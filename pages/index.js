@@ -46,7 +46,7 @@ export default function Home({ posts }) {
             <RoughNotation
               type="underline"
               show={true}
-              color="#fff176"
+              color="#1DB954"
               animationDelay={800}
               animationDuration={1200}
             >
@@ -55,7 +55,7 @@ export default function Home({ posts }) {
             <RoughNotation
               type="underline"
               show={true}
-              color="#ADD8E6"
+              color="#5a96c0"
               animationDelay={1400}
               animationDuration={1200}
             >
@@ -65,7 +65,7 @@ export default function Home({ posts }) {
             <RoughNotation
               type="underline"
               show={true}
-              color="#FF0000"
+              color="#c05a63"
               animationDelay={1700}
               animationDuration={1200}
             >
