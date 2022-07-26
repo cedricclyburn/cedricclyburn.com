@@ -34,10 +34,10 @@ export default function Home({ posts }) {
             <div>
               <Image
                 src="/static/images/cedric.jpg"
-                alt="avatar"
-                width="384px"
-                height="384px"
-                className=" [clip-path:circle(80%)]"
+                alt="Cedric Clyburn"
+                width="584px"
+                height="584px"
+                className=" [clip-path:circle(40%)]"
               />
             </div>
           </div>
