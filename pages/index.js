@@ -6,7 +6,7 @@ import { getAllFilesFrontMatter } from '@/lib/mdx'
 import formatDate from '@/lib/utils/formatDate'
 import { RoughNotation } from 'react-rough-notation'
 import Image from '@/components/Image'
-import ShortcutHome from '@/components/ShortcutHome'
+// import ShortcutHome from '@/components/ShortcutHome'
 
 import NewsletterForm from '@/components/NewsletterForm'
 
@@ -75,7 +75,7 @@ export default function Home({ posts }) {
           </p>
           <div className="flex justify-center w-full">
             <div className="justify-center mt-2">
-              <ShortcutHome />
+              
             </div>
           </div>
         </div>
