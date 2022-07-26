@@ -20,7 +20,7 @@ module.exports = {
       },
       colors: {
         'background-color': '#1F2023',
-        'primary-color': '#1e90ff',
+        'primary-color': '#c05a63',
         'primary-color-dark': '#FFFF66',
         'spotify-green': '#1DB954',
         primary: colors.teal,
