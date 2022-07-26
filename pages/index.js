@@ -33,16 +33,16 @@ export default function Home({ posts }) {
             </div>
             <div>
               <Image
-                src="/static/images/einar-avatar-new.jpg"
+                src="/static/images/cedric.jpg"
                 alt="avatar"
                 width="384px"
                 height="384px"
-                className=" [clip-path:circle(40%)]"
+                className=" [clip-path:circle(80%)]"
               />
             </div>
           </div>
           <p className="text-lg leading-7 text-slate-600 dark:text-slate-300">
-            This is my place for{' '}
+            Here's where I host my{' '}
             <RoughNotation
               type="underline"
               show={true}
@@ -50,7 +50,7 @@ export default function Home({ posts }) {
               animationDelay={800}
               animationDuration={1200}
             >
-              thoughts,{' '}
+              blogs,{' '}
             </RoughNotation>
             <RoughNotation
               type="underline"
@@ -59,7 +59,7 @@ export default function Home({ posts }) {
               animationDelay={1400}
               animationDuration={1200}
             >
-              reflections,{' '}
+              content,{' '}
             </RoughNotation>
             &{' '}
             <RoughNotation
