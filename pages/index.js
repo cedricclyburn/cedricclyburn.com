@@ -33,11 +33,11 @@ export default function Home({ posts }) {
             </div>
             <div>
               <Image
-                src="/static/images/cedric.jpg"
+                src="/static/images/cedric.png"
                 alt="Cedric Clyburn"
                 width="584px"
                 height="584px"
-                className=" [clip-path:circle(90%)]"
+                // className=" [clip-path:circle(90%)]"
               />
             </div>
           </div>
