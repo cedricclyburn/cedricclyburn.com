@@ -10,14 +10,14 @@ import LayoutWrapper from '@/components/LayoutWrapper'
 import { ClientReload } from '@/components/ClientReload'
 import 'remixicon/fonts/remixicon.css'
 
-import CommandBar from '../components/CommandBar'
+// import CommandBar from '../components/CommandBar'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 const isSocket = process.env.SOCKET
 
 export default function App({ Component, pageProps }) {
   return (
-    <CommandBar>
+    
       <ThemeProvider attribute="class" defaultTheme={siteMetadata.theme}>
         <Head>
           <meta content="width=device-width, initial-scale=1" name="viewport" />
@@ -28,6 +28,6 @@ export default function App({ Component, pageProps }) {
           <Component {...pageProps} />
         </LayoutWrapper>
       </ThemeProvider>
-    </CommandBar>
+    
   )
 }
