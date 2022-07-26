@@ -27,8 +27,8 @@ export default function Home({ posts }) {
           <div className="flex items-center justify-between">
             <div className="">
               <h1 className="mb-2 text-2xl font-extrabold tracking-tight leading-11 text-slate-900 dark:text-slate-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-                I'm <span className="text-primary-color dark:text-primary-color-dark">Einar</span>,
-                a curious software developer who's trying to get a bit better every day
+                I'm <span className="text-primary-color dark:text-primary-color-dark">Cedric</span>,
+                a passionate software developer and continual learner of all things cloud-native!
               </h1>
             </div>
             <div>
