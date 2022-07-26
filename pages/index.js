@@ -42,7 +42,7 @@ export default function Home({ posts }) {
             </div>
           </div>
           <p className="text-lg leading-7 text-slate-600 dark:text-slate-300">
-            Here's where I host my{' '}
+            Here's where I keep my{' '}
             <RoughNotation
               type="underline"
               show={true}
