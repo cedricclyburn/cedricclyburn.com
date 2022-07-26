@@ -5,7 +5,7 @@ import SectionContainer from './SectionContainer'
 import Footer from './Footer'
 import MobileNav from './MobileNav'
 import ThemeSwitch from './ThemeSwitch'
-import NowPlaying from './NowPlaying'
+// import NowPlaying from './NowPlaying'
 import Typewriter from 'typewriter-effect'
 import { useRouter } from 'next/router'
 
@@ -47,7 +47,7 @@ const LayoutWrapper = ({ children }) => {
           </div>
         </header>
         <main className="relative mb-auto">{children}</main>
-        <NowPlaying />
+
         <Footer />
       </div>
     </SectionContainer>
