@@ -37,7 +37,7 @@ export default function Home({ posts }) {
                 alt="Cedric Clyburn"
                 width="584px"
                 height="584px"
-                // className=" [clip-path:circle(40%)]"
+                className=" [clip-path:circle(90%)]"
               />
             </div>
           </div>
