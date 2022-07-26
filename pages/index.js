@@ -75,7 +75,6 @@ export default function Home({ posts }) {
           </p>
           <div className="flex justify-center w-full">
             <div className="justify-center mt-2">
-              
             </div>
           </div>
         </div>
