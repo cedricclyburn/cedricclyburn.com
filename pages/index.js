@@ -1,41 +1,34 @@
-import Link from "@/components/Link";
-import { PageSEO } from "@/components/SEO";
-import Tag from "@/components/Tag";
-import siteMetadata from "@/data/siteMetadata";
-import { getAllFilesFrontMatter } from "@/lib/mdx";
-import formatDate from "@/lib/utils/formatDate";
-import { RoughNotation } from "react-rough-notation";
-import Image from "@/components/Image";
+import Link from '@/components/Link'
+import { PageSEO } from '@/components/SEO'
+import Tag from '@/components/Tag'
+import siteMetadata from '@/data/siteMetadata'
+import { getAllFilesFrontMatter } from '@/lib/mdx'
+import formatDate from '@/lib/utils/formatDate'
+import { RoughNotation } from 'react-rough-notation'
+import Image from '@/components/Image'
 // import ShortcutHome from '@/components/ShortcutHome'
 
-import NewsletterForm from "@/components/NewsletterForm";
+import NewsletterForm from '@/components/NewsletterForm'
 
-const MAX_DISPLAY = 3;
+const MAX_DISPLAY = 3
 
 export async function getStaticProps() {
-  const posts = await getAllFilesFrontMatter("blog");
+  const posts = await getAllFilesFrontMatter('blog')
 
-  return { props: { posts } };
+  return { props: { posts } }
 }
 
 export default function Home({ posts }) {
   return (
     <>
-      <PageSEO
-        title={siteMetadata.title}
-        description={siteMetadata.description}
-      />
+      <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="pt-6 pb-8 space-y-2 md:space-y-5">
           <div className="flex items-center justify-between">
             <div className="">
               <h1 className="mb-2 text-2xl font-extrabold tracking-tight leading-11 text-slate-900 dark:text-slate-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-                I'm{" "}
-                <span className="text-primary-color dark:text-primary-color-dark">
-                  Cedric
-                </span>
-                , a passionate software developer and continual learner of all
-                things cloud-native!
+                I'm <span className="text-primary-color dark:text-primary-color-dark">Cedric</span>,
+                a passionate software developer and continual learner of all things cloud-native!
               </h1>
             </div>
             <div>
@@ -49,7 +42,7 @@ export default function Home({ posts }) {
             </div>
           </div>
           <p className="text-lg leading-7 text-slate-600 dark:text-slate-300">
-            Here's where I keep my{" "}
+            Here's where I keep my{' '}
             <RoughNotation
               type="underline"
               show={true}
@@ -57,7 +50,7 @@ export default function Home({ posts }) {
               animationDelay={800}
               animationDuration={1200}
             >
-              blogs,{" "}
+              blogs,{' '}
             </RoughNotation>
             <RoughNotation
               type="underline"
@@ -66,9 +59,9 @@ export default function Home({ posts }) {
               animationDelay={1400}
               animationDuration={1200}
             >
-              content,{" "}
+              content,{' '}
             </RoughNotation>
-            &{" "}
+            &{' '}
             <RoughNotation
               type="underline"
               show={true}
@@ -76,18 +69,19 @@ export default function Home({ posts }) {
               animationDelay={1700}
               animationDuration={1200}
             >
-              everything{" "}
+              everything{' '}
             </RoughNotation>
             in between
           </p>
           <div className="flex justify-center w-full">
-            <div className="justify-center mt-2"></div>
+            <div className="justify-center mt-2">
+            </div>
           </div>
         </div>
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-          {!posts.length && "No posts found."}
+          {!posts.length && 'No posts found.'}
           {posts.slice(0, MAX_DISPLAY).map((frontMatter) => {
-            const { slug, date, title, summary, tags } = frontMatter;
+            const { slug, date, title, summary, tags } = frontMatter
             return (
               <li key={slug} className="py-12">
                 <article>
@@ -132,7 +126,7 @@ export default function Home({ posts }) {
                   </div>
                 </article>
               </li>
-            );
+            )
           })}
         </ul>
       </div>
@@ -153,5 +147,5 @@ export default function Home({ posts }) {
         </div>
       )} */}
     </>
-  );
+  )
 }
