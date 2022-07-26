@@ -1,6 +1,6 @@
 ---
 name: Cedric Clyburn
-avatar: /static/images/avatar.png
+avatar: /static/images/cedric.png
 occupation: Developer Advocate Intern
 company: MongoDB
 # email: address@yoursite.com
