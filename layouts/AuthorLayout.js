@@ -76,6 +76,9 @@ export default function AuthorLayout({ children, frontMatter }) {
               you can see what I use on daily basis.
             </p> */}
             <br />
+            {text2}
+            <br />
+            {text3}
             <p>
               Feel free to reach out if you want to talk, you can reach me on{' '}
               <RoughNotation type="highlight" show={true} color="#dca3a7" animationDelay={600}>
