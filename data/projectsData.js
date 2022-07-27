@@ -10,14 +10,11 @@ const projectsData = [
     tech3: 'OpenShift',
   },
   {
-    title: 'Reboot Hack 2020',
-    description: `Information and registration webpage for Reboot Hack, the first student driven hackathon in Iceland.`,
+    title: 'MongoDB Podcast',
+    description: `Producing weekly episodes for the MongoDB Podcast for a total audience of over 10k, including interviewing, editing, and marketing on Twitter & LinkedIn.`,
     imgSrc: '',
-    href: 'https://reboothack.is',
-    github: 'https://github.com/einargudnig/reboothackFORK',
-    tech1: 'React',
-    tech2: 'PostgresQL',
-    tech3: 'Bootstrap',
+    href: 'https://mongodb.com/podcast',
+    github: '',
   },
   {
     title: 'GAIA',
