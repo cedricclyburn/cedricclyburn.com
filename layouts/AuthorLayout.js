@@ -77,11 +77,16 @@ export default function AuthorLayout({ children, frontMatter }) {
             </p>
             <br />
             <p>
-              Feel free to reach out if you have anything to talk about, you can reach me on{' '}
-              <RoughNotation type="highlight" show={true} color="#FBCFE8" animationDelay={1200}>
-                <span className="dark:text-gray-700">einargudnig@gmail.com </span>
+              Feel free to reach out if you want to talk, you can reach me on{' '}
+              <RoughNotation type="highlight" show={true} color="#c05a63" animationDelay={1200}>
+                <span className="dark:text-gray-700">cedricclyburn@gmail.com </span>
               </RoughNotation>
-              or on social media.
+              or on <Link
+                href={'https://twitter.com/cedricclyburn'}
+                className="special-underline no-underline hover:dark:text-gray-800 dark:text-gray-100"
+              >
+                twitter{' '}
+              </Link>.
             </p>
           </div>
         </div>
