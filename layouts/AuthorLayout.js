@@ -45,7 +45,7 @@ export default function AuthorLayout({ children, frontMatter }) {
           </div>
           {/* <div className="pt-8 pb-8 prose dark:prose-dark max-w-none xl:col-span-2">{children}</div> */}
           <div className="pt-8 pb-8 prose dark:prose-dark max-w-none xl:col-span-2">
-            <p>{text1}</p>
+            {/* <p>{text1}</p>
             <span>Are you interested in what I'm doing </span>
             <Link
               href={'/now'}
@@ -75,7 +75,7 @@ export default function AuthorLayout({ children, frontMatter }) {
               </Link>
               you can see what I use on daily basis.
             </p>
-            <br />
+            <br /> */}
             <p>
               Feel free to reach out if you want to talk, you can reach me on{' '}
               <RoughNotation type="highlight" show={true} color="#c05a63" animationDelay={1200}>
@@ -85,7 +85,7 @@ export default function AuthorLayout({ children, frontMatter }) {
                 href={'https://twitter.com/cedricclyburn'}
                 className="special-underline no-underline hover:dark:text-gray-800 dark:text-gray-100"
               >
-                twitter{' '}
+                twitter
               </Link>.
             </p>
           </div>
