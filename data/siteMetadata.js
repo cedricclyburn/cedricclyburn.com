@@ -14,7 +14,7 @@ const siteMetadata = {
   github: 'https://github.com/cedricclyburn',
   twitter: 'https://twitter.com/cedricclyburn',
   // facebook: 'https://facebook.com',
-  // youtube: 'https://youtube.com',
+  youtube: 'https://www.youtube.com/channel/UC5ugZBxTy70E8g-HovcWcBA',
   linkedin: 'https://www.linkedin.com/in/cedricclyburn/',
   locale: 'en-US',
   analytics: {
