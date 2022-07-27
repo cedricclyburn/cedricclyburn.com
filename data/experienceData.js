@@ -5,11 +5,11 @@ const experienceData = [
     location: 'New York, United States',
     range: 'June 2022 - present',
     url: 'https://mongodb.com/',
-    text1: 'Creating technical content and demos for MongoDB and partner technologies including Kubernetes and Tableau, as well as accompanying video content',
+    text1: 'Creating technical content and demos for MongoDB and partner technologies including Kubernetes and Tableau, as well as accompanying video content.',
     text2:
-      'Aiding in managing DevRel team projects using Jira to keep in check with timelines and other departments',
+      'Aiding in managing DevRel team projects using Jira to keep in check with timelines and other departments.',
     text3:
-      'Producing weekly episodes for the MongoDB Podcast for a total audience of over 10k, including interviewing, editing, and marketing on Twitter & LinkedIn',
+      'Producing weekly episodes for the MongoDB Podcast for a total audience of over 10k, including interviewing, editing, and marketing on Twitter & LinkedIn.',
   },
   {
     title: 'Developer Advocate Intern',
@@ -20,7 +20,7 @@ const experienceData = [
     text1:
       'Overhauled 25+ client-facing demos and associated documentation for Java, Python, and Node.js tracks in conjunction with the OpenShift developer experience team.',
     text2:
-      'Developed video content, articles, and multimedia for Red Hat partners and internal developer audiences, resulting in over 100,000 impressions on Youtube, Twitter, and Twitch.',
+      'Developed video content, articles, and multimedia for Red Hat partners and internal developer audiences, resulting in over 70k impressions on Youtube, Twitter, and Twitch.',
     text3:
       'Aided in the multi-department launch of KubernetesByExample through the development of 7 Kubernetes training courses.',
   },
