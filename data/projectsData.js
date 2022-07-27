@@ -39,6 +39,26 @@ const projectsData = [
     tech2: 'NodeJS',
     tech3: 'MongoDB',
   },
+  {
+    title: 'Talks & Presentations',
+    description: `A few of my recorded talks & presentations, mainly based around cloud technology.`,
+    imgSrc: '',
+    href: 'https://youtube.com/playlist?list=PLqafLvg0O11-qxnKdPLjECESd2Tuui79O',
+    github: '',
+    tech1: 'Kubernetes',
+    tech2: 'NodeJS',
+    tech3: 'DevOps',
+  },
+  {
+    title: 'Technical Blogs',
+    description: `Technical content and guides around getting started with Podman, Tekton, and Buildah.`,
+    imgSrc: '',
+    href: 'https://developers.redhat.com/author/cedric-clyburn',
+    github: '',
+    tech1: 'OpenShift',
+    tech2: 'Docker',
+    tech3: 'Tekton',
+  },
 ]
 
 export default projectsData
