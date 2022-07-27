@@ -5,8 +5,8 @@ const siteMetadata = {
   description: "My name is Cedric, I'm a computer science student at NC State University, interested in machine learning and cloud native technologies",
   language: 'en-us',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://tailwind-nextjs-starter-blog.vercel.app',
-  siteRepo: 'https://github.com/timlrx/tailwind-nextjs-starter-blog',
+  siteUrl: 'https://cedricclyburn.com',
+  siteRepo: 'https://github.com/cedricclyburn/cedricclyburn.com',
   siteLogo: '/static/images/logo.png',
   image: '/static/images/avatar.png',
   socialBanner: '/static/images/twitter-card.png',
