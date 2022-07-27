@@ -1,5 +1,5 @@
 const siteMetadata = {
-  title: 'Cedric Clyburn - Developer Advocate & Student',
+  title: 'Cedric Clyburn - Developer Advocate',
   author: 'Cedric Clyburn',
   headerTitle: 'Cedric Clyburn',
   description: "My name is Cedric, I'm a computer science student at NC State University, interested in machine learning and cloud native technologies",
