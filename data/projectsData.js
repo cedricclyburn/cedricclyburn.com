@@ -15,6 +15,9 @@ const projectsData = [
     imgSrc: '',
     href: 'https://mongodb.com/podcast',
     github: '',
+    tech1: 'Audacity',
+    tech2: 'MongoDB',
+    tech3: 'Jira',
   },
   {
     title: 'Cedric Explains Things!',
