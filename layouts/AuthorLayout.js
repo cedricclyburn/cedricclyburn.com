@@ -46,14 +46,14 @@ export default function AuthorLayout({ children, frontMatter }) {
           {/* <div className="pt-8 pb-8 prose dark:prose-dark max-w-none xl:col-span-2">{children}</div> */}
           <div className="pt-8 pb-8 prose dark:prose-dark max-w-none xl:col-span-2">
             <p>{text1}</p>
-            {/* <span>Are you interested in what I'm doing </span>
+            {/* {/* <span>Are you interested in what I'm doing </span>
             <Link
               href={'/now'}
               className="special-underline hover:dark:text-gray-800 dark:text-gray-100 no-underline"
             >
               now{' '}
             </Link>
-            <br />
+            <br /> */}
             <p>
               <RoughNotation
                 type="bracket"
@@ -64,7 +64,7 @@ export default function AuthorLayout({ children, frontMatter }) {
                 {text2}
               </RoughNotation>
             </p>
-            <br />
+            {/* <br />
             <p>
               {text3} <br />
               <Link
@@ -74,11 +74,8 @@ export default function AuthorLayout({ children, frontMatter }) {
                 Here{' '}
               </Link>
               you can see what I use on daily basis.
-            </p> */}
-            <br />
-            {text2}
-            <br />
-            {text3}
+            </p>
+            <br /> */}
             <p>
               Feel free to reach out if you want to talk, you can reach me on{' '}
               <RoughNotation type="highlight" show={true} color="#dca3a7" animationDelay={600}>
