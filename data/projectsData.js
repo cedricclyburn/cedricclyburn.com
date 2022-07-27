@@ -2,7 +2,7 @@ const projectsData = [
   {
     title: 'Course grader',
     description: `Web application built to allow students from the computer science department from the university of Iceland to review and grade their classes.`,
-    imgSrc: '',
+    imgSrc: '/static/images/twitter-card.png',
     href: 'https://course-advisor-csui.herokuapp.com/',
     github: 'https://github.com/einargudnig/courseAdvisor',
     tech1: 'React',
@@ -12,7 +12,7 @@ const projectsData = [
   {
     title: 'Reboot Hack 2020',
     description: `Information and registration webpage for Reboot Hack, the first student driven hackathon in Iceland.`,
-    imgSrc: '',
+    imgSrc: '/static/images/twitter-card.png',
     href: 'https://reboothack.is',
     github: 'https://github.com/einargudnig/reboothackFORK',
     tech1: 'React',
@@ -22,7 +22,7 @@ const projectsData = [
   {
     title: 'GAIA',
     description: `Web application built with Java Spring and Thymeleaf HTML templates, Makes users complete challenges to decrease their carbon footprint.`,
-    imgSrc: '',
+    imgSrc: '/static/images/twitter-card.png',
     href: '',
     github: 'https://github.com/einargudnig/GAIA',
     tech1: 'Java Spring',
