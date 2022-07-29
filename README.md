@@ -17,8 +17,6 @@ This is a [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com
 - Support for nested routing of blog posts
 - SEO friendly with RSS feed, sitemaps and more!
 
-## Sample posts
-
 ## Quick Start Guide
 
 1. JS (official support)
