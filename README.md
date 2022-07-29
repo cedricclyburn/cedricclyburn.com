@@ -1,6 +1,6 @@
 # My personal website
 
-This is a [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com/) blog built on a template from Timothy Lin. [Repo](https://github.com/timlrx/tailwind-nextjs-starter-blog)
+This is a [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com/) blog built on a template from Timothy Lin and Einar Guðjónsson. [Repo](https://github.com/timlrx/tailwind-nextjs-starter-blog)
 
 ## Features
 
@@ -24,7 +24,7 @@ This is a [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com
 1. JS (official support)
 
 ```bash
-npx degit https://github.com/einargudnig/einargudni.com.git
+npx degit https://github.com/cedricclyburn/cedricclyburn.com.git
 ```
 
 2. Personalize `siteMetadata.js` (site related information)
