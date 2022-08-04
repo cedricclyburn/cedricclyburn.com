@@ -18,11 +18,11 @@ Since Tekton is optimized for simplicity and reusability, let's look at the diff
 
 ![Various building blocks that Tekton provides](https://lh6.googleusercontent.com/CiWCvkUl2-ssMfUpZ25za_yhzGySMcWV7uWATYj7PYj0zXjPO5OA3PMQWLWRB6C9iroFZmne-pHLnw4cTWQGGAg3hqK8jAkbfT3PJRXnu0A5MdXG6Uy5WKAqSJ2IcFcrY3iDSbYKWPS9HpY86dvHA8w)
 
--Step: The most basic component of Tekton, a Step is a Kubernetes container image that executes on a specific tool or input (ex. Writing or reading a file)
+-_Step_: The most basic component of Tekton, a Step is a Kubernetes container image that executes on a specific tool or input (ex. Writing or reading a file)
 
--Task: A sequence of steps to perform a single functionality that can be reused (ex. Cloning a repository)
+-_Task_: A sequence of steps to perform a single functionality that can be reused (ex. Cloning a repository)
 
--Pipeline: Series of tasks executed in series or parallel (ex. Clone a repository, build an image, and push it to a container registry)
+-_Pipeline_: Series of tasks executed in series or parallel (ex. Clone a repository, build an image, and push it to a container registry)
 
 Because these components are configured as Custom Resource Definitions on Kubernetes, you can create highly reusable pipelines, and Tekton is also compatible with [Jenkins](https://www.jenkins.io/), [Skaffold](https://skaffold.dev/), [Knative](https://knative.dev/), and other CI/CD tools. Let’s take a look at getting started with Tekton, and start working on building our pipeline.
 
