@@ -69,58 +69,69 @@ export default function About() {
         </div>
         <div className="lg:order-first lg:row-span-2">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            I’m Spencer Sharp. I live in New York City, where I design the
-            future.
+          I’m Cedric Clyburn. I love teaching about all things cloud-native.
           </h1>
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
-            <p>
-              I’ve loved making things for as long as I can remember, and wrote
-              my first program when I was 6 years old, just two weeks after my
-              mom brought home the brand new Macintosh LC 550 that I taught
-              myself to type on.
+            <p> 
+              I've always loved the moment when something "<em>clicks</em>", 
+              where you realize how something works, and there's clarity. 
+              When I had the opportunity during my first internship in college 
+              to become a <a href="https://www.whatisdevrel.com/">developer advocate</a>
+              , I was able to make that happen for others, all 
+              while spreading the awareness of open source 
+              software and culture. Since then, I've been devoted to making 
+              education more accessible for all, to work in the open, and try 
+              and help make developers lives easier! 
+            </p> 
+            <p> 
+              Fortunately, I have been around for a time 
+              where <a href="https://kubernetes.io/">Kubernetes</a> has been the 
+              standard for application deployment, and much of my work has 
+              revolved around the container tools <a href="https://podman.io/">Podman</a>
+              , <a href="https://podman-desktop.io/">Podman Desktop</a>
+              , <a href="https://buildah.io/">Buildah</a>, and related projects. 
+              In the realm of inner loop development, I help promote 
+              the <a href="https://odo.dev/">odo CLI</a> as well as 
+              the <a href="https://github.com/redhat-developer/openshift-toolkit">OpenShift Toolkit</a> 
+              for deploying to Kubernetes clusters. Additionally, I've created 
+              workshops for cloud-native CI/CD with <a href="https://tekton.dev/">Tekton</a>, 
+              and dabble with AI and MLOps. 
             </p>
             <p>
-              The only thing I loved more than computers as a kid was space.
-              When I was 8, I climbed the 40-foot oak tree at the back of our
-              yard while wearing my older sister’s motorcycle helmet, counted
-              down from three, and jumped — hoping the tree was tall enough that
-              with just a bit of momentum I’d be able to get to orbit.
-            </p>
-            <p>
-              I spent the next few summers indoors working on a rocket design,
-              while I recovered from the multiple surgeries it took to fix my
-              badly broken legs. It took nine iterations, but when I was 15 I
-              sent my dad’s Blackberry into orbit and was able to transmit a
-              photo back down to our family computer from space.
-            </p>
-            <p>
-              Today, I’m the founder of Planetaria, where we’re working on
-              civilian space suits and manned shuttle kits you can assemble at
-              home so that the next generation of kids really <em>can</em> make
-              it to orbit — from the comfort of their own backyards.
+            One of my passions is connecting folks, so I help to organize the 
+            annual <a href="https://kubernetescommunitydays.org/events/2023-nyc/">
+            Kubernetes Community Days conference in New York City</a>. 
+            I also enjoy speaking myself at conferences, and have had the privilege 
+            to speak at a number of events, including The Linux 
+            Foundation's <a href="https://events.linuxfoundation.org/ai-dev-north-america/">AI.dev</a>
+            , <a href="https://www.wearedevelopers.com/world-congress/">WeAreDevelopers World Congress</a>
+            , <a href="https://www.developerweek.com/">DeveloperWeek</a>
+            , <a href="https://devnexus.com/">DevNexus</a>
+            , <a href="https://www.devconf.info/">DevConf</a>
+            , and many more!
             </p>
           </div>
         </div>
         <div className="lg:pl-20">
           <ul role="list">
-            <SocialLink href="#" icon={XIcon}>
+            <SocialLink href="https://x.com/cedricclyburn" icon={XIcon}>
               Follow on X
             </SocialLink>
-            <SocialLink href="#" icon={InstagramIcon} className="mt-4">
+            <SocialLink href="https://www.instagram.com/cedricclyburn" icon={InstagramIcon} className="mt-4">
               Follow on Instagram
             </SocialLink>
-            <SocialLink href="#" icon={GitHubIcon} className="mt-4">
+            <SocialLink href="https://github.com/cedricclyburn" icon={GitHubIcon} className="mt-4">
               Follow on GitHub
             </SocialLink>
-            <SocialLink href="#" icon={LinkedInIcon} className="mt-4">
+            <SocialLink href="https://www.linkedin.com/in/cedricclyburn" icon={LinkedInIcon} className="mt-4">
               Follow on LinkedIn
             </SocialLink>
             <SocialLink
-              href="mailto:spencer@planetaria.tech"
+              href="mailto:cedricclyburn@gmail.com"
               icon={MailIcon}
               className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
             >
-              spencer@planetaria.tech
+              cedricclyburn@gmail.com
             </SocialLink>
           </ul>
         </div>
