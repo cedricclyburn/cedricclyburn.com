@@ -7,12 +7,12 @@ import '@/styles/tailwind.css'
 
 export const metadata: Metadata = {
   title: {
-    template: '%s - Spencer Sharp',
+    template: '%s - Cedric Clyburn',
     default:
-      'Spencer Sharp - Software designer, founder, and amateur astronaut',
+      'Cedric Clyburn - Developer advocate & engineer for all things cloud-native',
   },
   description:
-    'I’m Spencer, a software designer and entrepreneur based in New York City. I’m the founder and CEO of Planetaria, where we develop technologies that empower regular people to explore space on their own terms.',
+    "I'm Cedric, a developer advocate based at Red Hat, with a background in Kubernetes, DevOps, and container tools. I love all things open-source, and create demos, workshops, and content to make developer's lives easier! Based out of New York City.",
   alternates: {
     types: {
       'application/rss+xml': `${process.env.NEXT_PUBLIC_SITE_URL}/feed.xml`,

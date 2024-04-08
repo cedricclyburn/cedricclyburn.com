@@ -277,7 +277,7 @@ export default async function Home() {
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
             I’m Cedric, a developer advocate based at Red Hat, with a 
             background in Kubernetes, DevOps, and container tools.
-            I love all things open-source, create demos, workshops, 
+            I love all things open-source, and create demos, workshops, 
             and content to make developer's lives easier! Based out of New York City.
           </p>
           <div className="mt-6 flex gap-6">
