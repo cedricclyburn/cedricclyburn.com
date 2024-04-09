@@ -1,4 +1,5 @@
 import { type Metadata } from 'next'
+import { Analytics } from "@vercel/analytics/react"
 import Image from 'next/image'
 
 import { Card } from '@/components/Card'

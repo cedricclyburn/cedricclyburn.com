@@ -1,4 +1,5 @@
 import Image, { type ImageProps } from 'next/image'
+import { Analytics } from "@vercel/analytics/react"
 import Link from 'next/link'
 import clsx from 'clsx'
 
