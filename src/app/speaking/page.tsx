@@ -58,7 +58,7 @@ export default function Speaking() {
             href="https://docs.google.com/presentation/d/1Owg4LZ3b99Ptxu_bb-zRYqO882DOaHstUDLJZIiTYys/edit"
             title="Simplifying containers and Kubernetes on your laptop with Podman Desktop"
             description="Supercharge your container application development workflow, and easily craft your applications for Kubernetes with Podman Desktop, an open-source container management tool to seamlessly run, debug, and manage containers and Kubernetes from your local environment."
-            event="The Linux Foundation: AI.dev"
+            event="DeveloperWeek"
             cta="View presentation"
           />
           <Appearance
