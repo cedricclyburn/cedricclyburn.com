@@ -54,18 +54,25 @@ export default function Speaking() {
     >
       <div className="space-y-20">
         <SpeakingSection title="Conferences">
+        <Appearance
+            href="https://docs.google.com/presentation/d/1Owg4LZ3b99Ptxu_bb-zRYqO882DOaHstUDLJZIiTYys/edit"
+            title="Simplifying containers and Kubernetes on your laptop with Podman Desktop"
+            description="Supercharge your container application development workflow, and easily craft your applications for Kubernetes with Podman Desktop, an open-source container management tool to seamlessly run, debug, and manage containers and Kubernetes from your local environment."
+            event="The Linux Foundation: AI.dev"
+            cta="View presentation"
+          />
           <Appearance
-            href="#"
-            title="In space, no one can watch you stream — until now"
-            description="A technical deep-dive into HelioStream, the real-time streaming library I wrote for transmitting live video back to Earth."
-            event="SysConf 2021"
+            href="https://www.youtube.com/watch?v=VAM-FSz0oPg"
+            title="Empowering Collaboration: AI Developer Experience - Your Bridge from Model to Production"
+            description="A technical deep-dive into the process data scientists and developers can follow for end-to-end generative AI application development on Kubernetes, using open source technologies like Jupyter, Kubeflow, and KServe Model Mesh."
+            event="The Linux Foundation: AI.dev"
             cta="Watch video"
           />
           <Appearance
-            href="#"
-            title="Lessons learned from our first product recall"
-            description="They say that if you’re not embarassed by your first version, you’re doing it wrong. Well when you’re selling DIY space shuttle kits it turns out it’s a bit more complicated."
-            event="Business of Startups 2020"
+            href="https://www.youtube.com/watch?v=Q8a4XHXraz4"
+            title="Reducing Developer Cognitive Load with Red Hat Enterprise Linux"
+            description="Red Hat Enterprise Linux (RHEL) offers a large toolset for modern software projects that can help reduce developer cognitive load. Let's explore the open source tools and runtimes that make this possible, including porting a .NET application from Windows to Linux & more."
+            event="We Are Developers World Congress"
             cta="Watch video"
           />
         </SpeakingSection>
