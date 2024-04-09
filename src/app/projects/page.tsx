@@ -3,47 +3,40 @@ import Image from 'next/image'
 
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import logoAnimaginary from '@/images/logos/animaginary.svg'
-import logoCosmos from '@/images/logos/cosmos.svg'
-import logoHelioStream from '@/images/logos/helio-stream.svg'
+import logoRedhatdeveloper from '@/images/logos/redhatdeveloper.svg'
+import logoMongodb from '@/images/logos/mongodb.svg'
+import logoIbm from '@/images/logos/ibm.svg'
 import logoOpenShuttle from '@/images/logos/open-shuttle.svg'
-import logoPlanetaria from '@/images/logos/planetaria.svg'
+import logoRedhat from '@/images/logos/redhat.svg'
 
 const projects = [
   {
-    name: 'Planetaria',
+    name: 'Kubernetes & OpenShift Labs',
     description:
-      'Creating technology to empower civilians to explore space on their own terms.',
-    link: { href: 'http://planetaria.tech', label: 'planetaria.tech' },
-    logo: logoPlanetaria,
+      'Self-paced labs hosted by Red Hat to get hands-on learning experience.',
+    link: { href: 'https://www.redhat.com/en/interactive-labs/openshift', label: 'redhat.com' },
+    logo: logoRedhat,
   },
   {
-    name: 'Animaginary',
+    name: 'Technical Blogs & Guides',
     description:
-      'High performance web animation library, hand-written in optimized WASM.',
-    link: { href: '#', label: 'github.com' },
-    logo: logoAnimaginary,
+      'Technical content and guides around getting started with Podman, Tekton, and Buildah.',
+    link: { href: 'https://developers.redhat.com/author/cedric-clyburn', label: 'developers.redhat.com' },
+    logo: logoRedhatdeveloper,
   },
   {
-    name: 'HelioStream',
+    name: 'Whiteboard Explainer Videos',
     description:
       'Real-time video streaming library, optimized for interstellar transmission.',
-    link: { href: '#', label: 'github.com' },
-    logo: logoHelioStream,
+    link: { href: 'https://www.youtube.com/watch?v=Xx588nbshlM', label: 'youtube.com' },
+    logo: logoIbm,
   },
   {
-    name: 'cosmOS',
+    name: 'MongoDB & Kubernetes',
     description:
-      'The operating system that powers our Planetaria space shuttles.',
-    link: { href: '#', label: 'github.com' },
-    logo: logoCosmos,
-  },
-  {
-    name: 'OpenShuttle',
-    description:
-      'The schematics for the first rocket I designed that successfully made it to orbit.',
-    link: { href: '#', label: 'github.com' },
-    logo: logoOpenShuttle,
+      'Article & demo repository on using the MongoDB Kubernetes operator to connect to MongoDB Atlas.',
+    link: { href: 'https://www.mongodb.com/developer/products/atlas/kubernetes-operator-application-deployment/', label: 'mongodb.com' },
+    logo: logoMongodb,
   },
 ]
 
@@ -66,8 +59,8 @@ export const metadata: Metadata = {
 export default function Projects() {
   return (
     <SimpleLayout
-      title="Things I’ve made trying to put my dent in the universe."
-      intro="I’ve worked on tons of little projects over the years but these are the ones that I’m most proud of. Many of them are open-source, so if you see something that piques your interest, check out the code and contribute if you have ideas for how it can be improved."
+      title="Projects, activities, and more."
+      intro="I've had the honor to work on a variety of advocacy projects, labs, and workshops on all kinds of open source software. Here are the ones that I'm most proud of, take a look!"
     >
       <ul
         role="list"

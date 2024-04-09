@@ -43,14 +43,14 @@ function Appearance({
 export const metadata: Metadata = {
   title: 'Speaking',
   description:
-    'I’ve spoken at events all around the world and been interviewed for many podcasts.',
+    'I’ve been fortunate to speak at conferences around the world',
 }
 
 export default function Speaking() {
   return (
     <SimpleLayout
-      title="I’ve spoken at events all around the world and been interviewed for many podcasts."
-      intro="One of my favorite ways to share my ideas is live on stage, where there’s so much more communication bandwidth than there is in writing, and I love podcast interviews because they give me the opportunity to answer questions instead of just present my opinions."
+      title="I love to share ideas and speak at conferences."
+      intro="I'm a firm believer that fantastic ideas and learning comes from knowledge-sharing and conversations at events and conferences, so here is a (fairly) complete list of conferences, podcasts, and other speaking opportunities I've had in the realm of Kubernetes and cloud-native."
     >
       <div className="space-y-20">
         <SpeakingSection title="Conferences">
@@ -71,24 +71,17 @@ export default function Speaking() {
         </SpeakingSection>
         <SpeakingSection title="Podcasts">
           <Appearance
-            href="#"
-            title="Using design as a competitive advantage"
-            description="How we used world-class visual design to attract a great team, win over customers, and get more press for Planetaria."
-            event="Encoding Design, July 2022"
+            href="https://www.kubernetesbytes.com/home-1/episode/44410748/mongodb-kubernetes-operators-with-joel-lord-and-cedric-clyburn"
+            title="MongoDB Kubernetes Operators with Joel Lord & Cedric Clyburn"
+            description="Hosts of Kubernetes Bytes, Bhavin and Ryan, dive into the different operators MongoDB has for deploying and managing MongoDB with Kubernetes."
+            event="Kubernetes Bytes, August 2022"
             cta="Listen to podcast"
           />
           <Appearance
-            href="#"
-            title="Bootstrapping an aerospace company to $17M ARR"
-            description="The story of how we built one of the most promising space startups in the world without taking any capital from investors."
-            event="The Escape Velocity Show, March 2022"
-            cta="Listen to podcast"
-          />
-          <Appearance
-            href="#"
-            title="Programming your company operating system"
-            description="On the importance of creating systems and processes for running your business so that everyone on the team knows how to make the right decision no matter the situation."
-            event="How They Work Radio, September 2021"
+            href="https://podcasts.mongodb.com/public/112/The-MongoDB-Podcast-b02cf624/343850c6"
+            title="The Intern Episode, Part 2"
+            description="Cedric speaks with interns, and the early talent program manager, about the MongoDB summer internship experience."
+            event="The MongoDB Podcast, July 2022"
             cta="Listen to podcast"
           />
         </SpeakingSection>
