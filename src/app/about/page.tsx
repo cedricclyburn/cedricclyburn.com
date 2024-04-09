@@ -137,6 +137,7 @@ export default function About() {
           </ul>
         </div>
       </div>
+      <Analytics />
     </Container>
   )
 }

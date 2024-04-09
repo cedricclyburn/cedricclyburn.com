@@ -1,4 +1,5 @@
 import { type Metadata } from 'next'
+import { Analytics } from "@vercel/analytics/react"
 
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
@@ -7,6 +8,7 @@ import { formatDate } from '@/lib/formatDate'
 
 function Article({ article }: { article: ArticleWithSlug }) {
   return (
+    
     <article className="md:grid md:grid-cols-4 md:items-baseline">
       <Card className="md:col-span-3">
         <Card.Title href={`/articles/${article.slug}`}>
@@ -55,6 +57,7 @@ export default async function ArticlesIndex() {
           ))}
         </div>
       </div>
+      <Analytics />
     </SimpleLayout>
   )
 }

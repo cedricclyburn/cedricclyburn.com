@@ -1,5 +1,5 @@
 import { type Metadata } from 'next'
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from '@vercel/analytics/react';
 
 import { Card } from '@/components/Card'
 import { Section } from '@/components/Section'
@@ -94,6 +94,7 @@ export default function Speaking() {
           />
         </SpeakingSection>
       </div>
+      <Analytics />
     </SimpleLayout>
   )
 }

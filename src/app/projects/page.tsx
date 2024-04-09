@@ -88,6 +88,8 @@ export default function Projects() {
           </Card>
         ))}
       </ul>
+      <Analytics />
     </SimpleLayout>
+    
   )
 }
