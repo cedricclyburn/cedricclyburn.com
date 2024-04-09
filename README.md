@@ -1,8 +1,8 @@
-# 🌟 Cedric Clyburn's Personal Website 🚀
+## My Personal Website 🚀
 
 Welcome to the repository of my personal website! This is where I showcase my blog, projects, and speaking engagements. It's a reflection of my passion for technology, open-source, and sharing knowledge with the community.
 
-## 🔍 What You'll Find Here
+### 🔍 What You'll Find Here
 
 - 📝 **Blog**: Dive into my technical articles and tutorials on various topics like Kubernetes, DevOps, and container tools. I love sharing my insights and experiences to help fellow developers navigate the ever-evolving tech landscape.
 
@@ -10,7 +10,7 @@ Welcome to the repository of my personal website! This is where I showcase my bl
 
 - 🎙️ **Speaking**: Get a glimpse of my speaking engagements and presentations at conferences and events. I'm passionate about sharing my knowledge and connecting with developers from around the world.
 
-## 🚀 Built with the Best
+### 🚀 Built with the Best
 
 This website is crafted using the latest web technologies to provide a seamless and enjoyable user experience. Here's what powers it:
 
@@ -19,11 +19,11 @@ This website is crafted using the latest web technologies to provide a seamless 
 - 📦 **TypeScript**: A typed superset of JavaScript that enhances code quality and developer productivity.
 - ✍️ **MDX**: A markup format that allows seamless integration of JSX components into Markdown documents.
 
-## 🌐 Check It Out Live
+### 🌐 Check It Out Live
 
 Visit [cedricclyburn.com](https://cedricclyburn.com) to see the website in action!
 
-## 🤝 Let's Connect
+### 🤝 Let's Connect
 
 I'm always excited to connect with new friends and developers. Feel free to reach out to me through any of the following channels:
 
