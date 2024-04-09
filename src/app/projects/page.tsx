@@ -27,7 +27,7 @@ const projects = [
   {
     name: 'Whiteboard Explainer Videos',
     description:
-      'Real-time video streaming library, optimized for interstellar transmission.',
+      'Open source technologies explained for everyone, using the fantastic IBM studio whiteboard.',
     link: { href: 'https://www.youtube.com/watch?v=Xx588nbshlM', label: 'youtube.com' },
     logo: logoIbm,
   },
