@@ -37,21 +37,21 @@ const projects = [
   {
     name: 'Podman vs Docker: Whiteboard Video Explainer',
     description:
-      'Article & demo repository on using the MongoDB Kubernetes operator to connect to MongoDB Atlas.',
-    link: { href: 'https://www.mongodb.com/developer/products/atlas/kubernetes-operator-application-deployment/', label: 'youtube.com' },
+      'Interested in learning the difference between these container management tools? Check out this whiteboard explainer.',
+    link: { href: 'https://www.youtube.com/watch?v=Xx588nbshlM', label: 'youtube.com' },
     logo: logoYoutube,
   },
   {
-    name: 'Podman vs Docker: Whiteboard Video Explainer',
+    name: 'Podman Desktop for Java Development',
     description:
-      'Article & demo repository on using the MongoDB Kubernetes operator to connect to MongoDB Atlas.',
+      'Learn how to setup Podman Desktop to start working with Java specific development.',
     link: { href: 'https://www.thomasvitale.com/podman-desktop-for-java-development/', label: 'thomasvitale.com' },
     logo: logoBlog,
   },
   {
     name: 'Managing Java containers with Quarkus and Podman Desktop',
     description:
-      'Article & demo repository on using the MongoDB Kubernetes operator to connect to MongoDB Atlas.',
+      'Check out this guide for how to create and manage Quarkus containers with Podman Desktop.',
     link: { href: 'https://developers.redhat.com/articles/2023/07/03/managing-java-containers-quarkus-and-podman-desktop', label: 'developers.redhat.com' },
     logo: logoRedhatdeveloper,
   },
