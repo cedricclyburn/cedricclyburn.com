@@ -1,0 +1,141 @@
+import Image from 'next/image';
+import podmanDesktopDownload from './podman-desktop-download.png';
+import podmanDesktopLanding from './podman-desktop-landing.png';
+import podmanDesktopInstallPodman from './podman-desktop-install-podman.png';
+import podmanDesktopEnableVirtualMachine from './podman-desktop-enable-virtual-machine.png';
+import enableVirtualMachinePlatform from './enable-virtual-machine-platform.png';
+import podmanDesktopEnableWSL from './podman-desktop-enable-wsl.png';
+import podmanDesktopInstallPodmanPrompt from './podman-desktop-install-podman-prompt.png';
+import podmanDesktopInstaller from './podman-desktop-installer.png';
+import podmanDesktopInitialize from './podman-desktop-initialize.png';
+import podmanDesktopDashboard from './podman-desktop-dashboard.png';
+import podmanDesktopPullImage from './podman-desktop-pull-image.png';
+import podmanDesktopPullNginx from './podman-desktop-pull-nginx.png';
+import podmanDesktopRunNginx from './podman-desktop-run-nginx.png';
+import podmanDesktopNginxLogs from './podman-desktop-nginx-logs.png';
+import podmanDesktopNginxTerminal from './podman-desktop-nginx-terminal.png';
+
+export const article = {
+  title: 'Getting started with Podman Desktop on Windows',
+  date: '2023-06-12',
+  tags: ['containers', 'linux', 'windows'],
+  draft: false,
+  summary: 'Learn how to install, setup, and use Podman Desktop on Windows, allowing you to manage and run containers on your Windows machine.',
+  authors: ['default'],
+};
+
+export const metadata = {
+  title: article.title,
+  description: article.summary,
+};
+
+_Learn how to install, setup, and use Podman Desktop on Windows, allowing you to manage and run containers on your Windows machine._
+
+[Podman](https://podman.io/) is a popular tool for developers because of its ability to package applications into [containers](https://developers.redhat.com/topics/containers), making it simple to develop and scale across platforms. It's a daemonless container engine (doesn't require a daemon to be running in the background), can be used in rootless mode, and is compatible with Docker (due to the Open Container Initiative). Now with [Podman Desktop](https://podman-desktop.io/), it's even easier to work with your images and containers, giving you a powerful desktop GUI that supports both Podman and [Docker](https://www.docker.com/)! We'll start off with installing Podman Desktop, enabling the [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about) (WSL) in order to launch our containers, then finally installing Podman as a container engine on Windows. While the open-source project is available on [Linux & MacOS](https://podman-desktop.io/downloads), let's take a look at how to install and use Podman Desktop on Windows. 
+
+## More About Podman Desktop
+
+With containerization becoming essential to a developer's toolkit, Podman Desktop is a container management tool to [create, manage, and deploy containers on your local machine](https://developers.redhat.com/articles/2023/05/23/podman-desktop-now-generally-available). It simplifies the configuration of containers through a graphical interface and features support for working with Pods using Podman, as well as deploying to Kubernetes environments (or local ones using [Kind](https://kind.sigs.k8s.io/) and Podman).
+
+## Prerequisites
+
+In order to run Podman Desktop on your Windows system, you'll need Windows 10 or Windows 11, 6 GB of Ram, and Windows Subsystem for Linux (if you haven't already installed it, Podman Desktop will show you how).
+
+## Installing Podman Desktop on Windows
+
+It's simple to install Podman Desktop on Windows, and while I'll show the process of installing using the [Windows installer](https://podman-desktop.io/downloads/Windows), there's also a portable executable and support for package managers like [Chocolately](https://podman-desktop.io/docs/Installation/windows-install/installing-podman-desktop-with-chocolatey), [Scoop](https://podman-desktop.io/docs/Installation/windows-install/installing-podman-desktop-with-scoop), and [Winget](https://podman-desktop.io/docs/Installation/windows-install/installing-podman-desktop-with-winget). 
+
+First, head to [podman-desktop.io](https://podman-desktop.io/) to download [Podman Desktop for Windows](https://podman-desktop.io/downloads/Windows). You should see the Windows download page, where you can also select other downloads for Windows, but you can select the large **Download Now** button to go ahead and download the installer.
+
+<Image src={podmanDesktopDownload} alt="Podman Desktop Download" />
+
+Now, with the `.exe` installer downloaded, simply start the installer in order to install Podman Desktop, and once finished, it'll start automatically and add a handy shortcut to your Desktop. As soon as Podman Desktop starts up for the first time, we can see the supported engines (such as [Podman](https://podman.io/), [Docker](https://www.docker.com/), and [Lima](https://github.com/lima-vm/lima)) as well as Kubernetes orchestrators ([OpenShift Local](https://developers.redhat.com/products/openshift-local/overview), [Kind](https://kind.sigs.k8s.io/), [Developer Sandbox](https://developers.redhat.com/developer-sandbox), and your [Kubernetes](https://kubernetes.io/) cluster [from a kubeconfig file](https://podman-desktop.io/docs/kubernetes/deploying-a-pod-to-kubernetes)).
+
+<Image src={podmanDesktopLanding} alt="Podman Desktop Landing" />
+
+Checking out the homepage, if you've already installed Podman to your Windows machine, you're ready to go and take advantage of [what Podman Desktop has to offer](https://podman-desktop.io/features)! However, in my case, I haven't installed Podman as a container engine, so let's take a look at installing Podman on Windows with the guidance of Podman Desktop. We'll be instructed to enable the Virtual Machine platform, WSL, and install Podman on our machine.
+
+<Image src={podmanDesktopInstallPodman} alt="Podman Desktop Install Podman" />
+
+## Installing Podman on Windows
+
+Let's quickly install the Podman container engine on Windows so we can get back to easily deploying and managing containers. Now on Windows, running the Podman engine requires [running a Linux distribution on a virtual machine](https://podman.io/docs/installation#windows). Fortunately, Podman Desktop can easily assist you to install the Podman container engine in a Fedora distribution of Linux, powered by the [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about). By clicking **View detection checks**, you can see where Podman is expected to be found on your PATH system variable, but let's go ahead and select **Install** on Podman Desktop to begin this process!
+
+<Image src={podmanDesktopEnableVirtualMachine} alt="Podman Desktop Enable Virtual Machine" />
+
+As the installation begins, Podman Desktop is identifying [prerequisites](https://podman-desktop.io/docs/installation/windows-install/installing-podman-with-podman-desktop) such as needing 6 GB of RAM on your system, as well as WSL prerequisites such as admin privileges, a 64-bit version of Windows, and running Windows 10 or 11. Now, if you've already installed and are using the Window Subsystem for Linux (WSL), you'll automatically breeze past this section and be prompted to install Podman as shown later on, but let's go through the process of enabling WSL. Let's go ahead and select the option to **Enable Virtual Machine Platform** from Podman Desktop (you'll be prompted to open a Microsoft documentation page).
+
+<Image src={podmanDesktopEnableVirtualMachine} alt="Podman Desktop Enable Virtual Machine" />
+
+Just as shown in the [Microsoft documentation page](https://learn.microsoft.com/en-us/windows/wsl/install-manual#step-3---enable-virtual-machine-feature), to setup the Virtual Machine feature on your Windows system, open a Command Prompt or Powershell terminal with Administrative privileges, and run the following command:
+
+```bash
+# Enable VM Feature
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+```
+
+<Image src={enableVirtualMachinePlatform} alt="Enable Virtual Machine Platform" />
+
+Next, return to Podman Desktop to finish the installation of WSL and install the Podman container engine. Go ahead and continue with the process by clicking Install again (you may need to restart Podman Desktop), and you’ll now see that while the Virtual Machine Platform is enabled, your last step is enabling WSL, which can be done again in the Command Prompt using the following command (and feel free to use the flag \`--no-distribution\` to skip installing a distribution of linux, as Podman will handle that):
+
+```bash
+# Enable WSL
+wsl --install --no-distribution
+```
+<Image src={podmanDesktopEnableWSL} alt="Podman Desktop Enable WSL" />
+
+Congratulations! You’ve now installed WSL and can access the power of both Windows and Linux on the same time on a Windows machine, and are now ready to install Podman back on Podman Desktop. Once we hit **Install** one last time from the dashboard of Podman Desktop, we can see a prompt asking us if we’d like to install the latest release of Podman to our Windows machine, and let’s select **Yes**.
+
+<Image src={podmanDesktopInstallPodmanPrompt} alt="Podman Desktop Install Podman Prompt" />
+
+This will auto-download the [installer for Podman](https://github.com/containers/podman/releases) to your system, where you’ll have the option to install WSL if not present (although no need to, as we already did so using the Command Prompt), and once we select **Install**, wait a few seconds, and **Close** to return to Podman Desktop with Podman installed. 
+
+<Image src={podmanDesktopInstaller} alt="Podman Desktop Installer" />
+
+The last step is to initialize and start Podman on your Windows system, which is as simple as clicking the **Initialize and start** button on the dashboard of Podman Desktop. This is automatically installing a minimal version of [Fedora](https://fedoraproject.org/), and customizing it to run Podman using the feature known as [podman machine](https://docs.podman.io/en/latest/markdown/podman-machine.1.html)! You’ll see “Podman is initializing” on your dashboard, and after a few minutes, in addition to being able to use Podman Desktop, we’ll also be able to use the \`podman\` command directly from our Command Prompt or Powershell terminal (which is communicating in the background to Podman running in WSL)!
+
+<Image src={podmanDesktopInitialize} alt="Podman Desktop Initialize" />
+
+<Image src={podmanDesktopDashboard} alt="Podman Desktop Dashboard" />
+
+## Getting Started with Podman Desktop
+
+With [Podman Desktop](https://podman-desktop.io/) installed on our Windows system using Podman as a container engine, we can leverage all of Podman’s lightweight and daemon-less features as we work with images, containers, and deployment with Kubernetes. In addition, if you’ve worked with Docker Desktop, you’ll find Podman Desktop similar and intuitive, with support for it’s own plugins as well as [Docker Desktop extensions](https://podman-desktop.io/extend). Let’s take a quick look at working with Podman Desktop and some of it’s capabilities.
+
+<Image src={podmanDesktopDashboard} alt="Podman Desktop Dashboard" />
+
+### Running containers with Podman Desktop
+
+Let’s quickly use Podman Desktop to pull an [Nginx](https://www.nginx.com/) image and run it as a container, which we can start to do from the Images section of Podman Desktop. Once here, we’ll can simply pull down the \`nginx\` image from our default container registry, which is the [Docker Hub](https://hub.docker.com/) (or configure others by going to **Settings -> Registries** for [Red Hat Quay](https://quay.io/), [GitHub](https://github.com/), [Google Artifact Registry](https://cloud.google.com/artifact-registry), and more).
+
+<Image src={podmanDesktopPullImage} alt="Podman Desktop Pull Image" />
+
+<Image src={podmanDesktopPullNginx} alt="Podman Desktop Pull Nginx" />
+
+Now with the image pulled to our local image registry, let’s run it using Podman Desktop back in the **Images** section by selecting the **Run** icon on the right-hand side of the image, where we’ll have the option to map ports (let’s map port 8080 on our host to port 80 on the container), mount volumes, and much more!
+
+<Image src={podmanDesktopRunNginx} alt="Podman Desktop Run Nginx" />
+
+With our nginx container now running on our system, let’s select the container from the containers section and check out the logs, SSH access, and filesystem, and conveniently provided by Podman Desktop.
+
+<Image src={podmanDesktopNginxLogs} alt="Podman Desktop Nginx Logs" />
+
+<Image src={podmanDesktopNginxTerminal} alt="Podman Desktop Nginx Terminal" />
+
+## Wrapping Up
+
+As shown, working with containers on your Windows machine is as simple as downloading Podman Desktop, setting up WSL on your system, and installing the Podman container engine. You can then work with images, containers, volumes, logs, pods, and more with a single desktop application. Be sure to visit [podman-desktop.io](https://podman-desktop.io/) to give Podman Desktop a try on your machine (or Linux and MacOS), and best of luck on your containerization journey!
+
+### FAQs
+
+1. Can I run Podman in Windows?
+
+Yes, you can run Podman on Windows. While “Containers are Linux”, Podman also runs on Mac and Windows, where it provides a native CLI and uses a guest Linux system to launch your containers (known as a Podman machine).
+
+2. What is the difference between Podman and Podman Desktop?
+
+[Podman](https://podman.io/) is a daemonless, open source, Linux native tool designed to make it easy to find, run, build, share and deploy containerized applications, where as [Podman Desktop](https://podman-desktop.io/) is a visual application for Windows, MacOS, and Linux, to seamlessly work with containers and Kubernetes from your local environment.
+
+3. What are the system requirements to run Podman & Podman Desktop on Windows?
+
+Since Podman uses WSL, you need a recent release of Windows 10 or Windows 11. If you are running Windows on a VM, you must have a VM that supports nested virtualization. You can view the other prerequisites on via the [Podman Desktop documentation](https://podman-desktop.io/docs/installation/windows-install/installing-podman-with-podman-desktop).
