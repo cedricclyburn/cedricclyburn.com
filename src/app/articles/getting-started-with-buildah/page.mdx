@@ -2,18 +2,18 @@ import Image from 'next/image';
 import buildahContainers from './buildah-containers.png';
 
 export const article = {
-  title: 'Getting started with Buildah',
+  author: 'Cedric Clyburn',
   date: '2022-11-14',
-  tags: ['kubernetes', 'containers', 'linux'],
-  draft: false,
-  summary: 'Use Buildah to create a working Open Container Initiative container image from scratch, or from a pre-existing Dockerfile, before running it with Podman.',
-  authors: ['default'],
+  title: 'Getting started with Buildah',
+  description: 'Use Buildah to create a working Open Container Initiative container image from scratch, or from a pre-existing Dockerfile, before running it with Podman.',
 };
 
 export const metadata = {
   title: article.title,
-  description: article.summary,
+  description: article.description,
 };
+
+export default (props) => <ArticleLayout article={article} {...props} />
 
 If you're looking to build Open Container Initiative (OCI) container images without a full container runtime or daemon installed, [Buildah](https://buildah.io/) is the perfect solution. Now, Buildah is an open-source, Linux-based tool that can build Docker- and [Kubernetes](https://developers.redhat.com/topics/kubernetes)-compatible images, and is easy to incorporate into scripts and build pipelines. In addition, Buildah has overlap functionality with [Podman](https://podman.io/), [Skopeo](https://github.com/containers/skopeo), and [CRI-O](https://cri-o.io/).
 

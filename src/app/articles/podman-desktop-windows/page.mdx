@@ -13,18 +13,18 @@ import podmanDesktopPullImage from './podman-desktop-pull-image.png';
 import podmanDesktopPullNginx from './podman-desktop-pull-nginx.png';
 
 export const article = {
-  title: 'Getting started with Podman Desktop on Windows',
+  author: 'Cedric Clyburn',
   date: '2023-06-12',
-  tags: ['containers', 'linux', 'windows'],
-  draft: false,
-  summary: 'Learn how to install, setup, and use Podman Desktop on Windows, allowing you to manage and run containers on your Windows machine.',
-  authors: ['default'],
-};
+  title: 'Getting started with Podman Desktop on Windows',
+  description: 'Learn how to install, setup, and use Podman Desktop on Windows, allowing you to manage and run containers on your Windows machine.',
+}
 
 export const metadata = {
   title: article.title,
-  description: article.summary,
-};
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
 
 _Learn how to install, setup, and use Podman Desktop on Windows, allowing you to manage and run containers on your Windows machine._
 

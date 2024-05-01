@@ -12,18 +12,18 @@ import podmanDesktopDeployButton from './podman-desktop-deploy-button.png';
 import developerSandboxPodLogs from './developer-sandbox-pod-logs.png';
 
 export const article = {
-  title: 'Deploy and test Kubernetes containers using Podman Desktop',
+  author: 'Cedric Clyburn',
   date: '2023-06-09',
-  tags: ['containers', 'linux', 'kubernetes', 'openshift'],
-  draft: false,
-  summary: "Deploy and test a containerized application from your desktop to the no-cost Developer Sandbox for Red Hat OpenShift using Podman Desktop's Developer Sandbox extension.",
-  authors: ['default'],
-};
+  title: 'Deploy and test Kubernetes containers using Podman Desktop',
+  description: "Deploy and test a containerized application from your desktop to the no-cost Developer Sandbox for Red Hat OpenShift using Podman Desktop's Developer Sandbox extension.",
+}
 
 export const metadata = {
   title: article.title,
-  description: article.summary,
-};
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
 
 [Podman Desktop](https://podman-desktop.io/) ([now generally available](https://developers.redhat.com/articles/2023/05/23/podman-desktop-now-generally-available)) is an amazing tool for building, running, and managing [containerized applications](https://developers.redhat.com/topics/containers) locally—but in a real-world environment, you need to deploy your applications on container orchestration platforms such as [Kubernetes](https://kubernetes.io/). If you're looking for an enterprise-grade Kubernetes, look no further than [Red Hat OpenShift](https://www.redhat.com/en/technologies/cloud-computing/openshift).
 

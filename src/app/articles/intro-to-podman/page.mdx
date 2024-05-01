@@ -1,16 +1,16 @@
 export const article = {
+  author: 'Cedric Clyburn',
   title: 'Intro to Podman',
   date: '2023-04-09',
-  tags: ['containers', 'linux'],
-  draft: false,
-  summary: 'Podman is an alternative to the Docker command-line interface that lets you run standalone, daemonless containers. See examples of how easy it is to use Podman.',
-  authors: ['default'],
+  description: 'Podman is an alternative to the Docker command-line interface that lets you run standalone, daemonless containers. See examples of how easy it is to use Podman.',
 };
 
 export const metadata = {
   title: article.title,
-  description: article.summary,
+  description: article.description,
 };
+
+export default (props) => <ArticleLayout article={article} {...props} />
 
 With the latest release of [Red Hat Enterprise Linux](https://developers.redhat.com/products/rhel/overview), and one of its continuing features is [Podman](https://podman.io/). Podman offers an experience similar to the Docker command line, allowing users to run standalone (non-orchestrated) containers without requiring a daemon, enabling us to say goodbye to big fat daemons. Podman also complements similar container tools such as  [Buildah](https://buildah.io/) and [Skopeo](https://github.com/containers/skopeo), offering a comprehensive and flexible toolkit for your container needs.
 
