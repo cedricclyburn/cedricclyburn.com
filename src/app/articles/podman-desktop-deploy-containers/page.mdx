@@ -1,4 +1,4 @@
-import ArticleLayout from '@/components/ArticleLayout'
+import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image';
 import podmanDesktop from './podman-desktop.png';
 import podmanDesktopExtensions from './podman-desktop-extensions.png';
@@ -24,7 +24,7 @@ export const metadata = {
   description: article.description,
 }
 
-export default (props) => <ArticleLayout article={article} {...props} />;
+export default (props) => <ArticleLayout article={article} {...props} />
 
 [Podman Desktop](https://podman-desktop.io/) ([now generally available](https://developers.redhat.com/articles/2023/05/23/podman-desktop-now-generally-available)) is an amazing tool for building, running, and managing [containerized applications](https://developers.redhat.com/topics/containers) locally—but in a real-world environment, you need to deploy your applications on container orchestration platforms such as [Kubernetes](https://kubernetes.io/). If you're looking for an enterprise-grade Kubernetes, look no further than [Red Hat OpenShift](https://www.redhat.com/en/technologies/cloud-computing/openshift).
 

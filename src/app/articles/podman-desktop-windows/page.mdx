@@ -1,4 +1,4 @@
-import ArticleLayout from '@/components/ArticleLayout'
+import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image';
 import podmanDesktopDownload from './podman-desktop-download.png';
 import podmanDesktopLanding from './podman-desktop-landing.png';
@@ -25,7 +25,7 @@ export const metadata = {
   description: article.description,
 }
 
-export default (props) => <ArticleLayout article={article} {...props} />;
+export default (props) => <ArticleLayout article={article} {...props} />
 
 _Learn how to install, setup, and use Podman Desktop on Windows, allowing you to manage and run containers on your Windows machine._
 

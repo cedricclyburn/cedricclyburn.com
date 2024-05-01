@@ -1,4 +1,4 @@
-import ArticleLayout from '@/components/ArticleLayout'
+import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image';
 import tektonBuildingBlocks from './tekton-building-blocks.png';
 import tektonLogo from './tekton-logo.png';
@@ -20,7 +20,7 @@ export const metadata = {
   description: article.description,
 }
 
-export default (props) => <ArticleLayout article={article} {...props} />;
+export default (props) => <ArticleLayout article={article} {...props} />
 
 For modern applications that require [CI/CD](https://www.redhat.com/en/topics/devops/what-is-ci-cd) (continuous integration and continuous delivery/continuous deployment), how do you continuously deliver your code changes from source to production on Kubernetes? In this tutorial, you'll learn how to use [Tekton](https://tekton.dev/) to clone your repository, build an image, and push it to the Docker Hub. Let's get started with Tekton, an open-source cloud native CI/CD solution, by creating a real-world CI/CD pipeline.
 
