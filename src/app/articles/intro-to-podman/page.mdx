@@ -1,0 +1,330 @@
+export const article = {
+  title: 'Intro to Podman',
+  date: '2023-04-09',
+  tags: ['containers', 'linux'],
+  draft: false,
+  summary: 'Podman is an alternative to the Docker command-line interface that lets you run standalone, daemonless containers. See examples of how easy it is to use Podman.',
+  authors: ['default'],
+};
+
+export const metadata = {
+  title: article.title,
+  description: article.summary,
+};
+
+With the latest release of [Red Hat Enterprise Linux](https://developers.redhat.com/products/rhel/overview), and one of its continuing features is [Podman](https://podman.io/). Podman offers an experience similar to the Docker command line, allowing users to run standalone (non-orchestrated) containers without requiring a daemon, enabling us to say goodbye to big fat daemons. Podman also complements similar container tools such as  [Buildah](https://buildah.io/) and [Skopeo](https://github.com/containers/skopeo), offering a comprehensive and flexible toolkit for your container needs.
+
+Podman implements nearly all the Docker CLI commands. Additionally, Podman's design, which does not require any background daemons, makes it a suitable choice for integration into system services via `systemd`. For container orchestration, you might want to explore [Kubernetes](https://developers.redhat.com/topics/kubernetes) and [Red Hat OpenShift](https://developers.redhat.com/products/openshift/overview).
+
+We'll cover some real examples to show how easy transitioning from the Docker CLI to Podman can be. (See also: [Transitioning from Docker to Podman](developers.redhat.com/blog/2020/11/19/transitioning-from-docker-to-podman))
+
+## Podman installation
+
+If you are running [Red Hat Enterprise Linux 9.2](https://developers.redhat.com/articles/2023/05/10/how-new-rhel-92-improves-developer-experience?sc_cid=7013a0000034ZDPAA2) or [Red Hat Enterprise Linux 8](https://developers.redhat.com/rhel8), follow the step below. This command will also work for [CentOS](https://developers.redhat.com/products/rhel/centos-and-rhel), where Podman is available in the default repo for CentOS 7 and 8. If not, you can try our interactive lab on how to [deploy a container using Podman](https://developers.redhat.com/learn/lessons/deploying-containers-podman?intcmp=7013a0000026UTXAA2).
+
+To install the podman package, simply execute the command:
+
+```bash
+$ yum install -y podman
+```
+
+
+This command will install Podman and also its dependencies. Now you can start experimenting with Podman!
+
+## Command-line examples
+
+### Run a UBI (Universal Base Image) Container
+
+Let's start by running a [UBI (Universal Base Image)](https://developers.redhat.com/products/rhel/ubi) container. Assuming you are on a RHEL system, execute the below command. After you see the shell prompt, you are inside the running UBI container.
+
+```
+$ podman run -it registry.access.redhat.com/ubi9/ubi sh
+Trying to pull registry.access.redhat.com/ubi9/ubi:latest...
+Getting image source signatures
+Checking if image destination supports signatures
+Copying blob 33b9f09cff46 done  
+Copying config e7236a3e07 done  
+Writing manifest to image destination
+Storing signatures
+sh-5.1$
+```
+
+Now you have a RHEL container running. You can use the `ls` command to list non-hidden files in the current directory and `exit` to leave the container's shell.
+
+```
+sh-5.1$ ls 
+afs  boot  etc   lib    lost+found  mnt  proc  run   srv  tmp  var
+bin  dev   home  lib64  media       opt  root  sbin  sys  usr
+sh-5.1$ exit
+exit
+```
+
+You can now explore various Podman commands to check the status of your containers and delete containers or images as needed.
+
+To view the status of your containers, execute:
+
+```
+$ podman ps -a
+CONTAINER ID  IMAGE                                       COMMAND     CREATED         STATUS                    PORTS       NAMES
+1d49374d4964  registry.access.redhat.com/ubi9/ubi:latest  sh          10 minutes ago  Exited (0) 2 minutes ago              loving\_mendeleev second ago reverent\_torvalds
+```
+
+To remove a container, use the `podman rm` command followed by the container ID:
+
+```
+$ podman rm 1d49374d4964
+1d49374d4964
+```
+
+To remove an image, use the `podman image rm` command followed by the image name:
+
+```
+$ podman image rm registry.access.redhat.com/ubi9/ubi:latest
+Untagged: registry.access.redhat.com/ubi9/ubi:latest
+Deleted: e7236a3e070f267713ad79c451b8628166abc0bc9c855f624619e099ec3faa99
+```
+
+As you can see, we used the same syntax as we'd use with `docker`.
+
+### Run a MariaDB persistent container
+
+Let's move on to a more complicated example: running a MariaDB 10.5 SQL database server container with custom variables and persistent data.
+
+First, download the MariaDB container image and inspect its details:
+
+```
+$ podman pull docker.io/library/mariadb:10.5
+Trying to pull docker.io/library/mariadb:10.5...
+Getting image source signatures
+Copying blob 818ec8e8ed03 done  
+...
+Copying config 9a79847e85 done  
+Writing manifest to image destination
+Storing signatures
+9a79847e85fb307d90864c991fc925e2d33b3ca6f9d3908008e456725a8f2cf1
+```
+
+Now, you can use `podman images` to view the image we've just downloaded.
+
+```
+$ podman images
+REPOSITORY                 TAG         IMAGE ID      CREATED         SIZE
+docker.io/library/mariadb  10.5        76a5b2d8081a  3 weeks ago     399 MB
+```
+
+This is because container filesystems are ephemeral, meaning once the container is removed, all the data associated with it is lost, we'll create a new volume to hold database data. Then, if we don't already have `mysql` to work with the data in MariaDB, we can also install it using `yum`.
+
+```
+$ podman volume create mariadb\_data
+mariadb\_data
+$ yum install -y mysql
+Installed:
+  mariadb-connector-c-config-3.2.6-1.el9\_0.noarch                       
+  mysql-8.0.32-1.el9\_2.x86\_64                                           
+  mysql-common-8.0.32-1.el9\_2.x86\_64                                    
+Complete!
+```
+
+And finally, let's run this container, running Podman with the following flags: -d for detached mode (in the background), `-e` for setting environment variables, `-p` for port assignment, `-v` to route the volumes, and use the previously downloaded MariaDB image.
+
+```
+$ podman run --name mariadb -e MYSQL\_ROOT\_PASSWORD=pass -p 3306:3306 -v mariadb\_data:/var/lib/mysql -d docker.io/library/mariadb:10.5
+00388490e13e9cb64b4f79ff4a56d250b725b67190e450251adbe3649cc280c2
+```
+
+Now, we can list the current running containers with `podman ps`.
+
+```
+$ podman ps
+CONTAINER ID  IMAGE                           COMMAND     CREATED         STATUS         PORTS                   NAMES
+00388490e13e  docker.io/library/mariadb:10.5  mysqld      25 seconds ago  Up 26 seconds  0.0.0.0:3306->3306/tcp  mariadb
+```
+
+As you can see, the container is up and running, but what is it doing? Let's check using `podman logs`, and doing a `grep` with `head` to see the most recent activity in the logs.
+
+```
+$ podman logs 00388490e13e | head
+2023-06-08 18:10:09+00:00 \[Note\] \[Entrypoint\]: Entrypoint script for MariaDver 1:10.11.3+maria~ubu2204 started.B Server 1:10.11.3+maria~ubu2204 started.
+2023-06-08 18:10:10+00:00 \[Note\] \[Entrypoint\]: Switching to dedicated user 'mysql'
+2023-06-08 18:10:10+00:00 \[Note\] \[Entrypoint\]: Entrypoint script for MariaDB Server 1:10.11.3+maria~ubu2204 started.
+2023-06-08 18:10:10+00:00 \[Note\] \[Entrypoint\]: Initializing database files
+```
+
+Ah! It just started and has initialized its database. Now, to get the IP address of the container and connect to it using TCP, we can use a `podman inspect` command.
+
+```
+$ podman inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mariadb
+10.88.0.10
+```
+
+Perfect, now we can run the `mysql` client using the server address like so, and using the password `pass` we set when running this MariaDB container.
+
+```
+$ mysql -h 10.88.0.10 -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \\g.
+Your MySQL connection id is 3
+Server version: 5.5.5-10.5.20-MariaDB-1:10.5.20+maria~ubu2004 mariadb.org binary distribution
+```
+
+Within the MariaDB container, we can run regular commands that we would on any MySQL server.
+
+```
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information\_schema |
+| mysql              |
+| performance\_schema |
++--------------------+
+
+mysql> CREATE DATABASE test;
+Query OK, 1 row affected
+
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information\_schema |
+| mysql              |
+| performance\_schema |
+| test               |
++--------------------+
+```
+
+Perfect. With everything looking good, we can exit the MariaDB server.
+
+```
+mysql> exit;
+Bye
+```
+
+Once finished with it's usage, we can also kill the container with podman kill, and destroy it as well.
+
+```
+$ podman kill mariadb
+mariadb
+$ podman rm mariadb
+mariadb
+```
+
+Doing a quick `podman ps`, we can see there are no running containers, but let's start a new container to check for data persistence:
+
+```
+$ podman run --name mariadb -e MYSQL\_ROOT\_PASSWORD=pass -p 3306:3306 -v mariadb\_data:/var/lib/mysql -d docker.io/library/mariadb:10.5
+```
+
+Now, we can check to see if the container has started again.
+
+```
+$ podman ps
+CONTAINER ID  IMAGE                           COMMAND     CREATED        STATUS        PORTS                   NAMES
+f854d9bdfa38  docker.io/library/mariadb:10.5  mysqld      4 seconds ago  Up 4 seconds  0.0.0.0:3306->3306/tcp  mariadb
+```
+
+Being a new container, we'll again need to get the IP address of the container and connect to it.
+
+```
+$ podman inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mariadb
+10.88.0.11
+```
+
+Let's go ahead and check the MariaDB server again to ensure our database persisted through the removal of the container earlier, using password `pass`.
+
+```
+$ mysql -h 10.88.0.11 -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \\g.
+Your MySQL connection id is 3
+Server version: 5.5.5-10.5.20-MariaDB-1:10.5.20+maria~ubu2004 mariadb.org binary distribution
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information\_schema |
+| mysql              |
+| performance\_schema |
+| test               |
++--------------------+
+
+mysql> exit;
+Bye
+```
+
+Great! Looks like our data has persisted, and the new database still is showing through the new container provision. Let's now stop and kill the container to tidy up.
+
+```
+$ podman kill f854d9bdfa38
+f854d9bdfa38
+```
+
+### Manage containers as system services through systemd and Podman
+
+Finally, we'll create a simple `systemd` resource for handling the previously created MariaDB container, which will allow your system to manage your Podman container just like any other system service.
+
+First, we need to create a `systemd` resource file for handling the brand new container service.
+
+```
+$ vim /etc/systemd/system/mariadb-container.service
+```
+
+Then, we'll paste the following content into the file. This simple service definition will attempt to remove an existing `mariadb` container before starting a new one, and is configured to always restart the service if it stops.
+
+```
+[Unit]
+Description=MariaDB Podman container
+After=network.target
+
+[Service]
+Type=simple
+TimeoutStartSec=5m
+ExecStartPre=-/usr/bin/podman rm "mariadb"
+ExecStart=/usr/bin/podman run --name mariadb -e MYSQL\_ROOT\_PASSWORD=pass -p 3306:3306 -v mariadb\_data:/var/lib/mysql -d docker.io/library/mariadb:10.5
+ExecStop=/usr/bin/podman stop "mariadb"
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Save and close the file by selecting esc then `:wq`, then we can reload the `systemd` catalog and start the service.
+
+```
+$ systemctl daemon-reload
+$ systemctl start mariadb-container
+```
+
+Let's view the status of the service as well.
+
+```
+$ systemctl status mariadb-container
+● mariadb-container.service - MariaDB Podman container
+     Loaded: loaded (/etc/systemd/system/mariadb-container.service; dis>
+     Active: deactivating (stop) since Thu 2023-06-08 19:08:29 UTC; 4s >
+    Process: 4910 ExecStartPre=/usr/bin/podman rm mariadb (code=exited,>
+    Process: 4919 ExecStart=/usr/bin/podman run --name mariadb -e MYSQL>
+   Main PID: 4919 (code=exited, status=0/SUCCESS); Control PID: 5004 (p>
+      Tasks: 8 (limit: 48881)
+     Memory: 18.6M
+        CPU: 373ms
+     CGroup: /system.slice/mariadb-container.service
+             ├─5000 /usr/bin/conmon --api-version 1 -c 56cef5dded60b040>
+             └─5004 /usr/bin/podman stop mariadb
+```
+
+Let's go ahead and stop the service for now, we can also use the command `systemctl enable mariadb-container` to start it automatically at boot.
+
+```
+$ systemctl stop mariadb-container
+```
+
+Awesome! We just set up a custom system service based on a container managed through Podman.
+
+## Conclusion
+
+In summary, Podman is a powerful container management tool that serves as an alternative to the Docker command-line interface. With its daemonless architecture, it offers a lightweight and efficient solution for running standalone containers. Podman's compatibility with Docker CLI commands and its ability to integrate with system services through systemd make it a versatile choice for container orchestration and management. Feel free to follow me on Twitter [@cedricclyburn](https://twitter.com/cedricclyburn) for more cloud-native tutorials!
