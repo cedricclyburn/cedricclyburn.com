@@ -1,3 +1,4 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image';
 import podmanDesktopDownload from './podman-desktop-download.png';
 import podmanDesktopLanding from './podman-desktop-landing.png';
@@ -136,3 +137,5 @@ Yes, you can run Podman on Windows. While “Containers are Linux”, Podman als
 3. What are the system requirements to run Podman & Podman Desktop on Windows?
 
 Since Podman uses WSL, you need a recent release of Windows 10 or Windows 11. If you are running Windows on a VM, you must have a VM that supports nested virtualization. You can view the other prerequisites on via the [Podman Desktop documentation](https://podman-desktop.io/docs/installation/windows-install/installing-podman-with-podman-desktop).
+
+export default (props) => <ArticleLayout article={article} {...props} />;

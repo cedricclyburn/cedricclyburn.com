@@ -1,3 +1,4 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image';
 import tektonBuildingBlocks from './tekton-building-blocks.png';
 import tektonLogo from './tekton-logo.png';
@@ -261,3 +262,5 @@ When visiting `localhost:3000`, you’ll see the Next.js example application run
 Through this guide, you’ve learned how to work with [Tekton](https://tekton.dev/) to create cloud-native CI/CD Pipelines. You’ve also been able to build your own Pipeline to clone a repository, build an image, and push that image to the Docker Hub, all by using Tasks from the [Tekton Hub](https://hub.tekton.dev/). There are plenty more reusable Tasks and Pipelines there, but I also encourage you to learn about [Tekton Triggers](https://github.com/tektoncd/triggers/blob/main/docs/getting-started/README.md) (automatically running a Pipeline), other projects of the [Continuous Delivery Foundation](https://cd.foundation/) and the [Tekton documentation](https://tekton.dev/docs/) for more information!
 
 Feel free to follow me on Twitter [@cedricclyburn](https://twitter.com/cedricclyburn) for more cloud-native tutorials!
+
+export default (props) => <ArticleLayout article={article} {...props} />;
