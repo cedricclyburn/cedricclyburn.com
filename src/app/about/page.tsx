@@ -101,7 +101,7 @@ export default function About() {
             </p>
             <p>
             One of my passions is connecting folks, so I help to organize the 
-            annual <a href="https://kubernetescommunitydays.org/events/2023-nyc/">
+            annual <a href="https://community.cncf.io/events/details/cncf-kcd-new-york-presents-kcd-new-york-2024/">
             Kubernetes Community Days conference in New York City</a>. 
             I also enjoy speaking myself at conferences, and have had the privilege 
             to speak at a number of events, including The Linux 
