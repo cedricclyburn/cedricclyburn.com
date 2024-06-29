@@ -11,6 +11,7 @@ import {
   InstagramIcon,
   LinkedInIcon,
   XIcon,
+  YoutubeIcon,
 } from '@/components/SocialIcons'
 import logoMongodb from '@/images/logos/mongodb.svg'
 import logoRedhat from '@/images/logos/redhat.svg'
@@ -297,6 +298,11 @@ export default async function Home() {
               href="https://www.linkedin.com/in/cedricclyburn"
               aria-label="Follow on LinkedIn"
               icon={LinkedInIcon}
+            />
+            <SocialLink
+              href="https://www.youtube.com/@cloudnativecedric"
+              aria-label="Follow on YouTube"
+              icon={YoutubeIcon}
             />
           </div>
         </div>
