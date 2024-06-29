@@ -10,6 +10,7 @@ import {
   InstagramIcon,
   LinkedInIcon,
   XIcon,
+  YoutubeIcon,
 } from '@/components/SocialIcons'
 import portraitImage from '@/images/portrait.jpg'
 
@@ -126,6 +127,9 @@ export default function About() {
             </SocialLink>
             <SocialLink href="https://www.linkedin.com/in/cedricclyburn" icon={LinkedInIcon} className="mt-4">
               Follow on LinkedIn
+            </SocialLink>
+            <SocialLink href="https://www.youtube.com/@cloudnativecedric" icon={YoutubeIcon} className="mt-4">
+              Follow on YouTube
             </SocialLink>
             <SocialLink
               href="mailto:cedricclyburn@gmail.com"
