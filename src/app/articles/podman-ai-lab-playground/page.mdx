@@ -19,42 +19,42 @@ import podmanDesktopAILabQuarkusIntegration from './podman-desktop-ai-lab-quarku
 import podmanDesktopAILabModelLogs from './podman-desktop-ai-lab-model-logs.png';
 
 export const article = {
-  author: 'Cedric Clyburn',
-  date: '2024-06-17',
-  title: 'Experiment and test AI models with Podman AI Lab',
-  description: "Discover how Podman AI Lab's Playground feature accelerates your AI application development workflow",
+ author: 'Cedric Clyburn Legare Kerrison',
+ date: '2024-06-17',
+ title: 'Experiment and test AI models with Podman AI Lab',
+ description: "Discover how Podman AI Lab's Playground feature accelerates your AI application development workflow",
 }
 
 export const metadata = {
-  title: article.title,
-  description: article.description,
+ title: article.title,
+ description: article.description,
 }
 
 export default (props) => <ArticleLayout article={article} {...props} />
 
-Experimenting with AI models and testing different prompts is a key part of developing AI-enabled applications. However, setting up the right environment and managing model dependencies can be challenging. Podman AI Lab's Playground feature solves this by providing an intuitive, containerized environment for exploring open-source machine learning models locally. Let's explore the Playground feature in-depth and show how it can accelerate your application development workflow when working with generative AI.
+Experimenting with AI models and testing different prompts is a key part of developing AI-enabled applications. However, setting up the right environment and managing model dependencies can be challenging. <a href="https://developers.redhat.com/products/podman-desktop/podman-ai-lab">Podman AI Lab</a>'s Playground feature solves this by providing an intuitive, containerized environment for exploring open-source machine learning models locally. Let's explore the Playground feature in-depth and show how it can accelerate your application development workflow when working with generative AI.
 
 ## What is Podman AI Lab?
 
-Podman AI Lab is an extension for Podman Desktop, the graphical tool for managing containers and Kubernetes, and enables developers to work with large language models (LLMs) and other AI models locally on their machine. It provides an intuitive interface to discover models, spin up playground environments for experimentation, serve models via REST APIs, and use pre-built "recipes" that showcase common AI use cases and best practices. Figure 1 shows the first screen you will see upon opening the extension.
+Podman AI Lab is an extension for <a href="https://developers.redhat.com/products/podman-desktop/overview">Podman Desktop</a>, the graphical tool for managing containers and <a href="https://developers.redhat.com/topics/kubernetes/">Kubernetes</a>, and enables developers to work with <a href="https://www.redhat.com/en/topics/ai/what-are-large-language-models">large language models</a> (LLMs) and other AI models locally on their machine. It provides an intuitive interface to discover models, spin up playground environments for experimentation, serve models via REST APIs, and use pre-built "recipes" that showcase common AI use cases and best practices. Figure 1 shows the first screen you will see upon opening the extension.
 
 <Image src={podmanDesktopAILab} alt="Podman Desktop with the Podman AI Lab extension" />
 
-Podman AI Lab runs the open source models in containers using Podman's container engine under the hood. This makes it easy to get started with AI without worrying about library conflicts, driver issues, or resource contention on your local machine. Since it's built on open source, you can examine how the models and example applications work under the covers (Figure 2).
+Podman AI Lab runs the open source models in <a href="https://developers.redhat.com/topics/containers">containers</a> using Podman's container engine under the hood. This makes it easy to get started with AI without worrying about library conflicts, driver issues, or resource contention on your local machine. Since it's built on open source, you can examine how the models and example applications work under the covers (Figure 2).
 
 <Image src={podmanDesktopAILabRecipe} alt="Example of a recipe from Podman AI Lab" />
 
 ## Experimenting and testing AI models
 
-Let's set up a playground environment on our local machine so we can test and compare AI models with prompts, benchmarks, and more. We'll explore the capabilities of curated HuggingFace models, import custom models, tune performance, and integrate AI with your applications.
+Let's set up a playground environment on our local machine so we can test and compare AI models with prompts, benchmarks, and more. We'll explore the capabilities of curated <a href="https://huggingface.co/">HuggingFace</a> models, import custom models, tune performance, and integrate AI with your applications.
 
 ### Setting up Podman AI Lab and downloading models
 
-To get started, first install Podman Desktop from podman-desktop.io if you haven't already. Launch Podman Desktop, click the Extensions icon on the left sidebar, and install the Podman AI Lab extension (Figure 3).
+To get started, first install Podman Desktop from <a href="http://podman-desktop.io">podman-desktop.io</a> if you haven't already. Launch Podman Desktop, click the **Extensions** icon on the left sidebar, and install the **Podman AI Lab** extension (Figure 3).
 
 <Image src={podmanDesktopExtensions} alt="Installing the Podman AI Lab extension" />
 
-When you open Podman AI Lab, Navigate to the Catalog, which contains a curated set of powerful open-source models that Podman AI Lab makes easy to use (see Figure 4). It includes both foundational models that can be applied to many use cases (like Mistral and Granite) as well as more specialized models for tasks like image generation and audio transcription.
+When you open Podman AI Lab, Navigate to the **Catalog**, which contains a curated set of powerful open-source models that Podman AI Lab makes easy to use (see Figure 4). It includes both foundational models that can be applied to many use cases (like <a href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2">Mistral</a> and <a href="https://huggingface.co/ibm-granite">Granite</a>) as well as more specialized models for tasks like image generation and audio transcription.
 
 <Image src={podmanDesktopAILabCatalog} alt="Podman AI Lab's model catalog" />
 
@@ -62,23 +62,27 @@ It's also important to understand how a model can be used & redistributed, and b
 
 <Image src={podmanDesktopAILabModel} alt="Details of the model" />
 
-As an example, let's download TheBloke/Mistral-7B-Instruct-v0.2-GGUF, based on Mistral, and while only trained with 7 billion parameters, is a well-performing reasoning model that could fit various use cases. See Figure 6.
+As an example, let's download <code>TheBloke/Mistral-7B-Instruct-v0.2-GGUF</code>, based on Mistral, and while only trained with 7 billion parameters, is a well-performing reasoning model that could fit various use cases. See Figure 6.
 
 <Image src={podmanDesktopAILabDownloadModel} alt="Details of the TheBloke/Mistral-7B-Instruct-v0.2-GGUF model" />
 
-The catalog provides many models that are already compatible with Podman AI Lab's Recipies (sample applications to get started with chatbots, summarizers, code generation, object detection, etc.) on your local machine. You may want to consider importing your own models that you've discovered (perhaps from the Open LLM Leaderboard on HuggingFace) or fine-tuned using an approach like InstructLab. From the Models Catalog, you can easily import a quantized .gguf file to the catalog and make it available for use in Podman AI Lab, as shown in Figure 7.
+The catalog provides many models that are already compatible with <a href="https://developers.redhat.com/articles/2024/05/07/podman-ai-lab-recipes?intcmp=7015Y000003ss1hQAA">Podman AI Lab's Recipies</a> (sample applications to get started with chatbots, summarizers, code generation, object detection, etc.) on your local machine. You may want to consider importing your own models that you've discovered (perhaps from the <a href="https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard">Open LLM Leaderboard on HuggingFace</a>) or fine-tuned using an approach like <a href="https://instructlab.ai/">InstructLab</a>. From the **Models Catalog**, you can easily import a quantized <code>.gguf</code> file to the catalog and make it available for use in Podman AI Lab, as shown in Figure 7.
 
 <Image src={podmanDesktopAILabImportModel} alt="Importing a custom model into Podman AI Lab" />
 
-#### Importing an InstructLab trained model into Podman AI Lab 
+<h3 dir="ltr">
+   <span>Importing an InstructLab trained model into Podman AI Lab</span>
+</h3>
 
-Speaking of importing and working with trained models, let's take a look at working with an InstructLab-based fine-tuned model. While LLMs are trained on immense amounts of data in a variety of subjects, the InstructLab approach allows you to fine-tune a model on knowledge and skills for specific use cases, and brings true open source to AI model development. What's neat is that this is possible on consumer-grade hardware, and after following the instructions from the project repository, you'll end up with a quantized .gguf file in the model-trained directory ready to use with Podman AI Lab. See Figure 8.
+<p dir="ltr">
+   <span>Speaking of importing and working with trained models, let's take a look at working with an InstructLab-based fine-tuned model. While LLMs are trained on immense amounts of data in a variety of subjects, the </span><a href="https://instructlab.ai/"><span>InstructLab</span></a><span> approach allows you to </span><a href="https://developers.redhat.com/blog/2024/06/12/getting-started-instructlab-generative-ai-model-tuning"><u>fine-tune a model on knowledge and skills for specific use cases</u></a><span>, and brings true open source to AI model development. What's neat is that this is possible on consumer-grade hardware, and after following the </span><a href="https://github.com/instructlab/instructlab"><u>instructions from the project repository</u></a><span>, you'll end up with a quantized .gguf file in the model-trained directory ready to use with Podman AI Lab. See Figure 8.</span>
+</p>
 
 <Image src={podmanDesktopAILabImportInstructLab} alt="Importing an InstructLab trained model with Podman AI Lab" />
 
 ### Experimenting with a playground environment
 
-To interactively experiment with a model and try out different prompts, let's launch a Playground environment. Navigate to Playgrounds from the left sidebar, where we can select New Playground and specify the name of our new environment and a downloaded model to use (Figure 9).
+To interactively experiment with a model and try out different prompts, let's launch a Playground environment. Navigate to **Playgrounds** from the left sidebar, where we can select **New Playground** and specify the name of our new environment and a downloaded model to use (Figure 9).
 
 <Image src={podmanDesktopAILabPlayground} alt="Creating a new Playground in Podman AI Lab" />
 
@@ -102,11 +106,11 @@ The Playground logs your conversation, so you can track what works well. Iterate
 
 The Playground allows you to tune the model's behavior through several configuration options, as Figure 13 depicts. 
 
-Temperature: Controls the randomness of responses. Lower values are more focused, higher values are more creative.
+**Temperature:** Controls the randomness of responses. Lower values are more focused, higher values are more creative.
 
-Max Tokens: Sets the maximum length of the model's output, influencing verbosity and resource consumption.
+**Max Tokens:** Sets the maximum length of the model's output, influencing verbosity and resource consumption.
 
-Top-p: Adjusts the balance between relevance and diversity in word choices.
+**Top-p:** Adjusts the balance between relevance and diversity in word choices.
 
 <Image src={podmanDesktopAILabPlaygroundConfig} alt="Podman AI Lab's Playground configuration options" />
 
@@ -118,15 +122,15 @@ You can work with multiple Playground instances concurrently to compare differen
 
 ## Integrating with your application
 
-Once you've refined the model choice, prompts, and configuration, you're ready to supercharge your application with generative AI. Podman AI Lab enables you to serve the model as a containerized REST endpoint that your code can call, just like any other API. From the Services tab, select New Model Service to specify the model and port to expose (Figure 14).
+Once you've refined the model choice, prompts, and configuration, you're ready to supercharge your application with generative AI. Podman AI Lab enables you to serve the model as a containerized REST endpoint that your code can call, just like any other API. From the **Services** tab, select **New Model Service** to specify the model and port to expose (Figure 14).
 
 <Image src={podmanDesktopAILabModelService} alt="Creating a new Model Service in Podman AI Lab" />
 
-The Model Serving view provides the endpoint URL along with code snippets in popular languages for making requests. Use these as a starting point to integrate the model's capabilities into your application backend. The API is compatible with the OpenAI format, so you can easily swap between local and hosted models. See Figure 15.
+The Model Serving view provides the endpoint URL along with code snippets in popular languages for making requests. Use these as a starting point to integrate the model's capabilities into your application backend. The API is compatible with the <a href="https://platform.openai.com/docs/api-reference/introduction">OpenAI format</a>, so you can easily swap between local and hosted models. See Figure 15.
 
 <Image src={podmanDesktopAILabModelServiceDashboard} alt="Podman AI Lab's model serving view" />
 
-Let's say we're working on a banking application built with Quarkus, the Kubernetes-native Java stack for developer joy. We can easily integrate the generative AI model into my application by adding the new dependencies for LangChain4j and a connection to my served model to the application.properties. Now, we can create a service to interact with the LLM through a @RegisterAiService annotation, and call that method in other resources (more about Quarkus and Langchain4j here)! Figure 16 depicts this service.
+Let's say we're working on a banking application built with <a href="https://quarkus.io/">Quarkus</a>, the Kubernetes-native Java stack for developer joy. We can easily integrate the generative AI model into my application by adding the new dependencies for <a href="https://docs.langchain4j.dev/intro/">LangChain4j</a> and a connection to my served model to the <code>application.properties</code>. Now, we can create a service to interact with the LLM through a <code>@RegisterAiService</code> annotation, and call that method in other resources (<a href="https://developers.redhat.com/articles/2024/02/07/how-use-llms-java-langchain4j-and-quarkus#send_the_blog_content_to_openai">more about Quarkus and Langchain4j here</a>)! Figure 16 depicts this service.
 
 <Image src={podmanDesktopAILabQuarkusIntegration} alt="Integrating Podman AI Lab with a Quarkus application using LangChain4j" />
 
@@ -136,6 +140,6 @@ Podman Desktop manages the model server container, ensuring high availability an
 
 ## Conclusion
 
-Podman AI Lab's Playground provides an intuitive, powerful environment for exploring open source AI models and testing different approaches. It abstracts away infrastructure complexity and allows you to focus on integrating AI into your applications. You can evaluate various models from the curated catalog (or import your own models), tune configurations for performance and results, and easily serve the model to an API endpoint for usage in your application, no matter the language or framework.  
+<a href="https://developers.redhat.com/products/podman-desktop/podman-ai-lab">Podman AI Lab</a>'s Playground provides an intuitive, powerful environment for exploring open source AI models and testing different approaches. It abstracts away infrastructure complexity and allows you to focus on integrating AI into your applications. You can evaluate various models from the curated catalog (or import your own models), tune configurations for performance and results, and easily serve the model to an API endpoint for usage in your application, no matter the language or framework.  
 
-Try out the Podman AI Lab today, an extension of the Podman Desktop project for working with containers and Kubernetes.
+Try out the Podman AI Lab today, an extension of the <a href="https://developers.redhat.com/products/podman-desktop/overview">Podman Desktop</a> project for working with containers and Kubernetes.
