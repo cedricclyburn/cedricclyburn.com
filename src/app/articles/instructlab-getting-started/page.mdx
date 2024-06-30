@@ -37,7 +37,7 @@ We'll walk through getting started with InstructLab, from installation to contri
 
 ### Installing the InstructLab CLI
 
-<a href="https://github.com/instructlab/instructlab">InstructLab provides a command-line interface (CLI)</a> called ilab that handles the main tuning workflow. Currently, it supports Linux systems and Apple Silicon Macs (M1/M2/M3), as well as Windows with WSL2 (<a href="https://www.youtube.com/watch?v=EvpXokBpu8M">check out this guide</a>). In addition, you'll need <a href="https://www.python.org/">Python</a> 3.9+ (&lt;3.12 for PyTorch JIT), a C++ compiler, and about 60GB of free disk space, <a href="https://github.com/instructlab/instructlab#-requirements">more information is in the project's README</a>
+<a href="https://github.com/instructlab/instructlab">InstructLab provides a command-line interface (CLI)</a> called **ilab** that handles the main tuning workflow. Currently, it supports Linux systems and Apple Silicon Macs (M1/M2/M3), as well as Windows with WSL2 (<a href="https://www.youtube.com/watch?v=EvpXokBpu8M">check out this guide</a>). In addition, you'll need <a href="https://www.python.org/">Python</a> 3.9+ (&lt;3.12 for PyTorch JIT), a C++ compiler, and about 60GB of free disk space, <a href="https://github.com/instructlab/instructlab#-requirements">more information is in the project's README</a>
 
 Now, let's go ahead and create a new directory for your InstructLab project and set up a <a href="https://docs.python.org/3/library/venv.html">Python virtual environment</a> so that the InstructLab components installed are just available in this environment and not system-wide.
 
@@ -60,10 +60,10 @@ $ ilab --version
 ilab, version 0.16.1
 ```
 
-You should see the ilab version printed, e.g. ilab, version 0.16.1.
+You should see the ilab version printed, e.g. **ilab, version 0.16.1**.
 ### Initializing InstructLab and a Taxonomy project
 
-With ilab installed, we can initialize our tuning environment with the ilab init command. This will download the <a href="https://github.com/instructlab/taxonomy">Taxonomy</a> repository (which contains the structured task definitions and community-provided knowledge) to our local machine with a configuration file (after selecting Enter and Yes for project defaults).
+With ilab installed, we can initialize our tuning environment with the **ilab init** command. This will download the <a href="https://github.com/instructlab/taxonomy">Taxonomy</a> repository (which contains the structured task definitions and community-provided knowledge) to our local machine with a configuration file (after selecting **Enter** and **Yes** for project defaults).
 
 ```bash
 $ ilab init
@@ -101,7 +101,7 @@ generate:
 
 ### Downloading, serving, and testing a model with InstructLab
 
-InstructLab can enhance open-source LLMs like <a href="https://mistral.ai/news/mistral-large/">Mistral</a> and <a href="https://ai.meta.com/blog/large-language-model-llama-meta-ai/">Llama</a>, and now, the <a href="https://www.redhat.com/en/about/press-releases/red-hat-delivers-accessible-open-source-generative-ai-innovation-red-hat-enterprise-linux-ai">Granite set of foundation models</a> in partnership with IBM and Red Hat. To get started, download a compact pre-trained & quantized model with the ilab download command.
+InstructLab can enhance open-source LLMs like <a href="https://mistral.ai/news/mistral-large/">Mistral</a> and <a href="https://ai.meta.com/blog/large-language-model-llama-meta-ai/">Llama</a>, and now, the <a href="https://www.redhat.com/en/about/press-releases/red-hat-delivers-accessible-open-source-generative-ai-innovation-red-hat-enterprise-linux-ai">Granite set of foundation models</a> in partnership with IBM and Red Hat. To get started, download a compact pre-trained & quantized model with the **ilab download** command.
 
 ```bash
 $ ilab download
@@ -111,7 +111,7 @@ INFO 2024-06-11 23:21:23,255 file_download.py:1877 Downloading 'merlinite-7b-lab
 merlinite-7b-lab-Q4_K_M.gguf:   2%|▊       | 105M/4.37G [01:23&lt;57:18, 1.24MB/s]
 ```
 
-This <a href="https://huggingface.co/ibm/merlinite-7b">Merlinite</a> (derivative of Mistral) model, in particular, is trained with 7 billion parameters and is roughly 4GB in size, so it may take a few minutes on a fast connection. You can also <a href="https://github.com/instructlab/instructlab#downloading-a-specific-model-from-a-hugging-face-repository">download a specific model version or an entire Hugging Face repo</a>. Now, let's serve the model to be inferenced from our local machine using ilab serve.
+This <a href="https://huggingface.co/ibm/merlinite-7b">Merlinite</a> (derivative of Mistral) model, in particular, is trained with 7 billion parameters and is roughly 4GB in size, so it may take a few minutes on a fast connection. You can also <a href="https://github.com/instructlab/instructlab#downloading-a-specific-model-from-a-hugging-face-repository">download a specific model version or an entire Hugging Face repo</a>. Now, let's serve the model to be inferenced from our local machine using **ilab serve**.
 
 ```bash
 $ ilab serve
@@ -120,7 +120,7 @@ INFO 2024-06-11 23:27:40,984 server.py:206 Starting server process, press CTRL+C
 INFO 2024-06-11 23:27:40,984 server.py:207 After application startup complete see http://127.0.0.1:8000/docs for API.
 ```
 
-Now, in a new terminal environment, enter your virtual environment again (source venv/bin/activate) and run ilab chat to enter a simple interface for conversing with the LLM.
+Now, in a new terminal environment, enter your virtual environment again (**source venv/bin/activate**) and run **ilab chat** to enter a simple interface for conversing with the LLM.
 
 ```bash
 $ ilab chat
@@ -129,13 +129,13 @@ $ ilab chat
 Hello! I am doing well, thank you for asking. And how about yourself?
 ```
 
-You'll notice that this format may be different than your output! In this interactive terminal for conversing and testing out the model, type /h to learn about all of the different commands available, such as /p for plain text (without the ASCII), /n for a new chat context, and /q to quit the chat.
+You'll notice that this format may be different than your output! In this interactive terminal for conversing and testing out the model, type **/h** to learn about all of the different commands available, such as **/p** for plain text (without the ASCII), **/n** for a new chat context, and **/q** to quit the chat.
 
 ## Model alignment and training with InstructLab
 
 Now that we have a foundational model downloaded, served, and tested, let's dive into the exciting part: aligning and training the model with new knowledge and skills! InstructLab provides a structured approach to curating knowledge and generating synthetic data for efficient model tuning.
 
-As an example, I'm feeling lucky, so let's ask this model about the largest Las Vegas jackpot wins through the ilab chat interface (that you may still have open).
+As an example, I'm feeling lucky, so let's ask this model about the largest Las Vegas jackpot wins through the **ilab chat** interface (that you may still have open).
 
 ```bash
 $ ilab chat
@@ -203,7 +203,7 @@ document:
 
 You can begin to understand <a href="https://github.com/instructlab/taxonomy#getting-started-with-skill-contributions">how the file is structured</a>, from the metadata to the 5-10 Q&A pairs that can be included (although there's an approximate limit of 2,300 words for training efficiency and quality). There is also a link to a public repository for additional data points from which InstructLab will generate additional question-and-answer pairs. This additional data will be used to generate synthetic question-answer pairs during the next step.
 
-If you'd like to use <a href="https://github.com/cedricclyburn/taxonomy/blob/main/knowledge/trivia/vegas/qna.yaml">this same qna.yaml file</a>, feel free to download it locally using this command from the taxonomy/knowledge/ directory, which will also create a new directory structure under the knowledge directory for trivia/vegas.
+If you'd like to use <a href="https://github.com/cedricclyburn/taxonomy/blob/main/knowledge/trivia/vegas/qna.yaml">this same qna.yaml file</a>, feel free to download it locally using this command from the **taxonomy/knowledge/** directory, which will also create a new directory structure under the knowledge directory for trivia/vegas.
 
 ```bash
 $ mkdir -p trivia/vegas && curl -sSL https://raw.githubusercontent.com/cedricclyburn/taxonomy/main/knowledge/trivia/vegas/qna.yaml -o trivia/vegas/qna.yaml
@@ -213,7 +213,7 @@ $ mkdir -p trivia/vegas && curl -sSL https://raw.githubusercontent.com/cedriccly
 
 So we've added some task-specific knowledge—now what? The next step is to use <a href="https://github.com/instructlab/instructlab#-generate-a-synthetic-dataset">InstructLab's synthetic data generation pipeline</a> to create a large training set from your examples. The key insight behind InstructLab's LAB method is that we can use the base model itself to massively expand a small set of human-provided examples. By prompting the model to generate completions conditioned on your examples, we can produce a synthetic dataset that's much larger and more diverse than what you could feasibly write by hand.
 
-First, let's list, compare, and validate the new data compared to the base taxonomy repository using the ilab diff command, from your base InstructLab directory.
+First, let's list, compare, and validate the new data compared to the base taxonomy repository using the **ilab diff** command, from your base InstructLab directory.
 
 ```bash
 $ ilab diff
@@ -221,7 +221,7 @@ knowledge/trivia/vegas/qna.yaml
 Taxonomy in /taxonomy/ is valid :)
 ```
 
-Now, we can run the ilab generate command to begin generating synthetic data (by default, 100 data points). Remember, we still need to be serving the model with ilab serve in another terminal instance.
+Now, we can run the **ilab generate** command to begin generating synthetic data (by default, 100 data points). Remember, we still need to be serving the model with **ilab serve** in another terminal instance.
 
 ```bash
 $ ilab generate
@@ -244,7 +244,8 @@ train_merlinite-7b-lab-Q4_K_M_2024-05-29T19_28_12.jsonl
 ```
 
 ### Model training (alignment) with InstructLab
-Once the synthetic data generation is complete, it's time to actually tune the model on the synthetic data with ilab train.
+
+Once the synthetic data generation is complete, it's time to actually tune the model on the synthetic data with **ilab train**.
 
 ```bash
 $ ilab train
@@ -257,11 +258,11 @@ Loading datasets
 Training
 ```
 
-This command will download the necessary model files (if not already available) and begin the alignment phase. On an M1 Mac, it should take 5-15 minutes. On Linux, a few hours. With a compatible Nvidia GPU, you can speed it up significantly with ilab train --device cuda.
+This command will download the necessary model files (if not already available) and begin the alignment phase. On an M1 Mac, it should take 5-15 minutes. On Linux, a few hours. With a compatible Nvidia GPU, you can speed it up significantly with **ilab train --device cuda**.
 
 ### Converting and serving the aligned model
 
-When finished, the tuned model weights will be saved in the models directory. The command ilab convert will convert the model to the GGUF format, creating a quantized version of the model to share on <a href="https://huggingface.co/">HuggingFace</a>, use <a href="https://podman-desktop.io/extensions/ai-lab">locally</a>, etc. Be sure to you first stop the terminal instance that is serving the model (with ilab serve).
+When finished, the tuned model weights will be saved in the **models** directory. The command **ilab convert** will convert the model to the GGUF format, creating a quantized version of the model to share on <a href="https://huggingface.co/">HuggingFace</a>, use <a href="https://podman-desktop.io/extensions/ai-lab">locally</a>, etc. Be sure to you first stop the terminal instance that is serving the model (with ilab serve).
 
 ```bash
 $ ilab convert
@@ -271,7 +272,7 @@ Loading model file instructlab-merlinite-7b-lab-trained/model.safetensors
 …
 ```
 
-Once finished, we'll have a new directory in instructlab with our aligned and 4-bit quantized model, for example, instructlab-merlinite-7b-lab-trained. Fantastic!
+Once finished, we'll have a new directory in instructlab with our aligned and 4-bit quantized model, for example, **instructlab-merlinite-7b-lab-trained**. Fantastic!
 
 ```bash
 $ cd instructlab-merlinite-7b-lab-trained && ls
@@ -304,15 +305,15 @@ Fantastic! It recalls the exact information we provided in the taxonomy reposito
 
 ### Building Generative AI-enabled applications with Podman AI Lab
 
-You may be interested in taking this model, in quantized .gguf format, and using it to build AI-enabled applications. Fortunately, the <a href="https://developers.redhat.com/products/podman-desktop/podman-ai-lab">Podman AI Lab</a> extension for <a href="https://podman-desktop.io/">Podman Desktop</a> (the graphical open-source tool for working with containers and Kubernetes) helps with just that. After downloading and setting up Podman Desktop from podman-desktop.io, navigate to the Extensions in the left-sidebar to easily install the AI Lab extension.
+You may be interested in taking this model, in quantized .gguf format, and using it to build AI-enabled applications. Fortunately, the <a href="https://developers.redhat.com/products/podman-desktop/podman-ai-lab">Podman AI Lab</a> extension for <a href="https://podman-desktop.io/">Podman Desktop</a> (the graphical open-source tool for working with containers and Kubernetes) helps with just that. After downloading and setting up Podman Desktop from podman-desktop.io, navigate to the **Extensions** in the left-sidebar to easily install the **AI Lab** extension.
 
 <Image src={podmanDesktopExtensions} alt="Podman Desktop Extensions" />
 
-Now, from the Catalog of models, you can import a new model from your local machine (for example, the new InstructLab aligned model, or one from HuggingFace).
+Now, from the **Catalog** of models, you can import a new model from your local machine (for example, the new InstructLab aligned model, or one from HuggingFace).
 
 <Image src={podmanDesktopImportModel} alt="Podman Desktop Import Model" />
 
-Finally, you can create a new model Service (or Playground for model experimentation) to seamlessly integrate the power of generative AI into your application, with information about the model's API endpoint (which is OpenAI API compatible) and sample code to get you started in your favorite language or framework.
+Finally, you can create a new model **Service** (or Playground for model experimentation) to seamlessly integrate the power of generative AI into your application, with information about the model's API endpoint (which is OpenAI API compatible) and sample code to get you started in your favorite language or framework.
 
 <Image src={podmanDesktopModelService} alt="Podman Desktop Model Service" />
 
