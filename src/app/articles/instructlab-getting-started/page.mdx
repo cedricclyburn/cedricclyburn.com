@@ -55,7 +55,7 @@ $ pip install instructlab
 
 This will compile the native dependencies and download the required Python packages. It may take a few minutes to finish, but when ready, let's validate the installation.
 
-```bash
+```
 $ ilab --version
 ilab, version 0.16.1
 ```
@@ -65,7 +65,7 @@ You should see the ilab version printed, e.g. **ilab, version 0.16.1**.
 
 With ilab installed, we can initialize our tuning environment with the **ilab init** command. This will download the <a href="https://github.com/instructlab/taxonomy">Taxonomy</a> repository (which contains the structured task definitions and community-provided knowledge) to our local machine with a configuration file (after selecting **Enter** and **Yes** for project defaults).
 
-```bash
+```
 $ ilab init
 Welcome to InstructLab CLI. This guide will help you to setup your environment.
 Please provide the following values to initiate the environment [press Enter for defaults]:
@@ -103,7 +103,7 @@ generate:
 
 InstructLab can enhance open-source LLMs like <a href="https://mistral.ai/news/mistral-large/">Mistral</a> and <a href="https://ai.meta.com/blog/large-language-model-llama-meta-ai/">Llama</a>, and now, the <a href="https://www.redhat.com/en/about/press-releases/red-hat-delivers-accessible-open-source-generative-ai-innovation-red-hat-enterprise-linux-ai">Granite set of foundation models</a> in partnership with IBM and Red Hat. To get started, download a compact pre-trained & quantized model with the **ilab download** command.
 
-```bash
+```
 $ ilab download
 Downloading model from instructlab/merlinite-7b-lab-GGUF@main to models...
 Downloading 'merlinite-7b-lab-Q4_K_M.gguf' to 'models/.huggingface/download/merlinite-7b-lab-Q4_K_M.gguf.9ca044d727db34750e1aeb04e3b18c3cf4a8c064a9ac96cf00448c506631d16c.incomplete'
@@ -113,7 +113,7 @@ merlinite-7b-lab-Q4_K_M.gguf:   2%|▊       | 105M/4.37G [01:23&lt;57:18, 1.24M
 
 This <a href="https://huggingface.co/ibm/merlinite-7b">Merlinite</a> (derivative of Mistral) model, in particular, is trained with 7 billion parameters and is roughly 4GB in size, so it may take a few minutes on a fast connection. You can also <a href="https://github.com/instructlab/instructlab#downloading-a-specific-model-from-a-hugging-face-repository">download a specific model version or an entire Hugging Face repo</a>. Now, let's serve the model to be inferenced from our local machine using **ilab serve**.
 
-```bash
+```
 $ ilab serve
 INFO 2024-06-11 23:27:21,994 lab.py:340 Using model 'models/merlinite-7b-lab-Q4_K_M.gguf' with -1 gpu-layers and 4096 max context size.
 INFO 2024-06-11 23:27:40,984 server.py:206 Starting server process, press CTRL+C to shutdown server...
@@ -122,7 +122,7 @@ INFO 2024-06-11 23:27:40,984 server.py:207 After application startup complete se
 
 Now, in a new terminal environment, enter your virtual environment again (**source venv/bin/activate**) and run **ilab chat** to enter a simple interface for conversing with the LLM.
 
-```bash
+```
 $ ilab chat
 ╭─────────────────── models/merlinite-7b-lab-Q4_K_M.gguf ────
 >>> Hi, how are you today? 
@@ -137,7 +137,7 @@ Now that we have a foundational model downloaded, served, and tested, let's dive
 
 As an example, I'm feeling lucky, so let's ask this model about the largest Las Vegas jackpot wins through the **ilab chat** interface (that you may still have open).
 
-```bash
+```
 $ ilab chat
 >>> When and how much was the largest Las Vegas jackpot?
 ╭─────────────────── models/merlinite-7b-lab-Q4_K_M.gguf ────
@@ -205,7 +205,7 @@ You can begin to understand <a href="https://github.com/instructlab/taxonomy#get
 
 If you'd like to use <a href="https://github.com/cedricclyburn/taxonomy/blob/main/knowledge/trivia/vegas/qna.yaml">this same qna.yaml file</a>, feel free to download it locally using this command from the **taxonomy/knowledge/** directory, which will also create a new directory structure under the knowledge directory for trivia/vegas.
 
-```bash
+```
 $ mkdir -p trivia/vegas && curl -sSL https://raw.githubusercontent.com/cedricclyburn/taxonomy/main/knowledge/trivia/vegas/qna.yaml -o trivia/vegas/qna.yaml
 ```
 
@@ -215,7 +215,7 @@ So we've added some task-specific knowledge—now what? The next step is to use 
 
 First, let's list, compare, and validate the new data compared to the base taxonomy repository using the **ilab diff** command, from your base InstructLab directory.
 
-```bash
+```
 $ ilab diff
 knowledge/trivia/vegas/qna.yaml
 Taxonomy in /taxonomy/ is valid :)
@@ -223,7 +223,7 @@ Taxonomy in /taxonomy/ is valid :)
 
 Now, we can run the **ilab generate** command to begin generating synthetic data (by default, 100 data points). Remember, we still need to be serving the model with **ilab serve** in another terminal instance.
 
-```bash
+```
 $ ilab generate
 Q> How much money did the winner of the biggest jackpot win?
 I> 
@@ -235,7 +235,7 @@ During this process, we can visualize the example queries and answers, light pre
 
 On a typical laptop CPU, synthetic data generation can take anywhere from a few minutes to a few hours, depending on the number of examples and generation parameters. Using a GPU will significantly speed things up. The end result is a set of JSONL files in the specified output directory, with a train/validation/test split. Each line contains an example with input and target completion fields, and feel free to vim to understand how things are working under the hood.
 
-```bash
+```
 $ cd generated && ls
 discarded_merlinite-7b-lab-Q4_K_M_2024-06-12T00_20_33.log
 generated_merlinite-7b-lab-Q4_K_M_2024-05-29T19_28_12.json
@@ -247,7 +247,7 @@ train_merlinite-7b-lab-Q4_K_M_2024-05-29T19_28_12.jsonl
 
 Once the synthetic data generation is complete, it's time to actually tune the model on the synthetic data with **ilab train**.
 
-```bash
+```
 $ ilab train
 [INFO] Loading
 Fetching 11 files: 100%|█████████████████████████████████████████████████████████████████████| 11/11 [00:00<00:00, 5654.78it/s]
@@ -264,7 +264,7 @@ This command will download the necessary model files (if not already available) 
 
 When finished, the tuned model weights will be saved in the **models** directory. The command **ilab convert** will convert the model to the GGUF format, creating a quantized version of the model to share on <a href="https://huggingface.co/">HuggingFace</a>, use <a href="https://podman-desktop.io/extensions/ai-lab">locally</a>, etc. Be sure to you first stop the terminal instance that is serving the model (with ilab serve).
 
-```bash
+```
 $ ilab convert
 Loading pretrained model
 Using model_type='mistral'
@@ -274,7 +274,7 @@ Loading model file instructlab-merlinite-7b-lab-trained/model.safetensors
 
 Once finished, we'll have a new directory in instructlab with our aligned and 4-bit quantized model, for example, **instructlab-merlinite-7b-lab-trained**. Fantastic!
 
-```bash
+```
 $ cd instructlab-merlinite-7b-lab-trained && ls
 added_tokens.json                  tokenizer.json
 config.json                        tokenizer.model
@@ -286,7 +286,7 @@ special_tokens_map.json
 
 Finally, to interact with the aligned model and observe the impact of the added knowledge or skills, let's serve the model by pointing to the new model path.
 
-```bash
+```
 $ ilab serve --model-path instructlab-merlinite-7b-lab-trained/instructlab-merlinite-7b-lab-Q4_K_M.gguf
 INFO 2024-06-12 01:07:12,714 lab.py:340 Using model 'instructlab-merlinite-7b-lab-trained/instructlab-merlinite-7b-lab-Q4_K_M.gguf' with -1 gpu-layers and 4096 max context size.
 INFO 2024-06-12 01:07:30,935 server.py:206 Starting server process, press CTRL+C to shutdown server...
@@ -294,7 +294,7 @@ INFO 2024-06-12 01:07:30,935 server.py:206 Starting server process, press CTRL+C
 
 With the model served, we can switch over to our other terminal instance and use ilab chat to converse with the model and verify the new knowledge, also pointing to the new quantized model.
 
-```bash
+```
 $ ilab chat --model instructlab-merlinite-7b-lab-trained/instructlab-merlinite-7b-lab-Q4_K_M.gguf
 ╭──────── instructlab-merlinite-7b-lab-trained/instructlab-merlinite-7b-lab-Q4_K_M.gguf
 >>> How much and when was the largest Las Vegas jackpot?
