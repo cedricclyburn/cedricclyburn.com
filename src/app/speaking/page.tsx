@@ -44,7 +44,7 @@ function Appearance({
 export const metadata: Metadata = {
   title: 'Speaking',
   description:
-    'I’ve been fortunate to speak at conferences around the world',
+    "Cedric Clyburn's speaking engagements at conferences and more",
 }
 
 export default function Speaking() {
@@ -59,35 +59,35 @@ export default function Speaking() {
             href="https://www.youtube.com/watch?v=eb3dNupkjpw"
             title="Going from containers, to pods, to K8s – help for your developer environments!"
             description="Full session on Podman Desktop & Podman, with a demo moving from app to Kubernetes, leveraging features like Podman AI Lab for generative AI development and InstructLab for LLM model fine-tuning."
-            event="DevConf.cz"
+            event="DevConf.cz 2024"
             cta="View Talk Recording"
           />
         <Appearance
             href="https://www.youtube.com/watch?v=VcMym4NJlW0"
             title="Containers and Kubernetes Made Easy: A 15-minute dive into Podman Desktop"
             description="Discover how Podman Desktop simplifies containerization for developers with features like Compose support, local Kubernetes testing, and resource visibility. Learn to move from local apps to multi-tier deployments on Kubernetes, plus tips for efficient container and Kubernetes workflows."
-            event="DevConf.cz"
+            event="DevConf.cz 2024"
             cta="View Talk Recording"
           />
         <Appearance
             href="https://docs.google.com/presentation/d/1Owg4LZ3b99Ptxu_bb-zRYqO882DOaHstUDLJZIiTYys/edit"
             title="Simplifying containers and Kubernetes on your laptop with Podman Desktop"
             description="Supercharge your container application development workflow, and easily craft your applications for Kubernetes with Podman Desktop, an open-source container management tool to seamlessly run, debug, and manage containers and Kubernetes from your local environment."
-            event="DeveloperWeek"
+            event="DeveloperWeek 2024"
             cta="View presentation"
           />
           <Appearance
             href="https://www.youtube.com/watch?v=VAM-FSz0oPg"
             title="Empowering Collaboration: AI Developer Experience - Your Bridge from Model to Production"
             description="A technical deep-dive into the process data scientists and developers can follow for end-to-end generative AI application development on Kubernetes, using open source technologies like Jupyter, Kubeflow, and KServe Model Mesh."
-            event="The Linux Foundation: AI.dev"
+            event="The Linux Foundation: AI.dev 2023"
             cta="Watch video"
           />
           <Appearance
             href="https://www.youtube.com/watch?v=Q8a4XHXraz4"
             title="Reducing Developer Cognitive Load with Red Hat Enterprise Linux"
             description="Red Hat Enterprise Linux (RHEL) offers a large toolset for modern software projects that can help reduce developer cognitive load. Let's explore the open source tools and runtimes that make this possible, including porting a .NET application from Windows to Linux & more."
-            event="We Are Developers World Congress"
+            event="We Are Developers World Congress 2023"
             cta="Watch video"
           />
         </SpeakingSection>

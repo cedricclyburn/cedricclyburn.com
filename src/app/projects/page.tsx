@@ -54,7 +54,7 @@ function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 
 export const metadata: Metadata = {
   title: 'Projects',
-  description: 'Things I’ve made trying to put my dent in the universe.',
+  description: "Cedric Clyburn's projects and initatives in cloud-native",
 }
 
 export default function Projects() {
