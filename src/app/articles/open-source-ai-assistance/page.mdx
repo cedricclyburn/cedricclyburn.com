@@ -1,0 +1,209 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import integrationDiagram from './integration-diagram.png'
+import benchmarkResults from './benchmark-results.jpg'
+import ollamaLogo from './ollama-logo.png'
+import ollamaInstallation from './ollama-installation.png'
+import ollamaRunningGranite from './ollama-running-granite.png'
+import ollamaModelfile from './ollama-modelfile.png'
+import instructLabLogo from './instructlab-logo.png'
+import instructLabInstallation from './instructlab-installation.png'
+import instructLabInstallationInit from './instructlab-installation-init.png'
+import huggingFaceToken from './huggingface-token.png'
+import huggingFaceTokenAccess from './huggingface-token-access.png'
+import instructLabModelDownload from './instructlab-model-download.png'
+import instructLabModelServe from './instructlab-model-serve.png'
+import continueFeatures from './continue-features.png'
+import continueInstallation from './continue-installation.png'
+import continueOllamaSetup from './continue-ollama-setup.png'
+import continueInstructLabSetup from './continue-instructlab-setup.png'
+import continueConfiguration from './continue-configuration.png'
+import codeCompletionExample from './code-completion-example.png'
+import contextualDocumentationExample from './contextual-documentation-example.png'
+import refactoringExample from './refactoring-example.png'
+import debuggingExample from './debugging-example.png'
+
+export const article = {
+  author: 'Your Name',
+  date: '2024-08-04',
+  title: 'Supercharge Your Development with Open Source AI Code Assistants',
+  description: 'Learn how to integrate powerful AI code assistants into your IDE using open source tools like Continue, Ollama, and the Granite family of code models.',
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+As developers, we're always looking for ways to be more productive and write higher-quality code. While tools like [GitHub Copilot](https://github.com/features/copilot) have gained popularity as AI pair programmers, the downside is they run on closed models and you might have to pay a subscription to use them. Imagine instead being able to use state-of-the-art free AI coding assistants right on your local machine using powerful open source models, with auto-completions and confidence that your data stays private! 
+
+Let's take a look at how to integrate an AI code assistant into your IDE using a combination of open source tools, including [Continue](https://github.com/continuedev/continue) (an extension for VS Code and JetBrains), [Ollama](https://github.com/ollama/ollama) or [InstructLab](https://github.com/instructlab/instructlab) as a local model server, and the [Granite family of code models](https://github.com/ibm-granite/granite-code-models) to supercharge your development workflow without any cost or privacy tradeoffs. See Figure 1.
+
+<Image src={integrationDiagram} alt="Diagram showing the integration of Continue, Ollama/InstructLab, and Granite models" />
+
+## What are the Granite models?
+
+The Granite code models, [accessible here from Hugging Face](https://huggingface.co/collections/ibm-granite/granite-code-models-6624c5cec322e4c148c8b330), are a set of open source language models designed for AI-assisted software development. They've been trained on a variety of open source repository code spanning 116 programming languages to build a deep knowledge of syntax, semantics, design patterns, and software engineering best practices. What's highly impressive is that the training data is all open license-permissible data through [IBM's AI ethics principles](https://www.ibm.com/artificial-intelligence/ethics) for safe enterprise use and the models are released under an [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) license. 
+
+You'll notice that in a [comprehensive evaluation](https://arxiv.org/abs/2306.09607) on HumanEvalPack, MBPP, MBPP+, and other benchmarks, Granite consistently outperformed other open source code LLMs like Mistral-7B, LLama, and more across model scales, as shown in Figure 2.
+
+<Image src={benchmarkResults} alt="Benchmark results showing Granite models outperforming other open source LLMs" />
+
+## Running models locally with Ollama
+
+To get started running a generative AI LLM such as Granite, or any other code model, you'll first need to install a model-serving framework that can run the models on your machine. One option is with [Ollama](https://ollama.com/), an [open source project](https://github.com/ollama/ollama) that makes it easy to download, manage, and deploy language models on your local system (Figure 3). Ollama provides a simple command line interface for pulling models, exposing REST endpoints, and [can even be deployed easily as a container](https://ollama.com/blog/ollama-is-now-available-as-an-official-docker-image).
+
+<Image src={ollamaLogo} alt="Ollama logo and interface" />
+
+### Install Ollama on your system
+
+After visiting the [Ollama](https://ollama.com/) homepage, simply download the appropriate package for your operating system from the release page and run the installer. In a few clicks, you'll have the `ollama` command ready to use from your terminal (Figure 4).
+
+<Image src={ollamaInstallation} alt="Ollama installation process" />
+
+### Install and serve a model with Ollama
+
+The [Ollama models library](https://ollama.com/library) contains a curated collection of various models sourced from [Hugging Face](https://huggingface.co/). Once you have Ollama installed, download the Granite 8B parameter model (using the `latest` tag will pull the 3B parameter model, and depending on your computer resources and requirements, you might want to try the 20B and 34B models) and run it with:
+
+```bash
+$ ollama run granite-code:8b
+```
+
+See Figure 5.
+
+<Image src={ollamaRunningGranite} alt="Running Granite 8B model with Ollama" />
+
+This will fetch the roughly 4.6 Gigabyte [Granite 8B model](https://huggingface.co/ibm-granite/granite-8b-code-instruct) and cache it locally. Ollama is now serving this model by default on `localhost:11434`, providing a REST endpoint and OpenAI-compatible API, and you can instantly start chatting with the model if you'd like. However, this is all you need to do to set up and start running the Granite model locally to power our AI code assistant.
+
+### Customize your model with a Modelfile (optional)
+
+While we just demonstrated how to download and serve the Granite code model, you might want to further customize your current model, adjust custom system prompts and preferences, etc. This can be done through the Ollama Modelfile configuration to create custom setups and reuse existing models (the [documentation](https://github.com/ollama/ollama/blob/main/docs/modelfile.md?utm_source=ibm_developer&utm_content=in_content_link&utm_id=tutorials_awb-local-ai-copilot-ibm-granite-code-ollama-continue) provides information on how to do so, including working with (Q)LoRA adapters). See Figure 6.
+
+<Image src={ollamaModelfile} alt="Example of Ollama Modelfile configuration" />
+
+## InstructLab: An alternative model serving option
+
+Another powerful tool for running language models locally is [InstructLab](https://instructlab.ai/) (Figure 7). While Ollama focuses on getting setup quickly, InstructLab provides accessibility for developers and data scientists alike to easily fine-tune language models, both in a community workflow and to [adapt models for specific use cases](https://developers.redhat.com/blog/2024/06/12/getting-started-instructlab-generative-ai-model-tuning). Both Ollama and InstructLab use the same [llama.cpp](https://github.com/ggerganov/llama.cpp) project as a backend, and work as model servers.
+
+<Image src={instructLabLogo} alt="InstructLab logo" />
+
+### Install InstructLab on your system
+
+To use InstructLab, you can [install the CLI depending on your system from the repository](https://github.com/instructlab/instructlab#-getting-started), which involves setting up a Python virtual environment and installing InstructLab through a `pip` command. Once ready, you can use the `ilab` command to interact with InstructLab, download models, etc. (Figure 8).
+
+<Image src={instructLabInstallation} alt="InstructLab installation process" />
+
+### Initialize InstructLab
+
+You'll need to briefly setup an InstructLab environment before downloading a model. As InstructLab provides a system to do model fine-tuning with a [synthetic data generation process and multi-phase tuning framework](https://arxiv.org/abs/2403.01081), you'll have the resources later (contained in the config.yaml and taxonomy folder) to enhance your large language model with new capabilities. Maybe you can teach it some tips and tricks about Rust! 
+
+Let's begin by running `ilab config init` to set things up. Figure 9 shows the terminal window for initiating the environment.
+
+<Image src={instructLabInstallationInit} alt="Initializing InstructLab environment" />
+
+### Install and serve a model with InstructLab
+
+With InstructLab installed and an environment setup, you can download any type of specific model from a Hugging Face repository, or an entire repository. While the default `ilab model download` currently pulls a pretrained merlinite model, you'll need to first generate a Hugging Face user access token to provide to the CLI through the [user settings](https://huggingface.co/settings/tokens) (Figure 10).
+
+<Image src={huggingFaceToken} alt="Generating a Hugging Face user access token" />
+
+This access token will need Read access to your account's resources in order to pull models like Granite code, or others such as CodeLlama (Figure 11).
+
+<Image src={huggingFaceTokenAccess} alt="Setting up Hugging Face token access" />
+
+Be sure to save and copy the token to your clipboard, as you'll now head back to the CLI in order to pass this along to the ilab model download command and specify a quantized version of the Granite code model from the IBM Granite Hugging Face organization (Figure 12). The command you'll be using is the following, where you can insert your token before the InstructLab command is invoked:
+
+```bash
+$ HF_TOKEN=<YOUR HUGGINGFACE TOKEN> ilab model download --repository=ibm-granite/granite-8b-code-instruct-GGUF --filename=granite-8b-code-instruct.Q4_K_M.gguf
+```
+
+<Image src={instructLabModelDownload} alt="Downloading a model with InstructLab" />
+
+With the model downloaded in a `models` folder from your local directory, let's serve it by running the following command (as illustrated in Figure 13):
+
+```bash
+$ ilab model serve --model-path models/granite-8b-code-instruct.Q4_K_M.gguf
+```
+
+<Image src={instructLabModelServe} alt="Serving a model with InstructLab" />
+
+Similarly, you now have an OpenAI-compatible API model server running locally, with the Granite model; however, note that the default port is 8000.
+
+## Set up the AI code assistant in your IDE
+
+Now that you have a Granite code model running locally, it's time to integrate it into your development environment. Let's take a look at [Continue](https://www.continue.dev/), an open source VS Code and JetBrains extension that connects your editor with language models to provide IDE-native AI assistance. Continue offers a wide set of features, including the ability to break down code sections, tab to autocomplete, refactor functions, chat with your codebase, and much more (Figure 14).
+
+<Image src={continueFeatures} alt="Continue AI assistant features" />
+
+### Install Continue for VS Code
+
+To start working with Continue, first, install it from the [VS Code marketplace](https://marketplace.visualstudio.com/items?itemName=Continue.continue) (using Ctrl+Shift+X or Cmd+Shift+X). Search for `Continue` in the extensions marketplace and click **Install** to add the extension to your VS Code instance. You'll now have an AI-enabled sidebar to help you through your programming tasks (see Figure 15). 
+
+<Image src={continueInstallation} alt="Installing Continue in VS Code" />
+
+Now, let's break down how you can use either Ollama or InstructLab as model servers for the AI code assistant.
+
+### Set up the assistant with Ollama
+
+With Ollama, first select the **+ icon** from the bottom left-hand corner of the extension, where you can navigate through the menu to find **Ollama** and **Autodetect** the model you're running locally. See Figure 16.
+
+<Image src={continueOllamaSetup} alt="Setting up Continue with Ollama" />
+
+Continue should automatically detect your Ollama instance running and set up the configuration to recognize and use the Granite model. You're good to go!
+
+### Set up the assistant with InstructLab
+
+The setup is similar with InstructLab. After selecting the **+** icon, scroll a bit farther down to use the **OpenAI-compatible API** and, again, **Autodetect** for models (Figure 17).
+
+<Image src={continueInstructLabSetup} alt="Setting up Continue with InstructLab" />
+
+If you need assistance with this process, you can refer to the advanced settings and set the Base URL to the appropriate address (`http://localhost:11434` for Ollama or `http://localhost:8000` for InstructLab) and update the advanced parameters if needed.
+
+### Verify the extension's configuration
+
+If you run into any trouble, be sure to check the Continue [configuration](https://docs.continue.dev/setup/configuration) file, which might already be set up with your specific model. Here, you can point to the model server, define the autocomplete model, and even setup a multi-model strategy, using the strengths of each model to help in a different capacity. Figure 18 shows a simple Ollama use case for the chat and autocomplete, but you can also add models for embeddings and reranking.
+
+<Image src={continueConfiguration} alt="Continue configuration file" />
+
+## Using the open source AI code assistant
+
+Now that you have your AI code assistant set up with Continue connected to Granite, let's dive deep into its capabilities using the [Spring PetClinic sample application](https://github.com/spring-projects/spring-petclinic). This project is an excellent example of a Spring Boot application with a layered architecture, making it perfect for demonstrating various AI-assisted coding scenarios.
+
+### What can this AI code assistant do?
+
+Let's explore the key features of our AI code assistant using specific examples from the Spring PetClinic project:
+
+- Code completions
+- Contextual documentation
+- Refactoring
+- Debugging
+
+#### Code completions
+
+As you type, Continue will show Granite's suggestions inline and allow you to auto-complete by pressing Tab. It can complete everything from single tokens to entire functions—for example, when finishing a method for the OwnerController class (Figure 19).
+
+<Image src={codeCompletionExample} alt="Code completion example in Continue" />
+
+#### Contextual documentation
+
+Highlight a piece of code and use cmd+L (macOS) or ctrl+L (Windows) to have Granite provide a plain-English description of what the code does, with code examples as well (Figure 20). You can ask questions about certain functions, or the codebase as a whole!
+
+<Image src={contextualDocumentationExample} alt="Contextual documentation example in Continue" />
+
+#### Refactoring
+
+Select code that you want to improve and use Cmd+I (macOS) or Ctrl+I (Windows) to see Granite's suggestions. It will attempt to modernize syntax, extract methods, rename variables, and more. Accept the changes you like and iterate as needed.
+
+<Image src={refactoringExample} alt="Refactoring example in Continue" />
+
+#### Debugging
+
+When you encounter a tricky bug, use Cmd+I (macOS) or Ctrl+I (Windows) on the problematic code section and select **Debug Selection** from the options. Granite will analyze the code and propose potential fixes. It can often identify logical errors, edge cases, or common pitfalls that humans might overlook. In addition, if you encounter compilation errors, this setup can help you debug the situation. See Figure 22.
+
+<Image src={debuggingExample} alt="Debugging example in Continue" />
+
+## Conclusion
+
+The Granite code models, in tandem with Continue as a code assistant, and Ollama or InstructLab for model serving, provide a powerful stack for AI-assisted software development that rivals paid cloud offerings. With the efficiency of local inferencing, the comfort of data staying local on your machine, and the smooth IDE integrations, this open source setup can help you increase efficiency and reduce mundane tasks. Thanks for reading!
