@@ -20,6 +20,8 @@ export const metadata = {
   description: article.description,
 }
 
+export default (props) => <ArticleLayout article={article} {...props} />
+
 [InstructLab](https://instructlab.ai/) is a community-driven project designed to simplify the process of contributing to and enhancing large language models (LLMs) through synthetic data generation. This initiative [addresses several challenges](https://www.redhat.com/en/topics/ai/what-is-instructlab) faced by developers, such as the complexity of contributing to LLMs, the issue of model sprawl caused by forked models and the lack of direct community governance. Supported by Red Hat and IBM Research, InstructLab leverages [novel synthetic data-based alignment tuning methods](https://arxiv.org/abs/2403.01081) to improve model performance and accessibility. Here we'll talk about the current issue and technical challenges encountered when fine-tuning models traditionally and the approach that InstructLab takes to solve these problems.
 
 ## The challenge: Low-quality data and inefficient use of computational resources
