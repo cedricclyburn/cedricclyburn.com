@@ -1,0 +1,101 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image';
+import instructLabDiagram from './instructlab-diagram.png';
+import taxonomyStructure from './taxonomy-structure.png';
+import syntheticDataProcess1 from './synthetic-data-process-1.png';
+import syntheticDataProcess2 from './synthetic-data-process-2.png';
+import syntheticDataProcess3 from './synthetic-data-process-3.png';
+import benchmarkGraph from './benchmark-graph.png';
+import instructlabCollaborative from './instructlab-collaborative.png';
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2024-9-11',
+  title: 'How InstructLab’s Synthetic Data Generation Enhances LLMs',
+  description: 'InstructLab is a community-driven project designed to simplify the process of contributing to and enhancing large language models (LLMs) through synthetic data generation.',
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+[InstructLab](https://instructlab.ai/) is a community-driven project designed to simplify the process of contributing to and enhancing large language models (LLMs) through synthetic data generation. This initiative [addresses several challenges](https://www.redhat.com/en/topics/ai/what-is-instructlab) faced by developers, such as the complexity of contributing to LLMs, the issue of model sprawl caused by forked models and the lack of direct community governance. Supported by Red Hat and IBM Research, InstructLab leverages [novel synthetic data-based alignment tuning methods](https://arxiv.org/abs/2403.01081) to improve model performance and accessibility. Here we'll talk about the current issue and technical challenges encountered when fine-tuning models traditionally and the approach that InstructLab takes to solve these problems.
+
+## The challenge: Low-quality data and inefficient use of computational resources
+
+As the competition in the LLM space intensifies, the approach seems to be to build increasingly massive models trained from vast amounts of information from the public internet. However, large parts of the internet include redundant information or non-natural language data that does not contribute to the model's core functionality.
+
+For instance, [80% of tokens](https://facctconference.org/static/papers24/facct24-148.pdf) used to train the LLM GPT-3, upon which later versions are built, originates from [Common Crawl](https://commoncrawl.org/), which includes an enormous array of web pages. This dataset is known to contain a mix of high-quality text, low-quality text, scripts and other non-natural language data. It is estimated that a significant fraction of the data may be non-useful or low-quality content. [(Common Crawl Analysis)](https://facctconference.org/static/papers24/facct24-148.pdf)
+
+The result of this wide net of uncurated data is an inefficient use of computational resources, leading to high training costs that increase costs for consumers of these models down the line, as well as creating challenges in implementing these models in local environments.
+
+What we’ve been seeing are an increasing number of models with fewer parameters where the quality and the relevance of data are more critical than sheer quantity. Models with more precise and intentional data curation are able to perform better, require less computing resources and provide higher quality results. 
+
+## InstructLab's solution: Refining synthetic data generation
+
+What’s unique about InstructLab is the ability to generate large amounts of data to be used for training, with only a small seed dataset to begin with. It utilizes the [Large-scale Alignment for chatBots](https://arxiv.org/html/2403.01081v1) (LAB) methodology, which enhances LLMs with minimal human-generated data and computational overhead. This provides a user-friendly way for individuals to contribute relevant data, which is then enhanced using synthetic data generation with a model to assist during the generation process.
+
+<Image src={instructLabDiagram} alt="High-level overview of InstructLab’s structure and synthetic data generation process" />
+
+## Key features of InstructLab's approach:
+
+### Taxonomy-driven data curation
+
+The journey begins with the creation of a [taxonomy](https://github.com/instructlab/taxonomy)—a hierarchical structure that organizes various skills and knowledge areas. This taxonomy serves as a roadmap for curating initial human-generated examples, which act as seed data for the synthetic data generation process. This data is organized in a structure that makes it simple to explore the model's existing knowledge and find gaps where you can contribute, reducing redundant unorganized information. At the same time, it allows for the specific targeting of a model to a use case or specific needs, using only easily formatted YAML files in question-and-answer pair format.
+
+<Image src={taxonomyStructure} alt="Usage of a taxonomy structure for identifying model gaps & mapping contributions" />
+
+### Synthetic data generation process
+
+From the foundational seed data, InstructLab leverages a teacher model to generate new examples during the data generation process. What’s important to note is that this process isn’t using knowledge stored by the teacher model, instead using particular prompt templates that dramatically expand the dataset while making sure that the new examples maintain the structure and intent of the original human-curated data. The LAB methodology uses two specific synthetic data generators:
+
+- Skills Synthetic Data Generator (Skills-SDG): Uses prompt templates for instruction generation, evaluation, response generation and final pair evaluation.
+
+- Knowledge-SDG: Generates instruction data for domains not covered by the teacher model, using external knowledge sources to ground generated data.
+
+Fortunately, this significantly reduces the need for large amounts of manually annotated data. Using the small, unique and human-generated examples as a reference allows the curation of hundreds, thousands or millions of question-and-answer pairs to influence the model’s weights and biases.
+
+<Image src={syntheticDataProcess3} alt="Expanded data set with consistent structure and intent" />
+
+### Automated refinement
+
+The LAB method incorporates an automated refinement process to improve the quality and reliability of synthetically generated training data. Guided by a hierarchical taxonomy, it uses the model as both a generator and evaluator. The process includes instruction generation, content filtering, response generation and pair evaluation using a 3-point rating system. For knowledge-based tasks, generated content is grounded in reliable source documents, addressing potential inaccuracies in specialized domains.
+
+<Image src={syntheticDataProcess2} alt="Verification of data quality and adherence to guidelines" />
+
+### Multiphase tuning framework
+
+​​InstructLab implements a multiphase training process to incrementally improve the model's performance. This phased approach helps maintain training stability and a replay buffer of the data prevents [catastrophic forgetting](https://en.wikipedia.org/wiki/Catastrophic_interference), allowing the model to continuously learn and improve. The generated synthetic data is utilized in a two-phase tuning process:
+
+- Knowledge tuning: Integrates new factual information, divided into training on short responses followed by long responses and foundational skills.
+
+- Skills tuning: Enhances the model's ability to apply knowledge across various tasks and contexts, focusing on compositional skills.
+
+<Image src={syntheticDataProcess3} alt="Applying knowledge across various tasks and contexts" />
+
+
+### The framework uses small learning rates, extended warm-up periods and a large effective batch size for stability.
+
+### Iterative improvement cycle
+
+The synthetic data generation process is designed to be iterative. As new contributions are made to the taxonomy, they can be used to generate additional synthetic data, which further enhances the model. This continuous cycle of improvement helps make sure that the model remains up-to-date and relevant.
+
+
+## InstructLab results and significance
+
+The significance of InstructLab lies in its ability to achieve state-of-the-art performance using publicly available teacher models instead of relying on proprietary models. In [benchmarks](https://arxiv.org/pdf/2403.01081), the InstructLab methodology has shown promising results. For example, when applied to Llama-2-13b (resulting in [Labradorite-13b](https://huggingface.co/ibm/labradorite-13b)) and Mistral-7B (resulting in [Merlinite-7B](https://huggingface.co/ibm/merlinite-7b)), the LAB-trained models outperformed current best models fine-tuned on their respective base models in terms of [MT-Bench](https://klu.ai/glossary/mt-bench-eval) scores. They also maintained strong performance across other metrics, including [MMLU](https://en.wikipedia.org/wiki/MMLU) (testing multitask language understanding), [ARC](https://github.com/fchollet/ARC-AGI) (evaluating reasoning capabilities) and [HellaSwag](https://rowanzellers.com/hellaswag/)  (assessing common sense inference), among others.
+
+<Image src={benchmarkGraph} alt="Benchmark results of LAB-trained models" />
+
+Various benchmarks newly-created models using the LAB technique in comparison to their base models 
+
+## Community-based collaboration and accessibility
+
+One of the significant benefits of InstructLab is its open source nature, and the goal of democratizing generative AI in a way that [brings everyone together when shaping the future of models](https://github.com/instructlab/community). The command line interface (CLI) is designed to run on common hardware, such as personal laptops, lowering the barrier to entry for developers and contributors. In addition, the InstructLab project encourages community involvement by allowing members to contribute new knowledge or skills to a main model built regularly and released on Hugging Face, [feel free to check out the latest model here.](https://huggingface.co/instructlab)
+
+<Image src={instructlabCollaborative} alt="InstructLab collaborative approach" />
+
+How the InstructLab project integrates and triages community-created enhancements
+
+InstructLab's synthetic data generation process, built on the [LAB methodology](https://arxiv.org/abs/2403.01081), represents a significant advancement in the field of generative AI. By efficiently enhancing LLMs with new capabilities and knowledge domains, InstructLab is paving the way for a more collaborative and effective approach to AI development. If you’d like to learn more about the project, we recommend visiting [instructlab.ai](http://instructlab.ai) or checking out [this getting started guide](https://developers.redhat.com/blog/2024/06/12/getting-started-instructlab-generative-ai-model-tuning) to try out InstructLab on your machine!
