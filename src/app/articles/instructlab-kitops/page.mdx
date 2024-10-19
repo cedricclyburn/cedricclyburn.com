@@ -1,0 +1,226 @@
+import { ArticleLayout } from '@/components/ArticleLayout';
+import Image from 'next/image';
+import instructLabDiagram from './instructlab-diagram.png'; // Placeholder for Figure 1
+import instructLabInitImage from './instructlab-init-macbook.png'; // Placeholder for Figure 2
+import instructLabChatImage from './instructlab-chat.png'; // Placeholder for Figure 3
+import instructLabKitOpsUI from './instructlab-kitops-ui.png'; // Placeholder for Figure 4
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2024-10-19',
+  title: 'Enhance LLMs and streamline MLOps using InstructLab and KitOps',
+  description: 'Add knowledge to large language models with InstructLab and streamline MLOps using KitOps for efficient model improvement and deployment.',
+};
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+};
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+<p>
+The proliferation of publicly available large language models (LLMs) has grown substantially in recent months. Simply browse <a href="https://huggingface.co/" target="_blank">Hugging Face</a> to see the latest trending models. Furthermore, the quality of LLMs has noticeably improved with newer versions of the models. You may have noticed a recent boom in AI-assisted content generation as well, with increasingly convincing degrees of expertise on a wide range of topics.
+</p>
+
+<p>
+However, you also may have encountered limitations in the knowledge or accuracy of LLMs. Some very specific or esoteric knowledge that a model was not privy to in its data set during training could be missing or downright incorrect. Also, depending on when the model completed its training, a given LLM may not be up to date on current events.
+</p>
+
+<p>
+Why is this the case? LLMs can take months, and many compute cycles to train against a large corpus of data. During that time, new events and discoveries continue to occur worldwide. By the time the model is ready, it can be behind on the latest information. Search engine indexes are relatively simpler and can be updated much faster for search queries related to news and current knowledge bases.
+</p>
+
+## Strategies for improving LLMs: RAG and fine-tuning
+
+<p>
+So, what can be done about the lag time or missing data in order to improve LLMs? One strategy is to use <a href="https://www.redhat.com/en/topics/ai/what-is-retrieval-augmented-generation">retrieval-augmented generation (RAG)</a> to supplement the blind spots that LLMs have in their knowledge. This makes sense, but can add complexity to the deployment architecture of a system. Another approach is to update an existing model with the knowledge that is missing or out of date so that it is built in to the model. <a href="https://instructlab.ai/">InstructLab</a> is an open source tool that can be used to accomplish the latter with relative ease.
+</p>
+
+<p>
+In this article, we will walk through the details of adding knowledge to an LLM using InstructLab and then showcase packaging the retrained model with <a href="https://github.com/jozu-ai/kitops">KitOps</a> to easily incorporate it into an MLOps workflow. Using the two tools in tandem can significantly reduce the friction of retraining and distributing a model. We will illustrate how to do this with a practical sports example. Remarkably, this can all be accomplished locally on a laptop like a MacBook Pro.
+</p>
+
+## Using InstructLab and KitOps for AI/ML projects
+
+<p>
+Before jumping into the technical steps of our example, let's first cover some important points about the main tools we will be using. Both InstructLab and KitOps are open source and targeted for <a href="https://developers.redhat.com/topics/ai-ml">AI/ML</a> projects.
+</p>
+
+### What is InstructLab?
+
+<p>
+<a href="https://instructlab.ai/">InstructLab</a> aims to make it easier for people to contribute skills and knowledge to the development of large language models (LLMs). It enables a collaborative environment that allows individuals or teams to:
+</p>
+
+<ul>
+  <li>Add knowledge and skills to existing models.</li>
+  <li>Create new model capabilities without needing extensive machine learning expertise.</li>
+  <li>Contribute data through an upstream triage process, the same way we've done with open source software.</li>
+</ul>
+
+<p>
+More specifically, InstructLab uses a method called <a href="https://arxiv.org/abs/2403.01081">LAB (Large-Scale Alignment for ChatBots)</a> for tuning. The components of this are:
+</p>
+
+<ul>
+  <li><strong>Taxonomy-driven knowledge:</strong> Organizing information into a structured format.</li>
+  <li><strong>Synthetic data generation:</strong> Creating additional training data based on the curated knowledge and/or skills.</li>
+  <li><strong>Multi-phase instruction tuning:</strong> Refining the model's abilities using the curated and generated data.</li>
+</ul>
+
+<p>Figure 1 illustrates these phases.</p>
+
+<Image src={instructLabDiagram} alt="A diagram depicting InstructLab Components." />
+
+<p>
+This is an important initiative in the democratization of LLMs, ensuring that those without AI/ML expertise have the ability to contribute to improving these generative AI models.
+</p>
+
+### What is KitOps?
+
+<p>
+<a href="https://kitops.ml/">KitOps</a> is an open source tool designed to simplify the management and deployment of machine learning models. It addresses the challenges associated with packaging, versioning, and sharing models, datasets, code, and configuration. It does this through the use of <a href="https://kitops.ml/docs/modelkit/intro.html">ModelKits</a>, which are an OCI-compliant packaging mechanism.
+</p>
+
+<ul>
+  <li><strong>ModelKit creation:</strong> Packages all essential components of a machine learning model into a reusable and shareable unit defined by a <a href="https://kitops.ml/docs/kitfile/kf-overview.html">Kitfile</a>.</li>
+  <li><strong>Version control:</strong> Tracks changes to ModelKits, allowing for easy rollback and experiment management.</li>
+  <li><strong>Deployment automation:</strong> Facilitates the deployment of ModelKits to different environments, such as cloud platforms or on-premises infrastructure.</li>
+  <li><strong>Collaboration:</strong> Enables seamless sharing and collaboration among data scientists and developers.</li>
+</ul>
+
+## Set up a local environment for LLM training and management
+
+<p>
+Now that we learned about InstructLab and KitOps, let's get a local environment set up so that we can use these two complimentary tools together. We will be using a MacBook Pro with an M2 processor. Other platforms are supported by both tools, which may involve different steps than those described in this article.
+</p>
+
+### Install and use InstructLab
+
+```bash
+mkdir instructlab
+cd instructlab  
+python3 -m venv --upgrade-deps venv
+source venv/bin/activate
+pip cache remove llama_cpp_python 
+pip install 'instructlab[mps]==0.17.1'
+ilab --version
+```
+
+<Image src={instructLabInitImage} alt="A view of what InstructLab looks like initialized locally on a MacBook Pro." />
+
+## Install KitOps
+
+To install KitOps, follow the instructions [here](https://kitops.ml/docs/cli/installation.html) for your machine. For a Mac ARM-based processor, you'll need to download the pre-built binary and extract `kit` from the compressed file as shown below. Then move `kit` to a location in your PATH. You can check the version to verify it is functioning correctly:
+
+```bash
+curl -OL https://github.com/jozu-ai/kitops/releases/download/v0.3.2/kitops-darwin-arm64.zip
+unzip kitops-darwin-arm64.zip kit
+sudo mv kit /usr/local/bin
+kit version
+```
+
+The latest version if KitOps as of this writing is v0.3.2. You can double check if there are newer versions by visiting the project [Releases page](https://github.com/jozu-ai/kitops/releases) on GitHub.
+
+### Add new knowledge to the LLM
+
+
+Now that we have our environment set up and an LLM downloaded locally, we will look at how to add knowledge with the InstructLab Taxonomy. As we mentioned in the introduction, there a few reasons for enhancing an LLM with new knowledge:
+
+*   **Domain-specific expertise:** LLMs are general-purpose models. By adding domain-specific knowledge, you can create models tailored to specific industries or tasks (e.g., legal, medical, finance).
+*   **Proprietary information:** Incorporating proprietary data such as new product information or specific insights for customers can give your organization a competitive edge.
+*   **Enhanced accuracy:** By providing more relevant and timely training data, you can improve the model's ability to generate correct and informative responses.
+*   **Reduced hallucinations:** Addressing factual inaccuracies and reducing the likelihood of generating false or misleading information.
+
+For our example, we will be enhancing the LLM we downloaded to include the results of the 2024 Wimbledon tennis tournament. We happen to know that Carlos Alcarez won that final. At the time of this writing, however, the model did not have this information as we can see from Figure 3, which shows a sample chat using `ilab model chat`.
+
+We can create a file in the taxonomy that adds this knowledge. First, let's add a directory in the taxonomy hierarchy for tennis knowledge:
+
+```bash
+cd taxonomy
+mkdir -p knowledge/sports/tennis
+```
+
+From here, we create a `qna.yaml` file in the `tennis` directory which includes 5 questions and answers in the following format:
+
+```yaml
+version: 2 
+task_description: '2024 Wimbledon results'
+created_by: Dan Gross
+domain: sports
+seed_examples:
+  - question: Who won the 2024 Wimbledon grand slam tennis tournament?
+    answer: Carlos Alcarez won, defeating Novak Djokovic in the final.
+  - question: What was the score of the match? 
+    answer: Carlos Alcarez beat Novak Djokovic with a score of 6-2, 6-2, 7-6.
+  - question: What countries are the players in the final from?
+    answer: Carlos Alcarez is from Spain and Novak Djokovic is from Serbia.
+  - question: Where did the 2024 Wimbledon grand slam final take place?
+    answer: The final match of the tournament was held in Wimbledon, United Kingdom.
+  - question: What date was the final match of the 2024 Wimbledon tennis tournament?
+    answer: The 2024 Wimbledon final was held on Sunday, July 14, 2024.
+document:
+  repo: https://github.com/dj144/knowledge.git
+  commit: e1f21d3
+  patterns:
+    - wimbledon.md
+```
+
+Notice also that an external repo is referenced, which contains additional information about Wimbledon in 2024. This is a required dependency for knowledge in InstructLab taxonomies. Skills work slightly differently than knowledge does, but that will not be covered in this article, however feel free to check out the [taxonomy README](https://github.com/instructlab/taxonomy/blob/main/README.md) which provides more context.
+
+Once the file is saved, you can check the taxonomy formatting, generate the training data, re-train the model, and convert the model to a usable format with these steps:
+
+```bash
+ilab taxonomy diff
+ilab data generate
+ilab model train
+ilab model convert
+```
+
+Each step will take some time to complete, after which we will have a new model that should be contained in an automatically created `instructlab-merlinite-7b-lab-trained` folder. Moving to the next section, we will explore how to use KitOps to package this model and dataset for testing, sharing, and distribution.
+
+### Pack up the pieces
+
+Our new model is ready locally, so let's use KitOps to package it and push it to a public repo as a bona fide ModelKit. First off, within the `instructlab` folder we have been working from, create a Kitfile (no extension needed). This is a YAML formatted manifest file for an AI/ML project, and it is the cornerstone of a ModelKit. [More details on ModelKits and Kitfiles are covered here](https://kitops.ml/docs/next-steps.html). We will start with a fairly bare-bones Kitfile for our project:
+
+```yaml
+manifestVersion: v1.0.0
+datasets:
+- description: Added taxonomy knowledge  
+  name: Wimbledon 2024
+  path: ./taxonomy/knowledge/sports/tennis/qna.yaml
+model:
+  description: The trained model
+  name: Merlinite 7b Trained
+  path: ./instructlab-merlinite-7b-lab-trained/instructlab-merlinite-7b-lab-Q4\_K\_M.gguf
+```
+
+We can use KitOps to pack the latest model and dataset and then push the package to our public repo. For this article, we have set up an account at [Quay.io](https://quay.io/), which is a cost-effective option for storing container images. As mentioned earlier, ModelKits are OCI-compliant containers. You can create your own account and repo on Quay.io. Using KitOps with our account looks like this:
+
+```bash
+kit pack . -t quay.io/dan144/ilab:latest
+kit push quay.io/dan144/ilab:latest
+```
+
+Once the ModelKit is successfully uploaded, you or your colleagues can pull it from anywhere and try interacting with it like so:
+
+```bash
+kit pull quay.io/dan144/ilab:latest
+kit unpack quay.io/dan144/ilab:latest
+kit dev start .
+```
+
+This will launch an application listening on a free port on localhost. Point your browser to the address provided, and you can interact with the new model, as shown in Figure 4.
+
+<Image src={instructLabKitOpsUI} alt="Interacting with the InstructLab trained model from the KitOps UI." />
+
+And there you have it. The new model now knows who won the Men's final for Wimbledon in 2024. We successfully re-trained the default model with our own knowledge using InstructLab, then packaged our work with KitOps for distribution or incorporating into an MLOps workflow.
+
+There are many more paths to explore using the tools covered from this starting point. You are welcome to pull the ModelKit from the repo to try the LLM yourself without re-training. You can use KitOps in various ways for versioning, tagging, and deploying models enhanced with skills and knowledge via InstructLab.
+
+## Conclusion
+
+In this article, we demonstrated how to enhance LLMs with new knowledge using InstructLab and streamline the deployment process with KitOps. By combining these open source tools, users can effectively address the limitations of LLMs, such as outdated information and missing domain-specific expertise. 
+
+We walked through a practical example of adding Wimbledon 2024 results to an LLM and packaging the retrained model for distribution. This approach significantly reduces the time and complexity associated with LLM improvement and deployment, making it accessible to a wide audience and for numerous use cases you can explore further.
