@@ -21,7 +21,7 @@ This website is crafted using the latest web technologies to provide a seamless 
 
 ### 🌐 Check It Out Live
 
-Visit [cedricclyburn.com](https://cedricclyburn.com) to see the website in action!
+Visit [cedricclyburn.com](https://cedricclyburn.com) to see the website in action! Use `npm install` and `npm run dev` to run the project locally on `localhost:3000`.
 
 ### 🤝 Let's Connect
 
