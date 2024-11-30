@@ -1,9 +1,16 @@
-import { type Metadata } from 'next'
-import { Analytics } from '@vercel/analytics/react';
-
+import { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/react'
 import { Card } from '@/components/Card'
 import { Section } from '@/components/Section'
 import { SimpleLayout } from '@/components/SimpleLayout'
+
+async function fetchEvents() {
+  const response = await fetch('https://sessionize.com/api/speaker/json/y57j9luise', {
+    next: { revalidate: 60 }, // Optional: Revalidate every 60 seconds for fresh data
+  })
+  const data = await response.json()
+  return data.events
+}
 
 function SpeakingSection({
   children,
@@ -18,24 +25,25 @@ function SpeakingSection({
 
 function Appearance({
   title,
-  description,
-  event,
+  location,
+  date,
   cta,
   href,
 }: {
   title: string
-  description: string
-  event: string
+  location?: string
+  date?: string
   cta: string
   href: string
 }) {
   return (
     <Card as="article">
+      <Card.Eyebrow decorate>
+        {location && date ? `${location} | ${date}` : location || date}
+      </Card.Eyebrow>
       <Card.Title as="h3" href={href}>
         {title}
       </Card.Title>
-      <Card.Eyebrow decorate>{event}</Card.Eyebrow>
-      <Card.Description>{description}</Card.Description>
       <Card.Cta>{cta}</Card.Cta>
     </Card>
   )
@@ -43,67 +51,44 @@ function Appearance({
 
 export const metadata: Metadata = {
   title: 'Speaking',
-  description:
-    "Cedric Clyburn's speaking engagements at conferences and more",
+  description: "Cedric Clyburn's speaking engagements at conferences and more",
 }
 
-export default function Speaking() {
+export default async function Speaking() {
+  const events = await fetchEvents()
+
   return (
     <SimpleLayout
       title="I love to share ideas and speak at conferences."
-      intro="I'm a firm believer that fantastic ideas and learning comes from knowledge-sharing and conversations at events and conferences, so here is a (fairly) complete list of conferences, podcasts, and other speaking opportunities I've had in the realm of Kubernetes and cloud-native."
+      intro="I'm a firm believer that fantastic ideas and learning come from knowledge-sharing and conversations at events and conferences, so here is a (fairly) complete list of conferences, podcasts, and other speaking opportunities I've had in the realm of Kubernetes and cloud-native."
     >
       <div className="space-y-20">
+        {/* Conferences Section */}
         <SpeakingSection title="Conferences">
-        <Appearance
-            href="https://www.youtube.com/watch?v=eb3dNupkjpw"
-            title="Going from containers, to pods, to K8s – help for your developer environments!"
-            description="Full session on Podman Desktop & Podman, with a demo moving from app to Kubernetes, leveraging features like Podman AI Lab for generative AI development and InstructLab for LLM model fine-tuning."
-            event="DevConf.cz 2024"
-            cta="View Talk Recording"
-          />
-        <Appearance
-            href="https://www.youtube.com/watch?v=VcMym4NJlW0"
-            title="Containers and Kubernetes Made Easy: A 15-minute dive into Podman Desktop"
-            description="Discover how Podman Desktop simplifies containerization for developers with features like Compose support, local Kubernetes testing, and resource visibility. Learn to move from local apps to multi-tier deployments on Kubernetes, plus tips for efficient container and Kubernetes workflows."
-            event="DevConf.cz 2024"
-            cta="View Talk Recording"
-          />
-        <Appearance
-            href="https://docs.google.com/presentation/d/1Owg4LZ3b99Ptxu_bb-zRYqO882DOaHstUDLJZIiTYys/edit"
-            title="Simplifying containers and Kubernetes on your laptop with Podman Desktop"
-            description="Supercharge your container application development workflow, and easily craft your applications for Kubernetes with Podman Desktop, an open-source container management tool to seamlessly run, debug, and manage containers and Kubernetes from your local environment."
-            event="DeveloperWeek 2024"
-            cta="View presentation"
-          />
-          <Appearance
-            href="https://www.youtube.com/watch?v=VAM-FSz0oPg"
-            title="Empowering Collaboration: AI Developer Experience - Your Bridge from Model to Production"
-            description="A technical deep-dive into the process data scientists and developers can follow for end-to-end generative AI application development on Kubernetes, using open source technologies like Jupyter, Kubeflow, and KServe Model Mesh."
-            event="The Linux Foundation: AI.dev 2023"
-            cta="Watch video"
-          />
-          <Appearance
-            href="https://www.youtube.com/watch?v=Q8a4XHXraz4"
-            title="Reducing Developer Cognitive Load with Red Hat Enterprise Linux"
-            description="Red Hat Enterprise Linux (RHEL) offers a large toolset for modern software projects that can help reduce developer cognitive load. Let's explore the open source tools and runtimes that make this possible, including porting a .NET application from Windows to Linux & more."
-            event="We Are Developers World Congress 2023"
-            cta="Watch video"
-          />
+          {events.map((event: any) => (
+            <Appearance
+              key={event.id}
+              href={event.website}
+              title={event.name}
+              location={event.location}
+              date={new Date(event.eventStartDate).toLocaleDateString()}
+              cta="Learn more"
+            />
+          ))}
         </SpeakingSection>
+
+        {/* Podcasts Section */}
         <SpeakingSection title="Podcasts">
           <Appearance
             href="https://www.kubernetesbytes.com/home-1/episode/44410748/mongodb-kubernetes-operators-with-joel-lord-and-cedric-clyburn"
             title="MongoDB Kubernetes Operators with Joel Lord & Cedric Clyburn"
-            description="Hosts of Kubernetes Bytes, Bhavin and Ryan, dive into the different operators MongoDB has for deploying and managing MongoDB with Kubernetes."
-            event="Kubernetes Bytes, August 2022"
+            location="Kubernetes Bytes, August 2022"
             cta="Listen to podcast"
           />
           <Appearance
             href="https://podcasts.mongodb.com/public/112/The-MongoDB-Podcast-b02cf624/343850c6"
             title="The Intern Episode, Part 2"
-            description="Cedric speaks with interns, and the early talent program manager, about the MongoDB summer internship experience."
-            event="The MongoDB Podcast, July 2022"
+            location="The MongoDB Podcast, July 2022"
             cta="Listen to podcast"
           />
         </SpeakingSection>
