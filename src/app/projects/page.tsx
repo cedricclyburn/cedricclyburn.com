@@ -39,6 +39,13 @@ const projects = [
     link: { href: 'https://www.mongodb.com/developer/products/atlas/kubernetes-operator-application-deployment/', label: 'mongodb.com' },
     logo: logoMongodb,
   },
+  {
+    name: 'Red Hat Blogs',
+    description:
+      'Higher-level blogs and thought leadership around development, developer experience, and applied AI.',
+    link: { href: 'https://www.redhat.com/en/authors/cedric-clyburn', label: 'redhat.com' },
+    logo: logoRedhat,
+  },
 ]
 
 function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
