@@ -93,9 +93,9 @@ export default function About() {
               , <a href="https://podman-desktop.io/">Podman Desktop</a>
               , <a href="https://buildah.io/">Buildah</a>, and related projects. 
               In the realm of emerging technologies, I help with
-              the <a href="https://developers.redhat.com/products/podman-desktop/podman-ai-lab">Podman AI Lab</a> as well as 
-              <a href="https://instructlab.ai/">InstructLab</a> 
-              for fine-tuning and deploying AI models. Additionally, I've created 
+              the <a href="https://developers.redhat.com/products/podman-desktop/podman-ai-lab">Podman AI Lab</a> as well 
+              as <a href="https://instructlab.ai/">InstructLab</a> for 
+              fine-tuning and deploying AI models. Additionally, I've created 
               workshops for cloud-native CI/CD with <a href="https://tekton.dev/">Tekton</a>, 
               and dabble with and MLOps. 
             </p>
