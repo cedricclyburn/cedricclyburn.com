@@ -1,0 +1,90 @@
+import { ArticleLayout } from '@/components/ArticleLayout';
+import Image from 'next/image';
+import graniteTrainingDiagram from './granite-training-diagram.png';
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2024-06-16',
+  title: 'IBM’s Granite foundation model: A detailed look at its training data',
+  description:
+    'Explore IBM’s Granite family of models, with a transparent look into its training data, datasets, and enhancements made to Granite 13b models.',
+};
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+};
+
+export default (props) => <ArticleLayout article={article} {...props} />;
+
+While many AI model developers publicly release research papers and their data training approaches, we’ll focus on one model in particular– [IBM’s Granite model](https://www.ibm.com/granite), where IBM has gone one step further and released their specific training data. So, if you would like specificity on what Granite family large language models (LLM) is trained on, this article provides a detailed breakdown of the datasets used in the initial training phase of IBM’s popular [granite.13b.v1 model](https://www.ibm.com/docs/en/watsonx/w-and-w/2.0.x?topic=models-granite-13b-v1-model-card), the original Granite model from which other model variants were fine-tuned to target downstream tasks.
+
+## What are the IBM Granite models?
+
+As we begin to see the impact of AI in our lives and organizations, principles such as trust are as important to our software as they are to AI/ML models. Thus, IBM Research built and trained [the Granite family of models](https://www.redhat.com/en/topics/ai/what-are-granite-models) with transparency under an [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0) for broad, unencumbered commercial use. “The Granite family of models provides enterprise users with some of the most robust and transparent insights into the underlying training data, important for efficiently refining model behavior for specific use cases and domains, and for protecting enterprises from risk from any unlicensed content in the training data”, as reported by [The Forrester Wave™: AI Foundation Models For Language](https://reprints2.forrester.com/#/assets/2/848/RES180932/report) Q2 2024.
+
+## What data was used to train the Granite models?
+
+Granite.13b.v1 was trained on a massive dataset [consisting of 1 trillion tokens derived from 14 distinct datasets across various domains](https://www.ibm.com/downloads/cas/X9W4O6BM). Due to the transparency in training data, we’re able to detail the data sources used to teach the model to handle sentiment classification, named entity recognition, question answering and summarization. These are considered to be enterprise safe data sources, and Granite models are among the most transparent according to [Stanford University’s Foundation Model Transparency Index 2024](https://crfm.stanford.edu/fmti/May-2024/index.html). Let’s break these down into several categories.
+
+### Academia and science
+
+- [**arXiv**](https://arxiv.org/): This dataset includes over 1.8 million scientific pre-prints
+
+- [**DeepMind Mathematics**](https://github.com/google-deepmind/mathematics_dataset): This dataset contains pairs of mathematical questions and their corresponding answers
+
+- [**Pubmed Central**](https://pubmed.ncbi.nlm.nih.gov/): This dataset comprises biomedical and life sciences research papers
+
+
+### Legal and financial
+
+- [**Free Law**](https://free.law/): This dataset encompasses public-domain legal opinions from both US federal and state courts
+
+- [**SEC Filings**](https://www.sec.gov/search-filings): This dataset contains 10-K/Q filings from the US Securities and Exchange Commission (SEC) spanning from 1934 to 2022
+
+- [**United States Patent and Trademark Office**](https://www.sec.gov/search-filings): This dataset includes US patents granted between 1975 and May 2023, excluding design patents
+
+
+### Code and technology
+
+- [**GitHub Clean**](https://github.com/Code-Parrot-ai): This dataset features code from CodeParrot in various programming languages
+
+- [**Hacker News**](https://news.ycombinator.com/): This dataset comprises news articles focused on computer science and entrepreneurship, collected between 2007 and 2018
+
+
+### General web and literature
+
+- [**Common Crawl**](https://commoncrawl.org/): This dataset is an open repository of web crawl data
+
+- [**OpenWeb Text**](https://skylion007.github.io/OpenWebTextCorpus/): This is an open source version of OpenAI's Web Text corpus containing web pages up to 2019
+
+- [**Project Gutenberg**](https://www.gutenberg.org/) (PG-19): This dataset includes free e-books, primarily older works with expired US copyrights
+
+### Other
+
+- [**Stack Exchange**](https://stackexchange.com/): This dataset features anonymized user-contributed content from the Stack Exchange network, a collection of websites focused on questions and answers
+
+- [**Webhose**](https://webz.io/): This dataset includes unstructured web content transformed into machine-readable data feeds, acquired by IBM
+
+- [**Wikimedia**](https://www.wikimedia.org/): This dataset contains extracted plain text from pages and articles across eight English Wikimedia projects (enwiki, enwikibooks, enwikinews, enwikiquote, enwikisource, enwikiversity, enwikivoyage, enwiktionary)
+
+The Granite 13b model is the base model from which all other variants of Granite were fine-tuned for  specific tasks. However, version 2 of the 13b model, [granite.13b.v2](https://www.ibm.com/docs/en/watsonx/w-and-w/2.0.x?topic=models-granite-13b-instruct-v2-model-card), had an additional pretraining on 1.5T new tokens that were deemed usable after going through the data processing pipeline seen below. Upon adding these tokens to version one of the model we now have 2.5T Tokens used in the training of version 2. Version 2 still contains the same 14 datasets as version 1, plus 6 new data sets. 
+
+<Image src={graniteTrainingDiagram} alt="Training data funnel showing filtering of extracted data from 28.7 TB to 2.5 Trillion Tokens." />
+
+
+## Granite V2: Additional pre-training data
+
+- [**Earnings Call Transcripts**](https://www.marketbeat.com/earnings/transcripts/): This dataset includes transcripts from quarterly earnings companies hold with investors
+
+- [**EDGAR Filings**](https://www.sec.gov/search-filings): Annual reports from all the publicly traded companies in the US spanning a period of more than 25 years
+
+- [**FDIC**](https://www.fdic.gov/): The data is from the annual submissions of the Federal Deposit Insurance Corporation (FDIC)
+
+- [**Finance Text Books**](https://open.umn.edu/opentextbooks): A corpus from University of Minnesota's Open Textbook Library, including all textbooks tagged as finance
+
+- [**Financial Research Papers**](https://www.financialresearch.gov/working-papers/): Publicly available financial research paper corpus
+
+- [**IBM Documentation**](https://www.redbooks.ibm.com/): IBM redbooks and product documents
+
+As with any form of software, having trust and confidence in our workloads is critical to enterprise readiness. As AI is another tool being used to enhance our applications and streamline business processes, we should treat it as such and work to apply the same open source principles and transparency that have been tested over the years to AI itself.
