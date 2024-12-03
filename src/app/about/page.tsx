@@ -92,16 +92,16 @@ export default function About() {
               revolved around the container tools <a href="https://podman.io/">Podman</a>
               , <a href="https://podman-desktop.io/">Podman Desktop</a>
               , <a href="https://buildah.io/">Buildah</a>, and related projects. 
-              In the realm of inner loop development, I help promote 
-              the <a href="https://odo.dev/">odo CLI</a> as well as 
-              the <a href="https://github.com/redhat-developer/openshift-toolkit">OpenShift Toolkit</a> 
-              for deploying to Kubernetes clusters. Additionally, I've created 
+              In the realm of emerging technologies, I help with
+              the <a href="https://developers.redhat.com/products/podman-desktop/podman-ai-lab">Podman AI Lab</a> as well as 
+              <a href="https://instructlab.ai/">InstructLab</a> 
+              for fine-tuning and deploying AI models. Additionally, I've created 
               workshops for cloud-native CI/CD with <a href="https://tekton.dev/">Tekton</a>, 
-              and dabble with AI and MLOps. 
+              and dabble with and MLOps. 
             </p>
             <p>
             One of my passions is connecting folks, so I help to organize the 
-            annual <a href="https://community.cncf.io/events/details/cncf-kcd-new-york-presents-kcd-new-york-2024/">
+            annual <a href="https://kcdnewyork.com">
             Kubernetes Community Days conference in New York City</a>. 
             I also enjoy speaking myself at conferences, and have had the privilege 
             to speak at a number of events, including The Linux 
