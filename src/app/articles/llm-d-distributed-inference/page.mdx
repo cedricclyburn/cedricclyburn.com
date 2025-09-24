@@ -4,7 +4,7 @@ export const article = {
   author: 'Cedric Clyburn',
   title: 'Getting started with llm-d for distributed AI inference',
   date: '2024-08-19',
-  description: 'Learn how to get started with llm-d for distributed AI inference and scaling large language model deployments.',
+  description: 'llm-d: Kubernetes-native distributed inference stack for large-scale LLM applications.',
 }
 
 export const metadata = {
@@ -14,15 +14,49 @@ export const metadata = {
 
 export default (props) => <ArticleLayout article={article} {...props} />
 
-{/* 
-TODO: Replace this placeholder content with the actual article content from:
-https://developers.redhat.com/articles/2025/08/19/getting-started-llm-d-distributed-ai-inference
+As [large language models](https://www.redhat.com/en/topics/ai/what-are-large-language-models) (LLMs) shift from static, training-bound knowledge recall to dynamic, inference-time reasoning, their supporting infrastructure must also evolve. [Inference workloads](https://www.redhat.com/en/topics/ai/what-is-ai-inference) are no longer just about throughput—they demand adaptive computation, modular scaling, and intelligent caching to deliver complex reasoning with real-world efficiency.
 
-This is a placeholder structure. Please copy the full article content from the Red Hat Developer website
-and replace this comment and the content below.
-*/}
+[llm-d](https://llm-d.ai/) is a [Kubernetes](https://www.redhat.com/en/topics/containers/what-is-kubernetes)-native distributed inference stack purpose-built for this new wave of LLM applications. Designed by contributors to Kubernetes and [vLLM](https://www.redhat.com/en/topics/ai/what-is-vllm), llm-d offers a production-grade path for teams deploying large models at scale. Whether you're a platform engineer or a DevOps practitioner, llm-d brings increased performance per dollar across a wide range of accelerators and model families.
 
-*[This article content needs to be replaced with the actual content from the Red Hat Developer website. The article covers getting started with llm-d for distributed AI inference.]*
+But this isn't just another inference-serving solution. llm-d is designed for the future of AI inference—optimizing for long-running, multi-step prompts, retrieval-augmented generation, and agentic workflows. It integrates cutting-edge techniques like KV cache aware routing, disaggregated prefill/decode, and a vLLM-optimized inference scheduler, with Inference Gateway (IGW) for seamless Kubernetes-native operations.
+
+## Why llm-d is needed for efficient inference
+
+The key innovation with llm-d is its use case: _distributed_ model serving. Unlike traditional applications, LLM inference requests are vastly different from typical HTTP requests, and traditional Kubernetes load balancing and scaling mechanisms can be ineffective.
+
+For example, LLM inference requests are stateful, expensive, and have varying shapes (in the difference of input tokens and output tokens). To build a cost-efficient AI platform, it's critical that our infrastructure is used effectively, so let's see what typically happens during inference.
+
+Let's say a user prompts an LLM with a question, such as `customers who are up for renewal that we should reach out to`. First, this request initiates a phase known as _prefill_, which computes hidden states (also referred to as the KV cache) for the input tokens in parallel. This is compute-intensive. Next, the _decode_ phase consumes cached keys/values to generate tokens one at a time, making it memory bandwidth-bound. If this is all happening on a single GPU, it's an inefficient use of resources, especially for long sequences.
+
+llm-d improves this using _disaggregation_(separating workloads between specialized nodes or GPUs) and an inference gateway ([kgateway](https://github.com/kgateway-dev/kgateway)) to evaluate the incoming prompt and intelligently route requests, dramatically improving both performance and cost efficiency.
+
+*[Image placeholder: A diagram illustrating a distributed LLM inference workflow with disaggregation. A user request is sent to the k-gateway, which dispatches prefill and decode tasks to separate nodes, then returns the final response to the user.]*
+
+**Figure 1**: llm-d's disaggregated prefill/decode architecture for efficient LLM inference.
+
+## What are the main features of llm-d?
+
+Before we look at how to deploy llm-d, let's explore the features that make it unique.
+
+### Smart load balancing for faster responses
+
+llm-d includes a special load scheduler that ensures each request is routed to the correct model server, built using Kubernetes' Gateway API inference extension. Instead of using generic metrics, its inference scheduler uses smart rules based on real-time performance data—like system load, memory usage, and service level goals—to decide where to send each prompt.
+
+### Split-phase inference: Smarter use of compute
+
+Instead of running everything on the same machine, llm-d splits the work:
+
+- One set of servers handles understanding the prompt (prefill).
+- Another set handles writing the response (decode). 
+
+This helps use GPUs more efficiently—like having one group of chefs prep ingredients while another handles the cooking.
+
+### Reusing past work with disaggregated caching
+
+llm-d also helps models remember more efficiently by caching previously computed results (KV cache). It can store these results in two ways:
+
+- Locally (on memory or disk) for low-cost, zero-maintenance savings.
+- Across servers (using shared memory and storage) for faster reuse and better performance in larger systems.
 
 ---
 

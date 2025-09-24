@@ -4,7 +4,7 @@ export const article = {
   author: 'Cedric Clyburn',
   title: 'Get started with bootable containers and image mode for RHEL',
   date: '2024-11-27',
-  description: 'Learn how to get started with bootable containers and image mode for Red Hat Enterprise Linux (RHEL).',
+  description: 'Learn how to use and build bootable containers for disk image operating system deployment with Podman Desktop.',
 }
 
 export const metadata = {
@@ -14,15 +14,78 @@ export const metadata = {
 
 export default (props) => <ArticleLayout article={article} {...props} />
 
-{/* 
-TODO: Replace this placeholder content with the actual article content from:
-https://developers.redhat.com/articles/2024/11/27/get-started-bootable-containers-and-image-mode-rhel
+[Containerization](https://developers.redhat.com/topics/containers) has become a fundamental technology in modern software deployment and infrastructure management. However, while application-level containers have gained widespread adoption, a new concept is emerging at the system level: [bootable containers](https://developers.redhat.com/articles/2024/05/07/image-mode-rhel-bootable-containers). By packaging not just applications but entire system images into containers, bootable containers aim to solve challenges related to system consistency, immutability, and updates.
 
-This is a placeholder structure. Please copy the full article content from the Red Hat Developer website
-and replace this comment and the content below.
-*/}
+Let's take a look at how to create and manage a bootable container from [Podman Desktop](https://developers.redhat.com/products/podman-desktop/overview) using the bootc extension to build workloads that you can deploy on various platforms, from bare metal to cloud environments.
 
-*[This article content needs to be replaced with the actual content from the Red Hat Developer website. The article covers getting started with bootable containers and image mode for RHEL.]*
+*[Image placeholder: Podman Desktop's Bootable Container extension]*
+
+**Figure 1**: The Bootable Containers dashboard.
+
+## What are bootable containers?
+
+Bootable containers, also provided as [image mode for Red Hat Enterprise Linux](https://developers.redhat.com/products/rhel-image-mode/overview), represent an innovation in merging containerization technology with full operating system deployment. At their core, bootable containers are OCI ([Open Container Initiative](https://opencontainers.org/)) container images that contain a complete Linux system, including the kernel and hardware support.
+
+This approach has several characteristics:
+
+- **Immutability**: The entire system is treated as an immutable unit, reducing configuration drift and enhancing security
+- **Atomic updates**: System updates can be performed as atomic operations, simplifying rollbacks and ensuring system consistency
+- **Standardized tooling**: Leverages existing OCI container tools and workflows, reducing the learning curve for teams familiar with containerization
+
+This is a wonderful benefit for a variety of use cases, including edge computing and IoT devices (where consistent, easily updatable system images are crucial), as well as on general cloud-native infrastructure to enable infrastructure-as-code practices at the OS level.
+
+## Podman Desktop for bootable containers
+
+We'll be using [Podman Desktop](https://podman-desktop.io/), the open source project for developers working with containers and Kubernetes, in order to create and manage our bootable container. Podman Desktop provides a user-friendly interface for container operations, making it an excellent choice for those new to (bootable) containers or those who prefer a graphical interface over command-line tools.
+
+### Set up Podman Desktop
+
+Before we begin, ensure you have Podman Desktop installed on your system. You can download it from the [official Podman Desktop website](https://podman-desktop.io/) for your macOS, Windows, or Linux system. Once installed, launch the application to set up and configure [Podman](https://podman.io/) (if needed).
+
+*[Image placeholder: Navigating to the Podman Desktop website to download and install the interface for Podman]*
+
+**Figure 3**: Download and install the interface for Podman from the Podman Desktop website.
+
+Now, navigate to the **Extensions** tab in the left sidebar, and select the **Catalog** to find and install the **Bootable Containers** extension.
+
+*[Image placeholder: Installing the Bootable Containers extension for Podman Desktop]*
+
+**Figure 4**: Install the Bootable Containers extension for Podman Desktop.
+
+## Working with bootable container images
+
+Now, we're using OCI practices to create an OS from a container image, and we need to take into consideration what applications we need pre-installed, what services to include, and what should start automatically when the system boots. This allows you to create a purpose-built environment that's ready to use from the moment it starts up.
+
+### Understanding the bootable container's Containerfile
+
+We're using the example Apache httpd bootable container that you can find within the Bootable Container extension in Podman Desktop, but let's view the Containerfile that will be used to build the bootc image:
+
+```dockerfile
+# Run a stock apache webserver
+FROM quay.io/centos-bootc/centos-bootc-dev:stream9
+# The default package drops content in /var/www, and on bootc systems
+# we have /var as a machine-local mount by default.  Because this content
+# should be read-only (at runtime) and versioned with the container image,
+# we move it to /usr/share/www instead.
+RUN dnf -y install httpd && \
+    systemctl enable httpd && \
+    mv /var/www /usr/share/www && \
+    sed -ie 's,/var/www,/usr/share/www,' /etc/httpd/conf/httpd.conf
+# Further, we also disable the default index.html which includes the operating
+# system information (bad idea from a fingerprinting perspective), and crucially
+# we inject our own content as part of the container image build.
+RUN rm /usr/share/httpd/noindex -rf
+COPY index.html /usr/share/www/html
+EXPOSE 80
+```
+
+As detailed in the comments, we're starting from a CentOS Stream 9 base image, containing the full operating system's kernel, systemd, filesystem tools, and more. After installing required dependencies, configuring the web server as a service, and copying in artifacts, this Containerfile is ready to be built like any other traditional container image!
+
+## Wrapping up
+
+With [bootable containers](https://containers.github.io/bootc), you can use the same tools, skills, and patterns for creating containerized applications to deliver an operating system that is easier to build, ship, and run. We can streamline infrastructure management and deployment processes by treating the entire operating system as a versioned, immutable image.
+
+We've taken a look at [Podman Desktop](https://developers.redhat.com/products/podman-desktop/overview), with its [bootable containers extension](https://github.com/podman-desktop/extension-bootc), to learn how to get started with bootable containers, but the journey doesn't stop here. Check out the [full documentation](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/using_image_mode_for_rhel_to_build_deploy_and_manage_operating_systems/index) and learn about the supported offering of bootable containers with [image mode for Red Hat Enterprise Linux](https://developers.redhat.com/products/rhel-image-mode/overview).
 
 ---
 
