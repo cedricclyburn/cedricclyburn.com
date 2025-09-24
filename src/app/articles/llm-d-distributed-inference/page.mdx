@@ -1,0 +1,208 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  title: 'Getting started with llm-d for distributed AI inference',
+  date: '2024-08-19',
+  description: 'llm-d optimizes LLM inference at scale with disaggregated prefill/decode, smart caching, and Kubernetes-native architecture for production environments.',
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+As large language models become increasingly sophisticated and widely adopted, the challenge of serving them efficiently at scale has become paramount. Traditional inference approaches often struggle with the computational demands and resource requirements of modern LLMs. Enter llm-d, a distributed inference system designed specifically to optimize LLM serving in production environments.
+
+## What is llm-d?
+
+llm-d is a distributed inference framework that addresses the scalability challenges of serving large language models. It employs innovative techniques like disaggregated prefill/decode operations, intelligent caching strategies, and Kubernetes-native architecture to deliver efficient, scalable LLM inference.
+
+## Key Features and Benefits
+
+### Disaggregated Architecture
+
+llm-d separates the prefill and decode phases of LLM inference:
+- **Prefill Phase**: Processes the input prompt and generates the initial context
+- **Decode Phase**: Generates tokens sequentially based on the context
+
+This separation allows for optimized resource allocation and improved throughput.
+
+### Smart Caching
+
+The system implements intelligent caching mechanisms:
+- **KV Cache Management**: Efficient key-value cache sharing across requests
+- **Context Caching**: Reuse of common prompt prefixes
+- **Dynamic Cache Allocation**: Adaptive cache sizing based on demand
+
+### Kubernetes-Native Design
+
+Built from the ground up for Kubernetes environments:
+- **Pod-based Scaling**: Automatic scaling based on inference demand
+- **Resource Management**: Efficient GPU and CPU resource allocation
+- **Service Discovery**: Seamless integration with Kubernetes networking
+- **Monitoring Integration**: Native support for Prometheus and other monitoring tools
+
+## Getting Started
+
+### Prerequisites
+
+Before deploying llm-d, ensure you have:
+- Kubernetes cluster (v1.20+)
+- NVIDIA GPU operators installed
+- Helm 3.x
+- kubectl configured for your cluster
+
+### Installation
+
+1. **Add the llm-d Helm repository**:
+```bash
+helm repo add llm-d https://charts.llm-d.io
+helm repo update
+```
+
+2. **Install llm-d**:
+```bash
+helm install llm-d llm-d/llm-d \
+  --set gpu.enabled=true \
+  --set replicas.prefill=2 \
+  --set replicas.decode=4
+```
+
+3. **Verify the installation**:
+```bash
+kubectl get pods -l app=llm-d
+```
+
+### Basic Configuration
+
+Create a configuration file for your model:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: llm-d-config
+data:
+  config.yaml: |
+    model:
+      name: "llama-2-70b"
+      path: "/models/llama-2-70b"
+    inference:
+      max_batch_size: 32
+      max_sequence_length: 4096
+    caching:
+      kv_cache_size: "8Gi"
+      context_cache_enabled: true
+```
+
+## Architecture Deep Dive
+
+### Prefill Workers
+
+Prefill workers handle the initial processing of input prompts:
+- High memory bandwidth requirements
+- Optimized for parallel processing
+- Stateless operations allow for easy scaling
+
+### Decode Workers
+
+Decode workers manage sequential token generation:
+- Lower memory bandwidth, higher compute requirements
+- Maintain generation state
+- Optimized for low-latency token production
+
+### Cache Management
+
+The caching layer provides:
+- **Distributed KV Cache**: Shared across all workers
+- **Context Similarity Matching**: Identifies reusable prompt prefixes
+- **Eviction Policies**: LRU and usage-based cache management
+
+## Production Deployment Patterns
+
+### Horizontal Scaling
+
+Scale prefill and decode workers independently:
+
+```bash
+# Scale prefill workers for higher throughput
+kubectl scale deployment llm-d-prefill --replicas=4
+
+# Scale decode workers for concurrent requests
+kubectl scale deployment llm-d-decode --replicas=8
+```
+
+### Resource Allocation
+
+Optimize resource allocation based on workload:
+
+```yaml
+resources:
+  prefill:
+    requests:
+      memory: "16Gi"
+      nvidia.com/gpu: 1
+    limits:
+      memory: "32Gi"
+      nvidia.com/gpu: 1
+  decode:
+    requests:
+      memory: "8Gi"
+      nvidia.com/gpu: 1
+    limits:
+      memory: "16Gi"
+      nvidia.com/gpu: 1
+```
+
+### Monitoring and Observability
+
+llm-d provides comprehensive metrics:
+- Request latency and throughput
+- Cache hit rates
+- GPU utilization
+- Memory usage patterns
+
+## Performance Optimization
+
+### Batch Size Tuning
+
+Optimize batch sizes for your hardware:
+- Larger batches improve GPU utilization
+- Balance between throughput and latency
+- Monitor memory usage to avoid OOM errors
+
+### Cache Configuration
+
+Fine-tune caching parameters:
+- Adjust cache sizes based on available memory
+- Configure eviction policies for your workload
+- Monitor cache hit rates and adjust accordingly
+
+## Use Cases and Applications
+
+### High-Throughput Serving
+
+Ideal for applications requiring:
+- Concurrent request handling
+- Consistent low latency
+- Efficient resource utilization
+
+### Multi-Tenant Environments
+
+Supports:
+- Isolated model serving
+- Resource quotas per tenant
+- Fair scheduling algorithms
+
+## Conclusion
+
+llm-d represents a significant advancement in distributed LLM inference, offering production-ready solutions for scaling language model serving. Its disaggregated architecture, intelligent caching, and Kubernetes-native design make it an excellent choice for organizations looking to deploy LLMs at scale.
+
+By leveraging llm-d's capabilities, teams can achieve better resource utilization, improved performance, and more cost-effective LLM serving in production environments.
+
+---
+
+*Originally published on [Red Hat Developer](https://developers.redhat.com/articles/2024/08/19/getting-started-llm-d-distributed-ai-inference)*

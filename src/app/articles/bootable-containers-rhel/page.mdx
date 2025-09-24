@@ -1,0 +1,231 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  title: 'Get started with bootable containers and image mode for RHEL',
+  date: '2024-11-27',
+  description: 'Learn how to use and build bootable containers for disk image operating system deployment with Podman Desktop.',
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+Red Hat Enterprise Linux (RHEL) has introduced an innovative approach to operating system deployment through bootable containers and image mode. This paradigm shift allows you to package entire operating systems as container images, enabling more consistent, reproducible, and manageable deployments across your infrastructure.
+
+## Understanding Bootable Containers
+
+Bootable containers represent a fundamental change in how we think about operating system deployment. Instead of traditional installation methods, bootable containers package the entire OS stack—including the kernel, system libraries, and applications—into a container image that can boot directly on hardware or virtual machines.
+
+### Key Benefits
+
+- **Immutable Infrastructure**: OS images are read-only, ensuring consistency
+- **Atomic Updates**: Complete system updates with rollback capabilities
+- **Container Workflow**: Leverage familiar container tooling for OS management
+- **Version Control**: Track and manage OS configurations like application code
+
+## Image Mode for RHEL
+
+RHEL's image mode is designed specifically for bootable container deployments. It provides:
+
+- **Optimized Boot Process**: Fast boot times with minimal overhead
+- **Container Runtime Integration**: Seamless container workload support
+- **Persistent Storage**: Configurable persistent volumes for data
+- **Network Configuration**: Flexible networking options
+
+## Getting Started with Podman Desktop
+
+Podman Desktop provides an intuitive interface for building and managing bootable containers. Let's walk through the process:
+
+### Prerequisites
+
+Before you begin, ensure you have:
+- Podman Desktop installed
+- RHEL subscription or developer account
+- Sufficient disk space (minimum 20GB recommended)
+- Virtualization support enabled
+
+### Building Your First Bootable Container
+
+1. **Create a Containerfile**:
+```dockerfile
+FROM registry.redhat.io/ubi9/ubi:latest
+
+# Install required packages
+RUN dnf update -y && \
+    dnf install -y kernel systemd && \
+    dnf clean all
+
+# Configure system services
+RUN systemctl enable sshd
+
+# Set up user account
+RUN useradd -m -G wheel admin && \
+    echo "admin:password" | chpasswd
+
+# Configure bootloader
+RUN bootc install --target-no-signature-verification
+```
+
+2. **Build the container image**:
+```bash
+podman build -t my-rhel-bootable .
+```
+
+3. **Create a bootable disk image**:
+```bash
+podman run --rm --privileged \
+  -v /var/lib/containers/storage:/var/lib/containers/storage \
+  -v $(pwd):/output \
+  my-rhel-bootable \
+  bootc install --to-disk /output/rhel-image.qcow2
+```
+
+### Using Podman Desktop GUI
+
+Podman Desktop provides a user-friendly interface for bootable container management:
+
+1. **Navigate to Images**: View your built bootable container images
+2. **Create Bootable Disk**: Use the GUI to generate disk images
+3. **Virtual Machine Integration**: Launch VMs directly from disk images
+4. **Configuration Management**: Modify container configurations through the UI
+
+## Advanced Configuration
+
+### Customizing the OS Image
+
+You can customize your bootable containers with specific configurations:
+
+```dockerfile
+# Custom kernel parameters
+RUN echo "console=ttyS0" >> /etc/kernel/cmdline
+
+# Install additional software
+RUN dnf install -y httpd postgresql-server
+
+# Configure services
+RUN systemctl enable httpd postgresql
+
+# Add configuration files
+COPY custom-configs/ /etc/
+```
+
+### Persistent Storage Configuration
+
+Configure persistent volumes for data that survives container updates:
+
+```bash
+# Create persistent volume
+podman volume create app-data
+
+# Mount during container creation
+podman run -v app-data:/var/lib/app my-rhel-bootable
+```
+
+### Network Configuration
+
+Set up networking for your bootable containers:
+
+```dockerfile
+# Configure static networking
+COPY network-config /etc/systemd/network/
+
+# Enable networkd
+RUN systemctl enable systemd-networkd
+```
+
+## Deployment Strategies
+
+### Development Environments
+
+Bootable containers excel in development scenarios:
+- Consistent development environments
+- Easy environment replication
+- Quick environment teardown and recreation
+
+### Edge Computing
+
+Perfect for edge deployments:
+- Minimal attack surface
+- Predictable resource usage
+- Remote update capabilities
+
+### Cloud Infrastructure
+
+Ideal for cloud-native deployments:
+- Integration with cloud-init
+- Auto-scaling capabilities
+- Immutable infrastructure patterns
+
+## Best Practices
+
+### Security Considerations
+
+- **Minimal Base Images**: Include only necessary components
+- **Regular Updates**: Automate security patch deployment
+- **Signature Verification**: Ensure image integrity
+- **Access Controls**: Implement proper authentication and authorization
+
+### Performance Optimization
+
+- **Layer Optimization**: Minimize container layers
+- **Resource Limits**: Set appropriate CPU and memory limits
+- **Storage Optimization**: Use efficient storage drivers
+- **Boot Time**: Optimize service startup sequences
+
+### Maintenance and Updates
+
+- **Version Tagging**: Use semantic versioning for images
+- **Rollback Strategy**: Plan for quick rollbacks
+- **Testing Pipeline**: Implement automated testing
+- **Documentation**: Maintain clear deployment documentation
+
+## Troubleshooting Common Issues
+
+### Boot Failures
+
+Common boot issues and solutions:
+- **Kernel Panic**: Check kernel compatibility and hardware support
+- **Service Failures**: Review systemd service configurations
+- **Storage Issues**: Verify disk space and permissions
+
+### Network Connectivity
+
+Network troubleshooting steps:
+- **Interface Configuration**: Verify network interface settings
+- **DNS Resolution**: Check DNS configuration
+- **Firewall Rules**: Review firewall and security group settings
+
+## Integration with CI/CD
+
+Integrate bootable container builds into your CI/CD pipeline:
+
+```yaml
+# Example GitHub Actions workflow
+name: Build Bootable Container
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build bootable container
+        run: |
+          podman build -t my-app:${{ github.sha }} .
+          podman push my-app:${{ github.sha }}
+```
+
+## Conclusion
+
+Bootable containers and RHEL's image mode represent a significant evolution in operating system deployment and management. By leveraging container technologies for OS deployment, organizations can achieve greater consistency, reliability, and manageability in their infrastructure.
+
+Podman Desktop makes this technology accessible through its intuitive interface, enabling both developers and system administrators to adopt bootable containers effectively. As this technology matures, we can expect to see broader adoption across various deployment scenarios, from edge computing to large-scale cloud infrastructures.
+
+The combination of immutable infrastructure, atomic updates, and container-native workflows positions bootable containers as a compelling solution for modern infrastructure challenges.
+
+---
+
+*Originally published on [Red Hat Developer](https://developers.redhat.com/articles/2024/11/27/get-started-bootable-containers-and-image-mode-rhel)*
