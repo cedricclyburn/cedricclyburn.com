@@ -40,7 +40,7 @@ Before we look at how to deploy llm-d, let's explore the features that make it u
 
 ### Smart load balancing for faster responses
 
-llm-d includes a special load scheduler that ensures each request is routed to the correct model server, built using Kubernetes' Gateway API inference extension. Instead of using generic metrics, its inference scheduler uses smart rules based on real-time performance data—like system load, memory usage, and service level goals—to decide where to send each prompt.
+llm-d includes a special load scheduler that ensures each request is routed to the correct model server, built using Kubernetes' Gateway API inference extension. Instead of using generic metrics, its inference scheduler uses smart rules based on real-time performance data—like system load, memory usage, and service level goals—to decide where to send each prompt. Teams can also customize how decisions are made, while benefiting from built-in features like flow control and latency balancing. Think of it as traffic control for LLM requests, but with AI-powered smarts.
 
 ### Split-phase inference: Smarter use of compute
 
@@ -49,14 +49,254 @@ Instead of running everything on the same machine, llm-d splits the work:
 - One set of servers handles understanding the prompt (prefill).
 - Another set handles writing the response (decode). 
 
-This helps use GPUs more efficiently—like having one group of chefs prep ingredients while another handles the cooking.
+This helps use GPUs more efficiently—like having one group of chefs prep ingredients while another handles the cooking. It's powered by vLLM and high-speed connections like NVIDIA Inference Xfer Library (NIXL) or InfiniBand.
 
 ### Reusing past work with disaggregated caching
 
 llm-d also helps models remember more efficiently by caching previously computed results (KV cache). It can store these results in two ways:
 
 - Locally (on memory or disk) for low-cost, zero-maintenance savings.
-- Across servers (using shared memory and storage) for faster reuse and better performance in larger systems.
+- Across servers (using shared memory and storage) for faster reuse and better performance in larger systems. 
+
+This makes it easier to handle long or repeating prompts without redoing the same calculations.
+
+## Getting started with llm-d
+
+If we look at the examples in the [llm-d-infra repository](https://github.com/llm-d-incubation/llm-d-infra/tree/main/quickstart/examples), the prefill/decode disaggregation example is targeted at larger models like Llama-70B, deployed on high-end GPUs (NVIDIA H200s). For this article, we're going to focus on smaller models like Qwen3-0.6B on smaller GPUs (NVIDIA L40S). The example we're going to deploy is [Precise Prefix Cache Aware Routing](https://github.com/llm-d-incubation/llm-d-infra/tree/main/quickstart/examples/precise-prefix-cache-aware). This is more suitable to the hardware we have available, and will allow us to demonstrate KV cache aware routing.
+
+### Prerequisites for llm-d
+
+- Red Hat OpenShift Container Platform 4.17+.
+- NVIDIA GPU Operator 25.3.
+- Node Feature Discovery Operator 4.18.
+- 2 NVIDIA L40S GPUs (e.g., AWS g6e.2xlarge instances).
+- A Hugging Face token, with permissions to download your desired model.
+- No service mesh or Istio installation, as Istio CRDs will conflict with the gateway.
+- Cluster administrator privileges to install the llm-d cluster scoped resources.
+
+Follow the steps in [this repository](https://github.com/rh-aiservices-bu/ocp-gpu-setup/tree/main) for an example of how to install the prerequisites for llm-d on an OpenShift cluster running on AWS.
+
+### Installing llm-d
+
+Once you've installed the prerequisites, you're ready to deploy llm-d. Follow these steps carefully.
+
+#### Step 1: Clone the repository
+
+First, pull down the `llm-d-infra` repository that contains all deployment configurations:
+
+```bash
+git clone https://github.com/llm-d-incubation/llm-d-infra.git
+```
+
+#### Step 2: Install dependencies
+
+Navigate into the `quickstart` folder and install the required CLI tools and dependencies:
+
+```bash
+cd quickstart
+./dependencies/install-deps.sh
+```
+
+This script installs:
+
+- Helmfile.
+- Helm.
+- Other utilities required for deployment and orchestration.
+
+#### Step 3: Deploy the gateway and infrastructure
+
+Switch into the `gateway-control-plane-providers` directory and run the setup:
+
+```bash
+cd gateway-control-plane-providers
+./install-gateway-provider-dependencies.sh
+helmfile apply -f istio.helmfile.yaml
+```
+
+#### Step 4: Deploy the example (precise prefix cache aware)
+
+Move into the provided example deployment folder:
+
+```bash
+cd ../examples/precise-prefix-cache-aware
+```
+
+Create a namespace for your deployment:
+
+```bash
+export NAMESPACE=llm-d-precise
+oc new-project ${NAMESPACE}
+```
+
+Set Hugging Face credentials (replace with your token):
+
+```bash
+export HF_TOKEN=
+export HF_TOKEN_NAME=${HF_TOKEN_NAME:-llm-d-hf-token}
+```
+
+Create a Kubernetes secret for the Hugging Face token:
+
+```bash
+oc create secret generic ${HF_TOKEN_NAME} \
+  --from-literal="HF_TOKEN=${HF_TOKEN}" \
+  --namespace "${NAMESPACE}" \
+  --dry-run=client -o yaml | kubectl apply -f -
+```
+
+Apply Helmfile in the namespace:
+
+```bash
+helmfile apply -n ${NAMESPACE}
+```
+
+#### Step 5: Handle GPU node taints (if needed)
+
+At this point, the ms-kv-events-llm-d-modelservice-decode pods might be stuck in a Pending state. This typically happens when GPU nodes have taints applied; for example, for NVIDIA-L40S-PRIVATE (the GPUs we're using in this example).
+
+To allow scheduling, add the proper tolerations:
+
+```bash
+oc patch deployment ms-kv-events-llm-d-modelservice-decode \
+  -p '{"spec":{"template":{"spec":{"tolerations":[{"key":"nvidia.com/gpu","operator":"Equal","value":"NVIDIA-L40S-PRIVATE","effect":"NoSchedule"}]}}}}'
+```
+
+#### Step 6: Verify the pods
+
+After a few minutes, your pods should be running. Confirm with:
+
+```bash
+kubectl get pods -n ${NAMESPACE}
+```
+
+Example output:
+
+```
+NAME                                                       READY   STATUS    RESTARTS   AGE
+gaie-kv-events-epp-5d4f98d6b6-sxf9w                        1/1     Running   0          25m
+infra-kv-events-inference-gateway-istio-5f68d4f854-qpnq4   1/1     Running   0          25m
+ms-kv-events-llm-d-modelservice-decode-648464d84b-2r58r    2/2     Running   0          22m
+ms-kv-events-llm-d-modelservice-decode-648464d84b-lclzf    2/2     Running   0          18m
+```
+
+At this point, the deployment is complete. You can now send prompts through the inference gateway and test KV cache–aware routing.
+
+## Testing KV cache aware routing
+
+Get the service URL:
+
+```bash
+export SVC_EP=$(oc get svc infra-kv-events-inference-gateway-istio -o jsonpath='{.status.loadBalancer.ingress[0].ip}{.status.loadBalancer.ingress[0].hostname}')
+```
+
+Once this connection is established, from a separate terminal, run:
+
+```bash
+curl http://$SVC_EP/v1/models
+```
+
+You should see a response listing the models served, for example:
+
+```json
+{
+  "data": [
+    {
+      "created": 1753453207,
+      "id": "Qwen/Qwen3-0.6B",
+      "max_model_len": 40960,
+      "object": "model",
+      "owned_by": "vllm",
+      "parent": null,
+      "permission": [
+        {
+          "allow_create_engine": false,
+          "allow_fine_tuning": false,
+          "allow_logprobs": true,
+          "allow_sampling": true,
+          "allow_search_indices": false,
+          "allow_view": true,
+          "created": 1753453207,
+          "group": null,
+          "id": "modelperm-28c695df952c46d1b6efac02e0edb62d",
+          "is_blocking": false,
+          "object": "model_permission",
+          "organization": "*"
+        }
+      ],
+      "root": "Qwen/Qwen3-0.6B"
+    }
+  ],
+  "object": "list"
+}
+```
+
+Now that we can connect to our llm-d deployment, we can test KV-cache aware routing. To do this, we're going to use a larger message—one greater than 200 tokens:
+
+```bash
+export LONG_TEXT_200_WORDS="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+```
+
+Now, let's send this prompt to the llm-d gateway:
+
+```bash
+curl http://$SVC_EP/v1/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "Qwen/Qwen3-0.6B",
+    "prompt": "'"$LONG_TEXT_200_WORDS"'",
+    "max_tokens": 50
+  }' | jq
+```
+
+How can we tell if this request is being routed based on the prefix? We can look at the logs from the `gaie-kv-events-epp` pod, specifically for the text `Got pod scores`.
+
+```bash
+oc logs deployment/gaie-kv-events-epp -n llm-d --follow | grep "Got pod scores"
+```
+
+From our initial request, we should see something like:
+
+```
+Got pod scores  {"x-request-id": "57dbc51d-8b2f-46a4-a88f-5a9214ee2277", "model": "Qwen/Qwen3-0.6B", "resolvedTargetModel": "Qwen/Qwen3-0.6B", "criticality": "Sheddable", "scores": null}
+```
+
+This shows the prompt returned a `null` score, meaning it did not match a previously decoded prompt.
+
+Now let's try the same prompt again. We're going to use the same `curl` command:
+
+```bash
+curl http://$SVC_EP/v1/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "Qwen/Qwen3-0.6B",
+    "prompt": "'"$LONG_TEXT_200_WORDS"'",
+    "max_tokens": 50
+  }' | jq
+```
+
+This time we can see a prompt score with a pointer to the IP address of the preferred decode pod, based on the KV cache.
+
+```
+Got pod scores  {"x-request-id": "585b72a7-71e4-4eaf-96bc-1642a74a9d8e", "model": "Qwen/Qwen3-0.6B", "resolvedTargetModel": "Qwen/Qwen3-0.6B", "criticality": "Sheddable", "scores": {"10.131.2.23":2}}
+```
+
+If we look at the individual logs of the decode pods, we should see activity in the same pod when we send this large prompt.
+
+To summarize, we've demonstrated how llm-d's KV cache aware routing optimizes inference by intelligently directing requests to the most suitable decode pods and leveraging previously computed results. This approach significantly improves efficiency and reduces latency for repeated or similar prompts.
+
+## Community and contribution
+
+[llm-d](https://llm-d.ai/) is a collaborative effort with a strong emphasis on community-driven development. Launched with contributions from [Red Hat](https://www.redhat.com/en/about/press-releases/red-hat-launches-llm-d-community-powering-distributed-gen-ai-inference-scale), [Google](https://cloud.google.com/blog/products/ai-machine-learning/enhancing-vllm-for-distributed-inference-with-llm-d), IBM, NVIDIA, and AMD, it aims to foster a collaborative environment for defining and implementing best practices for LLM inference scaling. We encourage you to check out and engage with the project.
+
+- Check out the [llm-d project repository](https://github.com/llm-d/llm-d).
+- Try out the [llm-d quick start](https://github.com/llm-d/llm-d-deployer/tree/main/quickstart).
+- Join the llm-d community on [Slack](https://inviter.co/llm-d-slack) to receive updates and chat with maintainers.
+
+## Wrapping up
+
+With llm-d, there's a significant step forward in making large-scale LLM inference practical and efficient in production environments, powered by the operationalizability of Kubernetes. By focusing on intelligent request routing, KV cache optimization, and prefill/decode disaggregation, it offers organizations the ability to unlock the full potential of their LLM applications in a cost-effective and performant manner.
+
+Try out llm-d and join the growing community today!
 
 ---
 
