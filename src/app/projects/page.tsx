@@ -29,7 +29,7 @@ const projects = [
     name: 'Whiteboard Explainer Videos',
     description:
       'Open source technologies explained for everyone, using the fantastic IBM studio whiteboard.',
-    link: { href: 'https://www.youtube.com/watch?v=Xx588nbshlM', label: 'youtube.com' },
+    link: { href: 'https://www.youtube.com/watch?v=00Q0G84kq3M', label: 'youtube.com' },
     logo: logoIbm,
   },
   {
