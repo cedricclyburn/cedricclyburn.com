@@ -80,6 +80,24 @@ export default async function Speaking() {
         {/* Podcasts Section */}
         <SpeakingSection title="Podcasts">
           <Appearance
+            href="https://www.youtube.com/watch?v=2Wtug1kTwUk"
+            title="Introduction to llm-d: Open-source Kubernetes-native Framework for Distributed LLM Inference"
+            location="Cloud Native Podcast"
+            cta="Watch Podcast"
+          />
+          <Appearance
+            href="https://youtu.be/LopozI76KyA?si=LWNmtlrkSdKL0Ifs&t=1579"
+            title="DevBcn Report, Part 1 – Learn from the Community"
+            location="Foojay.io"
+            cta="Watch podcast"
+          />
+          <Appearance
+            href="https://www.youtube.com/watch?v=ZoqtIG0Hk5Y"
+            title="Fika Interview with Cedric Clyburn"
+            location="Neo4j"
+            cta="Watch podcast"
+          />
+          <Appearance
             href="https://www.kubernetesbytes.com/home-1/episode/44410748/mongodb-kubernetes-operators-with-joel-lord-and-cedric-clyburn"
             title="MongoDB Kubernetes Operators with Joel Lord & Cedric Clyburn"
             location="Kubernetes Bytes, August 2022"
