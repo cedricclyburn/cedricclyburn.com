@@ -83,7 +83,7 @@ export default function About() {
               while spreading the awareness of open source 
               software and culture. Since then, I've been devoted to making 
               education more accessible for all, to work in the open, and try 
-              and help make developers lives easier! 
+              and help make developers' lives easier! 
             </p> 
             <p> 
               Fortunately, I have been around for a time 
@@ -97,7 +97,7 @@ export default function About() {
               as <a href="https://instructlab.ai/">InstructLab</a> for 
               fine-tuning and deploying AI models. Additionally, I've created 
               workshops for cloud-native CI/CD with <a href="https://tekton.dev/">Tekton</a>, 
-              and dabble with and MLOps. 
+              and dabble with MLOps. 
             </p>
             <p>
             One of my passions is connecting folks, so I help to organize the 

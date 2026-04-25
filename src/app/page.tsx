@@ -280,7 +280,7 @@ export default async function Home() {
             I’m Cedric, a developer advocate based at Red Hat, with a 
             background in Kubernetes, DevOps, and container tools.
             I love all things open-source, and create demos, workshops, 
-            and content to make developer's lives easier! Based out of New York City.
+            and content to make developers' lives easier! Based out of New York City.
           </p>
           <div className="mt-6 flex gap-6">
             <SocialLink href="https://x.com/cedricclyburn" aria-label="Follow on X" icon={XIcon} />

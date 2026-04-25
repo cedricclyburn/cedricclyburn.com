@@ -3,11 +3,7 @@ import * as cheerio from 'cheerio'
 import { Feed } from 'feed'
 
 export async function GET(req: Request) {
-  let siteUrl = process.env.NEXT_PUBLIC_SITE_URL
-
-  if (!siteUrl) {
-    throw Error('Missing NEXT_PUBLIC_SITE_URL environment variable')
-  }
+  let siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cedricclyburn.com'
 
   let author = {
     name: 'Cedric Clyburn',
@@ -16,7 +12,7 @@ export async function GET(req: Request) {
 
   let feed = new Feed({
     title: author.name,
-    description: 'Your blog description',
+    description: 'Articles and tutorials on Kubernetes, DevOps, containers, and open source by Cedric Clyburn.',
     author,
     id: siteUrl,
     link: siteUrl,
