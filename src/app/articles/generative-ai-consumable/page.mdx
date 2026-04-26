@@ -1,0 +1,54 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import deloitteGenAiAdvantages from './deloitte-gen-ai-advantages.png'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2024-11-12',
+  title: 'How to make generative AI more consumable',
+  description:
+    'Learn about the three stages of AI adoption—utilization, adoption, and customization—and how open frameworks make generative AI accessible for enterprises.',
+};
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+};
+
+export default (props) => <ArticleLayout article={article} {...props} />;
+
+Think about some of the past trends in technology, and you'll start to see some patterns emerge. For example, with cloud computing there's no one-size-fits-all approach. Combinations of different approaches, such as on premise and different cloud providers, have led to organizations taking advantage of hybrid infrastructure benefits in deploying their enterprise applications. When we think about the future, a similar structure will be essential for the [consumption of artificial intelligence (AI)](https://www.redhat.com/en/topics/ai) across diverse applications and business environments. Flexibility will be crucial as no single AI approach will meet the needs of every organization. And no single AI platform vendor can fulfill all of the needs. Instead, a combination of prebuilt models, custom-tuned solutions and secure integration with proprietary data will drive AI adoption. Thanks to open frameworks, software and infrastructure, companies of all sizes can now access and customize generative AI (gen AI) models, adapting them to their specific needs.
+
+### Where do the advantages of gen AI come from?
+
+To understand how AI can be consumed in internal and external applications, let's get specific on how organizations are investing in the technology. Compiled by [Deloitte's State of Generative AI in the Enterprise in 2024](https://www2.deloitte.com/us/en/pages/consulting/articles/state-of-generative-ai-in-enterprise.html), the most important advantages of investing in gen AI are not to innovate in their business domain, but to rather focus on efficiency, productivity and the automation of repetitive tasks. It's true that these models are capable of generating new content, but in this case, the real value comes from large language models (LLMs) understanding and processing large amounts of data to recognize patterns. When applied to traditional software, these AI-enhanced applications are known as intelligent applications, augmenting and assisting a human workflow.
+
+<Image src={deloitteGenAiAdvantages} alt="Most important advantages of investing in generative AI, compiled by Deloitte" />
+
+Still, the journey to adopt AI can vary; organizations typically progress from automating simple tasks to fully integrating AI into business workflows. This gradual adoption starts with piloting non-critical use cases and leveraging out-of-the-box tools, like automated code assistants, which free up time from repetitive tasks. As confidence in AI's value grows, developers and businesses begin embedding it into [specific business processes and applications](https://www.redhat.com/en/topics/ai/ai-ml-use-cases). The final step is customization–developing proprietary AI models that are informed by unique organizational data, enabling AI to drive unique insights and decisions.
+
+Each phase brings its own advantages and complexities as businesses become increasingly sophisticated in their AI use. Let's look deeper at these stages, which reveal how AI can incrementally become a critical, consumable part of any operation.
+
+## Utilizing AI: Streamlining tasks with AI assistance
+
+For the past few years, many of us have already interacted with gen AI to automate and enhance routine work, specifically for developers and engineers. Code assistants are a common use case for LLMs, streamlining repetitive tasks in various programming languages. For example, tools like [Red Hat Ansible Lightspeed with watsonx Code Assistant](https://www.redhat.com/en/technologies/management/ansible/ansible-lightspeed) or [Red Hat OpenShift Lightspeed](https://developers.redhat.com/products/openshift/lightspeed) integrate AI to accelerate software development tasks or operational IT environment debugging. In practice, this enables faster iteration cycles and eliminates redundant work, allowing developers to focus on problem solving and critical decision making.
+
+For IT teams, these pre-built models are easy to implement, require minimal tuning and can operate without significant infrastructure changes, making them an accessible option for teams new to AI. This is why, a common approach to consuming AI first, deals with the utilization for improving workplace efficiency.
+
+## Adopting AI: Integrating AI for business flows
+
+Once companies gain familiarity with these tools, they often move to adopting AI models into their business operations. At this stage, AI is embedded within applications to enhance user interaction or support tasks that can scale, such as automated customer service. One example is our [Experience Engineering](https://www.redhat.com/en/blog/red-hat-red-hat-how-we-use-our-ai-solutions-power-improved-customer-experience) (XE), who have used the [Mixtral-8x7b-Instruct](https://huggingface.co/mistralai/Mixtral-8x7B-v0.1) model to generate over 130,000 solution summaries for support cases, leading to a 20% increase in successful self-solve customer engagements. In many industries, developers are leading the effort to adopt AI-driven recommendation systems and dynamic customer engagement tools. However, in some cases these systems require moderate customization, such as training on specific interaction patterns or user behaviors, to ensure responses are relevant and useful.
+
+Ultimately, using AI with modern applications enables the applications to have a deeper context on what the user is trying to achieve. Whether this context is either general understanding or specific to an enterprise, the AI knows what is required and the steps to achieve the goal without detailed training from an IT team. Removing this friction between the human and the system is ultimately where we are heading with AI technology– applications that understand people and reduce the 'toil' of process.
+
+[Red Hat OpenShift AI](https://www.redhat.com/en/technologies/cloud-computing/openshift) is an AI platform that integrates with a cloud-native application platform to enable developers to test, deploy and iterate on AI models effectively, creating real-time applications that are responsive to customer needs. By combining foundation models with business data using APIs and AI orchestration frameworks such as [LangChain](https://www.langchain.com/), many traditionally complex actions with AI are now handled with function calls in an application itself.
+
+## Customizing AI: Integrating proprietary data for AI alignment
+
+For those ready to take full ownership of their AI models, the next step is to customize them with proprietary data in what's known as model alignment. This is where the potential of AI shifts from generic utility to a strategic business tool, aligning the model closely with a company's operational context. However, training and fine-tuning models with private data present technical challenges, such as managing data confidentiality, resource allocation and ongoing model updates.
+
+Customization is made more accessible through frameworks like [retrieval augmented generation (RAG)](https://www.redhat.com/en/topics/ai/what-is-retrieval-augmented-generation) and [large-scale alignment for chatBots (LAB)](https://arxiv.org/abs/2403.01081) in [InstructLab](https://instructlab.ai/), which enables teams to align AI with industry-specific knowledge and proprietary data. InstructLab allows enterprises to layer company-specific knowledge or model capabilities over foundational LLMs using [a novel synthetic data generation technique](https://www.redhat.com/en/blog/how-instructlabs-synthetic-data-generation-enhances-llms), enabling the AI to answer questions or perform tasks directly relevant to the organization.
+
+Remember, there is no standardized approach to the path organizations will take in their AI journey. However, in making AI more consumable, remember the three areas to prioritize: the utilization, adoption and customization of gen AI.
+
+To read more about Red Hat's KubeCon NA 2024 news, visit the [Red Hat KubeCon newsroom](https://www.redhat.com/en/about/red-hat-kubecon-newsroom).

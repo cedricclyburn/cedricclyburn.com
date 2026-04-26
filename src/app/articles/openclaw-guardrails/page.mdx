@@ -1,0 +1,172 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import openclawGithub from './openclaw-github.png'
+import openshiftAiMaas from './openshift-ai-maas.png'
+import hashicorpVault from './hashicorp-vault.png'
+import openshiftSecrets from './openshift-secrets.png'
+import jaegerTraceOverview from './jaeger-trace-overview.png'
+import jaegerTraceDetail from './jaeger-trace-detail.png'
+import mlflowTraces from './mlflow-traces.png'
+import mlflowDashboard from './mlflow-dashboard.png'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2026-04-09',
+  title: 'Build resilient guardrails for OpenClaw AI agents on Kubernetes',
+  description:
+    'Learn how to secure AI agents like OpenClaw using containers for isolation, RBAC for access control, secrets management, and full observability on Kubernetes.',
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+When [OpenClaw](https://github.com/openclaw/openclaw) crossed 340,000 GitHub stars in just a few weeks—while [Kubernetes](https://github.com/kubernetes/kubernetes) took nearly a decade to reach fewer than half that number—it confirmed what many of us suspected: 2026 is the year AI agents go mainstream. The general public finally has a tool to build personal agents and automate their lives, not just niche, task-specific workflows for developers.
+
+<Image src={openclawGithub} alt="OpenClaw's GitHub repository showing rapid star growth" />
+
+## The promise and challenge of AI agents
+
+This growth reflects the versatility and problem-solving potential of AI agents. Think about a seemingly basic task: "play the top country artists using YouTube over my Sonos speakers." This workflow could involve searching for trending music, heading over to YouTube (perhaps logging in to an account so you aren't hit with an unskippable advertisement), and connecting to the Sonos application for a specific speaker. An AI assistant like OpenClaw handles all these steps with a single prompt.
+
+The thing is, when running software that takes autonomous actions, you're one faulty permission setting away from turning helpful automation into a security risk. Many users grant OpenClaw broad access to read files, execute commands, manage credentials, and [connect to external services](https://docs.openclaw.ai/channels) like Google Drive, Slack, and Telegram. That's why [it took one ethical hacker less than two hours](https://ethiack.com/news/blog/one-click-rce-openclaw) to find a one-click account takeover that led to remote code execution (RCE). Snyk also found that [7% of OpenClaw skills contained flaws that expose sensitive credentials](https://snyk.io/blog/openclaw-skills-credential-leaks-research) by passing API keys, passwords, and even credit card numbers in plain text to an LLM.
+
+You can improve the security of personal AI agents like OpenClaw by using [containers](https://www.redhat.com/en/topics/containers) for isolation, role-based access control ([RBAC](https://www.redhat.com/en/topics/security/what-is-role-based-access-control)) for user access permissions, and [secrets](https://www.redhat.com/en/topics/devops/what-is-secrets-management) for sensitive information. This article explores how to use production-grade infrastructure powered by open source technology to secure these workflows.
+
+## How to build security hygiene into OpenClaw
+
+Typically, you can begin running OpenClaw directly on your system using the [TypeScript CLI or user interface](https://docs.openclaw.ai/install). By default, agents share the same environment. One agent might analyze private GitHub issues while another drafts Slack replies. If agents share access, a user could ask, "What is Cedric working on this week?", and the Slack agent might reveal details about an unannounced feature it found in the repository. The agent isn't trying to leak information, it just uses whatever context it can access.
+
+We created a live demo showcasing these OpenClaw components and recommend you check it out.
+
+### Isolate agents with default-deny networking and least-privilege access
+
+When you install OpenClaw on your laptop, the agent inherits your user's full network stack. The agent can reach every service on your local area network (LAN), connect to any public endpoint, and even probe internal APIs. A compromised skill or a cleverly-crafted prompt injection could turn your agent into a reconnaissance tool, mapping internal services, querying metadata endpoints, or quietly exfiltrating data to an external server.
+
+Running agents inside containers on a platform like OpenShift solves this at multiple layers.
+
+#### Container-level isolation
+
+Containers provide process isolation and a separate network namespace by default. The agent can only see what you explicitly allow it to see. On OpenShift, every container runs under the [restricted-v2 security context constraint (SCC)](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/authentication_and_authorization/managing-pod-security-policies#managing-pod-security-policies). This means the container is non-root, has a read-only root filesystem, drops all Linux capabilities, and blocks privilege escalation. That's not something you configure, it's the default. Here's what that looks like on a live OpenClaw container:
+
+```bash
+$ oc get pod -l app=openclaw -o jsonpath='{..annotations.openshift\.io/scc}'
+restricted-v2
+$ oc get pod -l app=openclaw -o jsonpath='{..containers[?(@.name=="gateway")].securityContext}'
+{
+  "allowPrivilegeEscalation": false,
+  "capabilities": { "drop": ["ALL"] },
+  "readOnlyRootFilesystem": true,
+  "runAsNonRoot": true,
+  "runAsUser": 1001080000
+}
+```
+
+#### Network-level isolation with NetworkPolicy
+
+Containers alone aren't enough; you also need to control which services the agent can access. By using a Kubernetes [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/), you can implement a default-deny egress policy so the agent can only reach the specific services it requires. For example, if your OpenClaw agent communicates only with Jira and a specific vector database, those should be the only permitted routes. This configuration prevents a compromised agent from scanning your internal network or sending data to an unknown IP address.
+
+```bash
+$ oc describe networkpolicy openclaw-default-deny-egress -n cedric-openclaw
+Name:         openclaw-default-deny-egress
+Namespace:    cedric-openclaw
+Spec:
+  PodSelector:     app=openclaw
+  Allowing egress traffic:
+    To Port: 53/UDP       (DNS)
+    To Port: 53/TCP       (DNS)
+    To Port: 443/TCP      (HTTPS only)
+  Policy Types: Egress
+```
+
+#### Scoped RBAC for least-privilege access
+
+Avoid the temptation to give your agent `cluster-admin` permissions just to complete the configuration. Create a dedicated `ServiceAccount` for each agent instance and use Kubernetes RBAC to ensure the agent can only read the specific namespaces or ConfigMaps required for its task.
+
+This layered approach matters because agents aren't just running code; they are generating it. Scoping container security, network access, and permissions ensures that if an agent is compromised through prompt injection (a common issue in the "ClawHub" skill ecosystem), its impact is confined to a single, low-privilege sandbox.
+
+### Keep inference in-cluster whenever possible
+
+By running your LLM endpoints in-cluster using [vLLM](https://github.com/vllm-project/vllm) on [Red Hat OpenShift AI](https://www.redhat.com/en/products/ai/openshift-ai) (Figure 2), you eliminate the need for the agent to send sensitive data over the public internet to third-party providers. This reduces your attack surface and maintains data within a controlled boundary, improving both security and compliance.
+
+<Image src={openshiftAiMaas} alt="In-cluster LLM inference using Models as a Service on Red Hat OpenShift AI" />
+
+### Manage API keys and credentials safely
+
+OpenClaw requires high-level access to work effectively: a GitHub PAT, a Slack token, or cloud provider credentials. In a production environment, storing these in a `.env` file directly in your container is asking for trouble. If leaked, these credentials expose your environment to immediate risk.
+
+Instead, use [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) and mount them as volumes using the Secrets Store CSI Driver. This lets you pull secrets directly from an enterprise vault (like [HashiCorp Vault](https://github.com/hashicorp/vault), as shown in Figure 3) without the secrets touching the disk in plain text.
+
+<Image src={hashicorpVault} alt="HashiCorp Vault authentication methods for pulling credentials securely" />
+
+But storage alone isn't enough. Long-lived tokens are a risk on their own. Where possible, use short-lived, rotatable credentials. For agents running on OpenShift, you can use `ServiceAccount` token volume projection to provide the agent with a token that has a limited lifespan and is automatically rotated by the platform (Figure 4).
+
+<Image src={openshiftSecrets} alt="Kubernetes Secrets in OpenShift for managing OpenClaw credentials" />
+
+### Tip
+
+The [External Secrets Operator (ESO)](https://external-secrets.io/latest/) synchronizes production secrets into Kubernetes while keeping the source of truth in a secure, audited vault.
+
+## Make every agent decision observable
+
+Unlike traditional applications that follow predetermined code paths, AI agents generate execution flows dynamically based on LLM reasoning. An agent might decide to call three different APIs, read from a database, and execute a Bash command, all from a single user prompt.
+
+Traditional logging is often insufficient for these dynamic workflows. You need complete visibility into the agent's decision-making chain: the input prompt that triggered the action, the tools the LLM selected, what data the agent accessed, and the generated output (Figure 5).
+
+<Image src={jaegerTraceOverview} alt="End-to-end observability of an agent's decision chain in Jaeger" />
+
+### Instrument OpenClaw with OpenTelemetry
+
+[OpenTelemetry](https://opentelemetry.io/) provides the standard for tracing distributed systems, and agent workflows are no different. When instrumenting an agent runtime, focus on capturing these critical layers, as shown in Figure 6:
+
+- Prompt and agent identity: The trigger for this action and the specific agent that handled it.
+- LLM reasoning phase: The model used, token counts for cost tracking, and the reasoning output.
+- Tool execution phase: External API calls, file access, and command execution.
+- Risk classification: Tags for each action based on its potential impact, such as read-only or destructive operations.
+
+<Image src={jaegerTraceDetail} alt="Detailed OpenTelemetry trace span showing LLM reasoning, token counts, and tool execution" />
+
+By creating spans for each phase, you build a complete trace from user input to final output. This lets you answer questions like "Why did the agent decide to call the Slack API?" or "Which prompt led to this AWS credential access?"
+
+### Centralize agent tracking with MLflow
+
+When you run agents across multiple environments, such as local Podman containers on your laptop or OpenShift clusters in the cloud, observability data can quickly become fragmented. [MLflow](https://github.com/mlflow/mlflow) solves this by acting as a centralized experiment and trace tracking backend that aggregates telemetry from every agent, regardless of where it's deployed.
+
+By pointing your OpenTelemetry collector at an MLflow instance (which can run in a separate cluster entirely), you get a single destination for agent traces, token consumption metrics, tool invocation logs, and model performance data. You can then compare agent behavior across environments, track cost per agent over time, and spot anomalies without switching between multiple dashboards, as shown in Figure 7.
+
+<Image src={mlflowDashboard} alt="MLflow dashboard aggregating agent request counts, latency, and error rates" />
+
+This cross-cluster visibility is especially valuable when you iterate on agent configurations. If you change a system prompt, swap a model, or add a skill, MLflow provides a before-and-after comparison based on real trace data rather than guesswork.
+
+<Image src={mlflowTraces} alt="MLflow traces view showing individual agent runs with execution time and state" />
+
+### Analyzing a risky agent action
+
+Consider an example OpenClaw user query for system automation: "Clean up my old files."
+
+A properly instrumented trace would reveal:
+
+- Agent reasoning: The LLM identifies files older than 90 days (low risk) and lists files in `/home/user/downloads` (auto-executed, logged).
+- High-risk action: The agent attempts to delete the `/home/user/.ssh/` directory. Because this triggers an approval boundary, the system flags the directory as sensitive and requests human approval.
+- Blocked: The user denies the action, and the agent halts execution.
+
+Without observability, you might only discover the issue after SSH keys mysteriously disappeared (that's no fun). With proper instrumentation, you can identify it and block the action before damage occurs. The entire decision tree, from prompt to blocked action, lives in your trace data for post-incident review.
+
+### Implement risk-based approval boundaries
+
+For production deployments, we recommend implementing a three-tier response system:
+
+- Low-risk actions: Auto-execute and log, such as reading files and searching documentation.
+- Medium-risk actions: Rate-limited and audited actions, such as writing files or calling external APIs.
+- High-risk actions: Require human approval for destructive operations, accessing credentials, or privilege escalation.
+
+Risk classifications can be rule-based (pattern matching on tool names and arguments) or machine learning-based (using historical traces to predict blast radius). You can also integrate approval workflows with tools like Slack, PagerDuty, or a custom web UI. Your team can approve or deny every action and generate an immutable audit trail.
+
+## Wrapping up and next steps
+
+The rapid growth of OpenClaw suggests that developers and consumers alike are ready for autonomous workflows. But transitioning from a local TypeScript CLI to a production-grade deployment requires more than just scaling containers; it requires security by default. Environment isolation, default-deny networking, scoped RBAC, secrets management, and full observability provide the foundation you need to trust an AI agent in production.
+
+Be sure to check out our [AI quickstarts](https://docs.redhat.com/en/learn/ai-quickstarts) for repositories that demonstrate agents deployed using Red Hat AI and Red Hat OpenShift.

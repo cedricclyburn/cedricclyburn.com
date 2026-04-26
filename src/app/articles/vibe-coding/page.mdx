@@ -1,0 +1,77 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import cursorStartScreen from './cursor-start-screen.png'
+import cursorAgentCoding from './cursor-agent-coding.png'
+import cursorFlashcardCode from './cursor-flashcard-code.png'
+import flashcardAppResult from './flashcard-app-result.png'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2025-06-10',
+  title: 'Can you vibe code without knowing how to code?',
+  description:
+    'Explore how AI-powered tools like Cursor are changing software development through vibe coding, and what you need to know before diving in.',
+};
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+};
+
+export default (props) => <ArticleLayout article={article} {...props} />;
+
+As developers and engineers, we've seen a wide variety of tools used to simplify the process of creating software. As a young student, we used [Scratch](https://scratch.mit.edu/) to build a pipeline of blocks that works in an if-this-then-that scenario. Then, there were no-code tools to help users with big ideas but limited technical experience in creating an application. The latest breakthrough in simplifying app development comes from [language models](https://www.redhat.com/en/topics/ai/what-are-large-language-models), which interpret natural language commands (like "Build a Quarkus app with a React frontend to show stock tickers") to automate tasks such as setting up projects, generating code, and running tests. This trend is known as "vibe coding" and it's powered by [agentic AI](https://www.redhat.com/en/topics/ai/what-is-agentic-ai). It's already integrated into today's development environments, but what are the implications of vibe coding, and is it doing more harm than good?
+
+## The evolution of code assistance
+
+Vibe coding is the act of interacting with an AI prompt to produce usable code, often despite not having the technical prowess to code independently. We've recently seen major changes in code editors. For example, [GitHub CoPilot](https://github.com/features/copilot) launched in October of 2021, even before the release of public GPT-style language model services, and quickly became widely adopted as a tool for autocompleting code. For example, if you were to type in `System.out.print`, then GitHub CoPilot might autocomplete it with `ln("Hello World!");` but even this requires you to know how to write enough code for CoPilot to have something to complete.
+
+After the barrier to entry for coding lowered with the release of [Cursor](https://www.cursor.com/), an AI-powered integrated development environment (IDE), the conversation around vibe coding rose to prominence with industry leaders, like Andrej Karpathy, founding member of OpenAI, [weighing in](https://x.com/karpathy/status/1886192184808149383?lang=en) and coining the term "vibe coding."
+
+Cursor, built using the popular [Visual Studio Code IDE](https://code.visualstudio.com/) as a foundation, is similar to many other code editors at first glance. But, the vibe coding described by Karpathy allows you to describe a desired outcome for your project or a change to your code in natural language, and the model backend then suggests or autonomously makes changes. This is perhaps the most common use case of agentic AI, where a model has autonomy or access to tools to extend its capabilities. For these AI-assisted coding tools, this can include reading and writing to files, online access to documentation and web pages, terminal access for running tests and more.
+
+What has been crucial to this functionality, however, is the extended context window for language models. This has extended from hundreds to millions of tokens at a time, allowing vibe coding to use the entire codebase as context with a language model. For example, [Llama 2](https://arxiv.org/abs/2307.09288) supported a 4,096 token context window, [Llama 3](https://arxiv.org/abs/2407.21783) initially offered an 8,192 token window and [Llama 4](https://ai.meta.com/blog/llama-4-multimodal-intelligence/) natively handles up to 10 million tokens in its context. The larger the context, the more use it provides developers and users interested in vibe coding.
+
+## What you need to know before you vibe code?
+
+Not all of us are seasoned developers. Many of us are, however, super interested in tech and seeing ideas turn to reality–not necessarily the nitty gritty art of syntax and semicolons. Tools like Cursor give many of us hope of cooking up a useful application. Let's take a look at the typical experience for a user looking to vibe code so you can get a better understanding of where it succeeds, where it falters, and how someone can use this technique to improve their own workflows.
+
+I downloaded Cursor from the [Cursor website](https://www.cursor.com/), where there were pre-compiled installers for Linux, Mac, and Windows. I was unsure about the best way to start, so I uploaded a screenshot of the Cursor start screen to an AI assistant and asked for guidance. Following its instructions, I created a folder to store all project files, then opened it using the open project button.
+
+<Image src={cursorStartScreen} alt="The Cursor IDE start screen with options to open a project, clone a repo, or connect via SSH" />
+
+The Cursor interface is similar to VS Code, except that there's a chat window on the right. This interface, with the working environment and active files opened on the left and the chat window to the right, simplifies the workflow, so there's no need to Alt+Tab between different windows just to chat with an AI system. It's integrated into the code editor itself.
+
+Here at Red Hat, continuing education is encouraged and supported, whether that's through [Red Hat Training and Certification](https://www.redhat.com/en/services/training-and-certification) courses about containers, Kubernetes and GitOps or by contributing to open source projects. This inspired me to build a memorization tool that runs locally, so I could host and share it with others.
+
+My first prompt: Create a flashcards app that I can run in my browser. I want to be able to flip and "favorite" the cards.
+
+<Image src={cursorAgentCoding} alt="Cursor's AI agent generating code changes for a project based on a natural language prompt" />
+
+My request was processed by a cloud-based model, and then Cursor produced code in three files:
+
+- index.html: The main page structure
+- style.css: Styling and layout
+- script.js: Functionality
+
+Much of the process involved mindlessly pressing accept on each file and code suggestion.
+
+I was then left with a link to my flashcard app. Unfortunately, it didn't quite work yet.
+
+<Image src={cursorFlashcardCode} alt="Cursor generating a flashcard app with HTML, CSS, and JavaScript from a single prompt" />
+
+I had to use my brain, just a little, to explain the problems in the chat window. Because Cursor and many modern models can process images as well as text, I included screenshots with explanations in natural language of where things got stuck. After a bit of back and forth, it worked.
+
+Cursor generated a full app with editable cards, smooth flip animations, previous and next buttons, and persistent storage. I opened `index.html` and it just ran.
+
+<Image src={flashcardAppResult} alt="The finished flashcard app running in the browser with flip and favorite functionality" /> While it's not perfect – there's no backend, no syncing across devices and scaling it would require more knowledge – it felt magical considering I created it with only a prompt.
+
+If you've never written a line of code in your life, Cursor or similar platforms aren't enough for you to have a fully functional application. AI code without conceptual understanding is brittle. You will encounter numerous problems if you attempt to deploy your code, manage infrastructure or troubleshoot issues in a production environment. Without foundational knowledge, you're likely to hit roadblocks when trying to scale, secure or maintain your application in the real world.
+
+I think it's still worth trying, regardless of your level of experience. It can be tricky for newcomers, because there are multiple paths to accomplish tasks, and if you're unfamiliar with the basics of terminal behavior (like typing your computer password without being able to see it or pressing Y to confirm), it can be easy to get tripped up. My advice for beginners is to drop screenshots into Cursor when you can't quite explain how you are stuck, and use another chat bot to explain what Cursor assumes you already know, and to help you know what to ask for. This is becoming common enough that there's a term for the art of knowing what to ask for from AI: [prompt engineering](https://www.redhat.com/en/blog/tips-for-gen-ai-prompts), or knowing how to effectively frame a question or request for a model in order to receive your desired outcome.
+
+## The reality of vibe coding
+
+AI coding tools and the art of vibe coding will continue to make coding more accessible. Like any other learned skill, trade or profession, there's a high amount of value in trial and error. Many developers vividly remember debugging sessions, issues with Python or Java versions and SDKs or step execution. It's one thing to produce code, but it's another thing to produce good code. Due to the way language models are currently trained, part of their dataset could include inaccurate responses or bad or outdated code, and [the average user isn't able to re-train a model themselves](https://developers.redhat.com/articles/2024/05/07/instructlab-open-source-generative-ai).
+
+The answer is to invest in yourself. Here at Red Hat, we offer [hands-on training](https://docs.redhat.com/en/ai-foundations) on AI, as well as fundamental technology like Linux and Kubernetes. In the world of AI, there is a strong future for vibe coding and augmenting AI capabilities with traditional programming. You might think of it as "rubber duck debugging," a common technique where a developer verbally explains a problem or intention out loud to a rubber duck as a way to force their brain to analyze a problem objectively. The difference is that with AI, the rubber duck now talks back!

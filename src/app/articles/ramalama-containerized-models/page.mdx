@@ -1,0 +1,125 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import ramalamaRunTerminal from './ramalama-run-terminal.png'
+import ramalamaArchitecture from './ramalama-architecture.png'
+import ramalamaServeApi from './ramalama-serve-api.png'
+import ramalamaRagBuild from './ramalama-rag-build.png'
+import ragWorkflowDiagram from './rag-workflow-diagram.png'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2025-12-17',
+  title: 'Run containerized AI models locally with RamaLama',
+  description:
+    'Learn how to run AI models locally with RamaLama, an open source project that simplifies running AI models in containers for local inference, serving, and RAG.',
+};
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+};
+
+export default (props) => <ArticleLayout article={article} {...props} />;
+
+The open source AI ecosystem has matured quickly, and many developers start by using tools such as Ollama or LM Studio to run large language models (LLMs) on their laptops. This works well for quickly testing out a model and prototyping, but things become complicated when you need to manage dependencies, support different accelerators, or move workloads to Kubernetes.
+
+Thankfully, just as containers solved development problems like portability and environment isolation for applications, the same applies to AI models too! [RamaLama](https://ramalama.ai/) is an open source project that makes running AI models in containers simple, or in the project's own words, "boring and predictable." Let's take a look at how it works, and get started with local AI [inference](https://www.redhat.com/en/topics/ai/what-is-ai-inference), model serving, and [retrieval augmented generation](https://www.redhat.com/en/topics/ai/what-is-retrieval-augmented-generation) (RAG).
+
+## Why run AI models locally?
+
+There are several reasons developers and organizations want local or self-hosted AI:
+
+- **Control for developers:** You can run models directly on your own hardware instead of relying on a remote LLM API. This avoids vendor lock-in and gives you full control over how models are executed and integrated.
+- **Data privacy for organizations:** Enterprises often cannot send sensitive data to external services. Running AI workloads on-premises or in a controlled environment keeps data inside your own infrastructure.
+- **Cost management at scale:** When you are generating thousands or millions of tokens per day, usage-based cloud APIs can become expensive very quickly. Hosting your own models offers more predictable cost profiles.
+
+With RamaLama, you can download, run, and manage your own AI models, just as you would with any other type of workload like a database, backend, etc.
+
+## What is RamaLama?
+
+[RamaLama is a command-line interface (CLI)](https://github.com/containers/ramalama) for running AI models in containers on your machine. Instead of manually managing model runtimes and dependencies, you plug into an existing container engine such as [Podman](https://podman.io/) or [Docker](https://www.docker.com/).
+
+Under the hood, RamaLama fetches models from sources such as [Ollama's model registry](https://ollama.com/search), [Hugging Face](https://huggingface.co/models), and any Open Container Initiative (OCI)-compliant registry (Docker Hub, Quay.io, etc.).
+
+One command, and you're good to start chatting with a local model or perhaps serve it as a [OpenAI-compatible API endpoint](https://platform.openai.com/docs/api-reference/introduction) for your existing applications to use. Now, let's check out how to install and use RamaLama.
+
+## Installing RamaLama and inspecting your environment
+
+Start by visiting the RamaLama website at [ramalama.ai](http://ramalama.ai/) and installing the CLI for your platform. Packages are available for Linux, macOS, and Windows. After installation, verify that RamaLama can see your environment:
+
+```bash
+ramalama info
+```
+
+This command prints details about your container engine and any detected GPU accelerators.
+
+### How RamaLama selects the right image
+
+When you run a model for the first time, RamaLama uses the information from `ramalama info` to pull a pre-built image that matches your hardware:
+
+- CUDA images for NVIDIA GPUs
+- ROCm images for supported AMD GPUs
+- Vulkan-based images where appropriate
+- CPU-only images when no accelerator is available
+
+<Image src={ramalamaArchitecture} alt="RamaLama architecture showing containers pulled from Quay.io for different GPU types via Podman or Docker" />
+
+These images are compiled from the upstream [llama.cpp](https://github.com/ggml-org/llama.cpp) project, which also powers Ollama. Once the image is pulled and the model is downloaded, RamaLama reuses them for subsequent runs.
+
+## Running your first model with RamaLama
+
+To run a model locally, you can start with a simple command such as:
+
+```bash
+ramalama run gpt-oss
+```
+
+After this command completes the initial image pull and model download, you have a local, isolated, GPU-optimized LLM running in a container!
+
+<Image src={ramalamaRunTerminal} alt="Running a model with RamaLama in the terminal" />
+
+## Serving an OpenAI-compatible API with RamaLama
+
+Interactive command-line chat is useful, but many applications require a network-accessible API. Typical use cases include:
+
+- RAG services that answer questions over your own documents (ex. [LangChain](https://github.com/langchain-ai/langchain), [Dify](https://github.com/langgenius/dify), [LlamaIndex](https://github.com/run-llama/llama_index))
+- Agents that call tools or microservices (ex. [Model Context Protocol](https://modelcontextprotocol.io/docs/getting-started/intro))
+- Existing applications that already use the OpenAI API
+
+RamaLama makes it straightforward to expose a local model through a REST endpoint:
+
+```bash
+ramalama serve gpt-oss --port 8000
+```
+
+This command serves an OpenAI-compatible HTTP API on port 8000, allows any tool that can talk to the ChatGPT API to use your local endpoint instead, and starts a lightweight UI front end you can use to interactively test the model in your browser.
+
+<Image src={ramalamaServeApi} alt="Serving a model with RamaLama and testing the OpenAI-compatible API with curl" />
+
+## Adding external data with RAG using RamaLama
+
+Many real applications need LLMs to answer questions about your own documents. This pattern is known as [retrieval-augmented generation](https://www.redhat.com/en/blog/redefining-development-retrieval-augmented-generation-rag-revolution-software-engineering) (RAG). RamaLama uses the [Docling](https://github.com/docling-project/docling) project to simplify data preparation and provides a built-in RAG workflow.
+
+<Image src={ragWorkflowDiagram} alt="RAG workflow showing how a question is retrieved from a vector database and augmented into the LLM prompt" />
+
+```bash
+ramalama rag data.pdf quay.io/cclyburn/my-data
+```
+
+<Image src={ramalamaRagBuild} alt="Building a RAG pipeline with RamaLama using Docling to convert documents into a vector database" />
+
+This command uses Docling to convert data.pdf into structured JSON, builds a vector database from that JSON for similarity search, and packages the result into an OCI image. Once that image is built, you can launch a model with RAG enabled:
+
+```bash
+ramalama run --rag gpt-oss
+```
+
+This starts 2 containers: the RAG image containing your processed documents via the vector database, and your selected model running as an inference server.
+
+## From local workflows to edge and Kubernetes
+
+Because RamaLama packages models (and a RAG pipeline) as container images, you can move them through the same pipelines you already use for other workloads. From a single local setup, you can generate [Quadlet files](https://www.redhat.com/en/blog/quadlet-podman) for deployment to edge devices and generate [Kubernetes manifests](https://kubernetes.io/docs/concepts/overview/working-with-objects/) for clusters.
+
+## Wrapping up
+
+RamaLama brings together containers, open source runtimes such as llama.cpp and an OpenAI-compatible API to make local AI workloads easier to run and manage. In addition, it's designed with a [robust security footprint](https://github.com/containers/ramalama#heres-how-ramalama-delivers-a-robust-security-footprint), running AI as an isolated container, mounting the model as read-only, and not providing network access. If you're looking for a standardized way to run LLMs locally on your own infrastructure, be sure to check out [RamaLama on GitHub](https://github.com/containers/ramalama) and start making working with AI "boring and predictable!"

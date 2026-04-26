@@ -73,7 +73,7 @@ export default function About() {
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
           I’m Cedric Clyburn. I love teaching about all things cloud-native.
           </h1>
-          <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
+          <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400 [&_a]:text-teal-500 dark:[&_a]:text-teal-400 [&_a]:underline [&_a]:decoration-teal-500/30 dark:[&_a]:decoration-teal-400/30 [&_a]:underline-offset-2 [&_a]:transition [&_a:hover]:decoration-teal-500 dark:[&_a:hover]:decoration-teal-400">
             <p> 
               I've always loved the moment when something "<em>clicks</em>", 
               where you realize how something works, and there's clarity. 
@@ -92,11 +92,13 @@ export default function About() {
               revolved around the container tools <a href="https://podman.io/">Podman</a>
               , <a href="https://podman-desktop.io/">Podman Desktop</a>
               , <a href="https://buildah.io/">Buildah</a>, and related projects. 
-              In the realm of emerging technologies, I help with
-              the <a href="https://developers.redhat.com/products/podman-desktop/podman-ai-lab">Podman AI Lab</a> as well 
-              as <a href="https://instructlab.ai/">InstructLab</a> for 
-              fine-tuning and deploying AI models. Additionally, I've created 
-              workshops for cloud-native CI/CD with <a href="https://tekton.dev/">Tekton</a>, 
+              In the realm of emerging technologies, I lead technical advocacy 
+              for AI-focused topics (Agentic AI, RAG, and more) and open source projects 
+              including <a href="https://docs.vllm.ai/">vLLM</a>
+              , <a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a>
+              , <a href="https://modelcontextprotocol.io/">Model Context Protocol</a>
+              , and more. Additionally, I've created 
+              workshops for cloud-native RAG with <a href="https://www.kubeflow.org">Kubeflow</a>, 
               and dabble with MLOps. 
             </p>
             <p>
@@ -128,7 +130,7 @@ export default function About() {
             <SocialLink href="https://www.linkedin.com/in/cedricclyburn" icon={LinkedInIcon} className="mt-4">
               Follow on LinkedIn
             </SocialLink>
-            <SocialLink href="https://www.youtube.com/@cloudnativecedric" icon={YoutubeIcon} className="mt-4">
+            <SocialLink href="https://www.youtube.com/@cedcodes" icon={YoutubeIcon} className="mt-4">
               Follow on YouTube
             </SocialLink>
             <SocialLink

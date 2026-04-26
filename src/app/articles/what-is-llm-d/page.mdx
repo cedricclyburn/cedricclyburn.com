@@ -1,0 +1,74 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import traditionalVsLlmD from './traditional-vs-llm-d.png'
+import disaggregationArchitecture from './disaggregation-architecture.png'
+import requestVariance from './request-variance.png'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2025-08-14',
+  title: 'What is llm-d and why do we need it?',
+  description:
+    'Discover llm-d, an open source Kubernetes-native framework for distributed AI inference that improves performance and reduces costs through disaggregation and intelligent scheduling.',
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+We're seeing a significant trend: More organizations are bringing their [large language model](https://www.redhat.com/en/topics/ai/what-are-large-language-models) (LLM) infrastructure in-house. Whether for latency, compliance, or data privacy, self-hosting with open source models on your own hardware puts you in control of your AI journey. However, scaling LLMs from experimentation to a production-grade service introduces significant cost and complexity.
+
+A new open source framework, [llm-d](https://llm-d.ai/), backed by a powerhouse of contributors including [Red Hat](https://redhat.com/en/about/press-releases/red-hat-launches-llm-d-community-powering-distributed-gen-ai-inference-scale), [IBM](https://www.ibm.com/think/news/Red-Hat-wants-to-bridge-the-here-and-now-for-enterprise-AI), and [Google](https://cloud.google.com/blog/products/ai-machine-learning/enhancing-vllm-for-distributed-inference-with-llm-d), is designed to address these challenges. It focuses on the core of the problem: [AI inference](https://redhat.com/en/topics/ai/what-is-ai-inference)—the process where your model generates results for prompts, agents, [retrieval-augmented generation](https://redhat.com/en/topics/ai/what-is-retrieval-augmented-generation) (RAG), and more.
+
+Through smart scheduling decisions (disaggregation) and AI-specific routing patterns, llm-d enables dynamic, intelligent workload distribution for LLMs. Why is this so important? Let's learn how llm-d works and how it can help save on AI costs, while increasing performance.
+
+[llm-d 101: Read the article](https://redhat.com/en/topics/ai/what-is-llm-d)
+
+## The challenge with scaling LLM inference
+
+Scaling traditional web services on platforms like [Kubernetes](https://redhat.com/en/topics/containers/what-is-kubernetes) follows established patterns. Standard HTTP requests are typically fast, uniform, and stateless. Scaling LLM inference, however, is a fundamentally different problem.
+
+One of the main reasons for this is the high variance in request characteristics. A RAG pattern, for example, might use a long input prompt packed with context from a vector database to generate a short, one-sentence answer. Conversely, a reasoning task might begin with a short prompt and produce a long, multi-step response. This variance creates load imbalances that can degrade performance and increase tail latency (ITL). LLM inference also relies heavily on key value (KV) cache, the short-term memory of an LLM, to store intermediate results. Traditional load balancing is unaware of this cache's state, leading to inefficient request routing and underutilized compute resources.
+
+With Kubernetes, the current approach has been to deploy LLMs as monolithic containers–large, black boxes with no visibility or control. This, in addition to ignoring prompt structure, token count, response latency goals ([Service Level Objectives](https://redhat.com/en/blog/monitoring-services-like-an-sre-in-openshift-servicemesh) or SLO), cache availability, and many other factors, makes it difficult to scale effectively.
+
+In short, our current inferencing systems are inefficient and are using more computing resources than necessary.
+
+<Image src={requestVariance} alt="Typical language model requests showing how RAG and reasoning-style requests have different compute profiles" />
+
+## llm-d is making inference more efficient and more cost-effective
+
+While [vLLM](https://redhat.com/en/topics/ai/what-is-vllm) provides vast model support across a wide array of hardware, llm-d takes it a step further. Building on top of existing enterprise IT infrastructures, llm-d brings distributed and advanced inference capabilities to help save on resources and improve performance, including [3x improvements in time-to-first-token](https://developers.redhat.com/articles/2025/05/20/llm-d-kubernetes-native-distributed-inferencing#llm_inference_goes_distributed) and doubled throughput under latency (SLO) constraints. Though it delivers [a powerful suite of innovations](https://redhat.com/en/about/press-releases/red-hat-launches-llm-d-community-powering-distributed-gen-ai-inference-scale), llm-d's main focus is around two innovations that help improve inference:
+
+- Disaggregation: Disaggregating the process allows us to more efficiently use hardware accelerators during inference. This involves separating prompt processing (prefill phase) from token generation (decode phase) into individual workloads, called pods. This separation allows for independent scaling and optimization of each phase, since they have different computational demands.
+- Intelligent scheduling layer: This extends the Kubernetes Gateway API, enabling more nuanced routing decisions for incoming requests. It leverages real-time data like KV cache utilization and pod load to direct requests to the most optimal instance, maximizing cache hits and balancing workload across the cluster.
+
+<Image src={traditionalVsLlmD} alt="Traditional LLM inference vs llm-d architecture with inference gateway, disaggregation, and KV cache" />
+
+In addition to features such as caching KV pairs across requests to prevent recomputing, llm-d breaks LLM inference into modular, intelligent services for scalable performance (and builds on the extensive support that vLLM itself provides). Let's dive a bit into each of these technologies and learn how they're used by llm-d, with some practical examples.
+
+### How disaggregation increases throughput with lower latency
+
+The fundamental difference between the prefill and decode phases of LLM inference presents a challenge for uniform resource allocation. The prefill phase, which processes the input prompt, is typically compute-bound, demanding high processing power to create the initial KV cache entries. Conversely, the decode phase, where tokens are generated one by one, is often memory-bandwidth bound, as it primarily involves reading from and writing to the KV cache with relatively less compute.
+
+<Image src={disaggregationArchitecture} alt="Disaggregation architecture showing prefill tokenization and decode generation sharing a KV cache" />
+
+By implementing disaggregation, llm-d allows these two distinct computational profiles to be served by separate Kubernetes pods. This means you can provision prefill pods with resources optimized for compute-heavy tasks and decode pods with configurations tailored for memory-bandwidth efficiency.
+
+### How the LLM-aware inference gateway works
+
+At the heart of llm-d's performance gains is its intelligent scheduling router, which orchestrates where and how inference requests are processed. When an inference request arrives at the llm-d gateway (based on [kgateway](https://github.com/kgateway-dev/kgateway)), it's not simply forwarded to the next available pod. Instead, the endpoint picker (EPP), a core component of llm-d's scheduler, evaluates multiple real-time factors to determine the optimal destination:
+
+- KV cache awareness: The scheduler maintains an index of the KV cache status across all running vLLM replicas. If a new request shares a common prefix with an already cached session on a specific pod, the scheduler prioritizes routing to that pod. This dramatically increases cache hit rates, avoiding redundant prefill computations and directly reducing latency.
+- Load awareness: Beyond simple request counts, the scheduler assesses the actual load on each vLLM pod, considering GPU memory utilization and processing queues, helping to prevent bottlenecks.
+
+This Kubernetes-native approach provides the policy, security, and observability layer for generative AI inference. Not only does this help with handling traffic, but it also enables prompt logging and auditing (for governance and compliance) as well as guardrails before forwarding to inference.
+
+## Get started with llm-d
+
+There's exciting energy behind the [llm-d](https://llm-d.ai/) project. While vLLM is ideal for single server setups, llm-d is built for the operator managing a cluster, aimed at performant, cost-efficient AI inference. Ready to explore it yourself? Check out the [llm-d repository on GitHub](https://github.com/llm-d/llm-d) and [join the conversation on Slack](https://llm-d.ai/docs/community/contact_us)! It's a great place to ask questions and get involved.
+
+The future of AI is being built on open and collaborative principles. With communities like vLLM and projects like llm-d, Red Hat is working to make AI more accessible, affordable, and powerful for developers everywhere.

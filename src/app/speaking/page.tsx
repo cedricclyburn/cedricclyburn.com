@@ -80,6 +80,12 @@ export default async function Speaking() {
         {/* Podcasts Section */}
         <SpeakingSection title="Podcasts">
           <Appearance
+            href="https://allthingsopen.org/articles/specialized-coder-orchestra-conductor-ai-developer-roles"
+            title="From Specialized Coder to Orchestra Conductor: How AI Changes Developer Roles"
+            location="We Love Open Source, All Things Open"
+            cta="Listen to podcast"
+          />
+          <Appearance
             href="https://www.youtube.com/watch?v=2Wtug1kTwUk"
             title="Introduction to llm-d: Open-source Kubernetes-native Framework for Distributed LLM Inference"
             location="Cloud Native Podcast"

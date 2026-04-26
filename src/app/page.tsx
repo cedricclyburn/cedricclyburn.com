@@ -300,7 +300,7 @@ export default async function Home() {
               icon={LinkedInIcon}
             />
             <SocialLink
-              href="https://www.youtube.com/@cloudnativecedric"
+              href="https://www.youtube.com/@cedcodes"
               aria-label="Follow on YouTube"
               icon={YoutubeIcon}
             />

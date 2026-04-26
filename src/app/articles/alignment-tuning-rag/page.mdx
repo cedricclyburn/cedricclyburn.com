@@ -1,0 +1,73 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import aiDataLayers from './ai-data-layers.png'
+import fineTuningWorkflow from './fine-tuning-workflow.png'
+import ragWorkflow from './rag-workflow.png'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2025-03-26',
+  title: 'Alignment tuning and RAG: What you should know',
+  description:
+    'Explore how alignment tuning and retrieval-augmented generation (RAG) are two strategies for customizing large language models for enterprise use cases.',
+};
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+};
+
+export default (props) => <ArticleLayout article={article} {...props} />;
+
+Incorporating artificial intelligence (AI) into an organization isn't a matter of flipping a switch; it requires careful customization to suit specific business needs. When adapting [large language models](https://www.redhat.com/en/topics/ai/what-are-large-language-models) (LLMs) for the enterprise, alignment tuning and retrieval-augmented generation (RAG) are two strategies that can be used separately or together to tune an AI model. While alignment tuning, a variation of fine tuning, focuses on shaping the model's responses and behavior, RAG relies on integrating external data into the model's workflow. Both approaches customize LLM behavior and output suited for a variety of different use cases and types of data. So, let's explore each method to help you determine the best fit for your needs.
+
+### Adapting large language models for enterprise use
+
+LLMs are robust systems trained on vast data sets, but while general-purpose LLMs excel at diverse language tasks, they often lack the specific knowledge or behavioral alignment required for enterprise applications.
+
+For truly useful applications of generative AI, applying industry, corporate, and personal data is where value is maximized.
+
+<Image src={aiDataLayers} alt="Generative AI models are based on publicly available data, while much internal enterprise data is not included" />
+
+In specialized fields such as finance, healthcare or customer support, developing an AI strategy means needing a model or system that is tailored to a specific purpose. However, this is highly dependent on the nature of the data an organization is working with—It all comes down to your data
+
+AI's effectiveness is fundamentally tied to data, and enterprises need to assess if their data is:
+
+- Static: This data doesn't change once it has been created and remains constant through its lifecycle. Examples include historical records, archived data and configuration files.
+- Slowly changing: Data that changes infrequently or at irregular intervals. Updates to slowly changing data are typically done manually or during scheduled periods. Examples include customer details or product catalog information.
+- Periodic: This data changes at a predictable, regular interval–think daily, weekly or monthly. Examples could include data warehouse updates and financial reports.
+- Frequently changing: Data that changes often but not continuously. Changes may occur every few minutes or hours, and the data is updated regularly, like website analytic data.
+- Near real-time: This information is processed and updated almost instantaneously, with only a short delay between an event and the data being updated. Examples include stock market prices, GPS tracking updates and live sports scores.
+- Real-time: This data is updated continuously and immediately as changes occur. Real-time data processing systems respond instantly to new information without any noticeable delay. Sensor data in IoT systems, live video streaming and high-frequency trading systems and examples of real-time data updates.
+
+To help simplify this, let's imagine for a moment that I'm giving you a new task to learn about a new subject or skill. You have two options here: you could either learn and teach yourself the content or outsource it to others. When we talk about fine tuning and RAG, it's a similar concept.
+
+There may be foundational, domain specific knowledge and processes that would be helpful for a model to understand, but what if information is dynamic and evolves quickly? In that case, simply providing it to an LLM on demand can be more effective. However, let's take a closer look at real-world examples of these approaches being used and understand when to take each approach.
+
+### Aligning to your use case with alignment tuning
+
+While language models are highly capable on their own, using them for real-world applications means providing specific context about the situation and prompt templates to craft behavior and tone. Instead of constantly adding this information in each query to the model, [fine tuning](https://www.redhat.com/en/topics/ai/what-is-peft#:~:text=Fine%2Dtuning%20is%20the%20process,that%20replaces%20the%20original%20model.) allows us to begin from a general-purpose foundation model and incorporate our corporate or personal information. Thus, we create a specialized domain expert model that understands the data it is processing and can improve the performance and accuracy of results. At a higher level, the combination of instruction tuning and preference tuning in order to guide the model's behavior is often referred to as alignment.
+
+<Image src={fineTuningWorkflow} alt="Fine-tuning workflow showing how additional training data is used to tailor an LLM for enterprise use" />
+
+### Integrating with your data with RAG
+
+As we earlier identified certain characteristics of data, it's important to note the difference of status versus dynamic data. While infusing data and intuition into a model can be helpful, what happens when that information changes? Due to the historical nature of alignment and fine-tuning being a complicated process, RAG has been adopted by both developers and enterprises to complement general-purpose LLMs with up-to-date and external data. This means having the ability to take a model off the shelf, regardless of whether it's proprietary or open source, and enable access to data repositories and databases without re-training. You'll typically encounter these steps in the approach:
+
+- Data transformation: Converting enterprise data into a format accessible by the AI, such as embedding knowledge into a searchable format.
+- Storage in a knowledge base: Organizing data within a knowledge library, which the model can access in real time.
+- Response generation: Using the knowledge base, the AI system retrieves relevant information to generate accurate, evidence-backed answers.
+
+<Image src={ragWorkflow} alt="RAG workflow showing how an application retrieves data from a vector store to augment LLM responses" />
+
+This methodology retrieves information from an external knowledge base, supplementing the original prompt, and generating an answer from the model.
+
+For customer support applications, RAG allows the LLM to draw from source data, delivering accurate responses that foster more trust and transparency. This evidence-backed answer component is important, as the idea of overconfidence, or hallucinations, is an issue when adopting AI into business use cases. However, it's important to note that tuning and maintaining a RAG system is complex, requiring robust data pipelines to pull and feed timely information to the model during usage.
+
+### The best of both worlds: Combining alignment tuning and RAG
+
+Much like how businesses can benefit from a hybrid cloud and on-premise approach for their workloads, an AI strategy can combine alignment tuning and RAG–also known as retrieval augmented fine tuning (RAFT)–to best meet their needs. This results in an LLM being a subject matter expert in a specific field, deeply understanding specific content and terminology while staying current. For example, you could combine both resulting in a fine-tuned model on your domain-specific data to understand your industry's context, while leveraging RAG for up-to-date information from databases and content stores. Scenarios such as financial analysis or regulatory compliance are just a few situations where the combined strategy would be immensely helpful.
+
+While we've covered how these approaches can be helpful for business use cases, it's important to understand that these techniques, specifically with alignment, allow us to set core behavioral parameters in these AI models themselves. This is incredibly important as we use AI to reflect our values and goals, not just our expectations. Enterprises should begin by figuring out what sticks and doesn't, and use those lessons to continue building great things.
+
+Here at Red Hat, we pride ourselves on developing platforms, built from open source to help power enterprises, and AI as a tool is no different. For alignment and tuning of large language models, [Red Hat Enterprise Linux AI](https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/ai) (RHEL AI) is our way to start with generative AI, and when distributed compute and multi-model serving becomes needed, [Red Hat OpenShift AI](https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai) offers a powerful way to scale things out. No matter where, or how, you decide to build your AI strategy, you now understand approaches that can truly bring value to your organization.

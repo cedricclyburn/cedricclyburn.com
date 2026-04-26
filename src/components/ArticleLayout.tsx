@@ -32,8 +32,25 @@ export function ArticleLayout({
   let router = useRouter()
   let { previousPathname } = useContext(AppContext)
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: article.title,
+    description: article.description,
+    datePublished: article.date,
+    author: {
+      '@type': 'Person',
+      name: article.author,
+      url: 'https://cedricclyburn.com',
+    },
+  }
+
   return (
     <Container className="mt-16 lg:mt-32">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="xl:relative">
         <div className="mx-auto max-w-2xl">
           {previousPathname && (
