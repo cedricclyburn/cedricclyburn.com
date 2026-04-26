@@ -1,0 +1,124 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import openModelTimeline from './open-model-timeline.png'
+import lmarenaLeaderboard from './lmarena-leaderboard.png'
+import qwenTestimonial from './qwen-testimonial.png'
+import qwenAdoption from './qwen-adoption.png'
+import artificialAnalysis from './artificial-analysis.png'
+import kimiBenchmarks from './kimi-benchmarks.png'
+import samAltmanGptOss from './sam-altman-gpt-oss.png'
+import smallModelPerformance from './small-model-performance.png'
+import enterpriseAiPlatform from './enterprise-ai-platform.png'
+import ragWorkflow from './rag-workflow.png'
+import vllmOverview from './vllm-overview.png'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2026-01-07',
+  title: 'The state of open source AI models in 2025',
+  description:
+    'A look at the open source AI model landscape in 2025, from DeepSeek and Qwen to gpt-oss and small language models, and how to run them on your own hardware.',
+};
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+};
+
+export default (props) => <ArticleLayout article={article} {...props} />;
+
+2025 was an exciting year for AI hobbyists running [large language models (LLMs)](https://www.redhat.com/en/topics/ai/what-are-large-language-models) on their own hardware and organizations that need [on-premises and sovereign AI](https://www.redhat.com/en/products/ai). These use cases require open models you can download locally from a public registry like [Hugging Face](https://huggingface.co/models). You can then run them on inference engines such as [Ollama](https://github.com/ollama/ollama) or [RamaLama](https://github.com/containers/ramalama) (for simple deployments) or production-ready inference servers such as [vLLM](https://github.com/vllm-project/vllm).
+
+As we help developers deploy these models for customer service and knowledge management (using patterns like [retrieval-augmented generation](https://www.redhat.com/en/topics/ai/what-is-retrieval-augmented-generation)) or code assistance (through [agentic AI](https://www.redhat.com/en/topics/ai/what-is-agentic-ai)), we see a trend toward specific models for specific use cases. Let's look at which models are used most in real-world applications and how you can start using them.
+
+## Leading to 2025: The pre-DeepSeek landscape
+
+Before [DeepSeek](https://github.com/deepseek-ai) gained popularity at the beginning of 2025, the open model ecosystem was simpler. Meta's [Llama family of models](https://huggingface.co/meta-llama) was quite dominant, and these dense models (ranging from 7 to 405 billion parameters) were easy to deploy or customize. [Mistral](https://mistral.ai/) was also competing (certainly in the EU market), but models from Asia, such as DeepSeek (with its V3) or Qwen were not yet popular.
+
+<Image src={openModelTimeline} alt="A brief recap of the open model ecosystem for 2025 and prior years" />
+
+Through the stock market effect and media attention, [DeepSeek's reasoning model](https://github.com/deepseek-ai/DeepSeek-R1) validated that open weights can deliver high-value reasoning. It showed that [open models are capable options for teams that need cost control or air-gapped deployments](https://www.redhat.com/en/resources/openshift-ai-overview). In fact, many of the models I'll discuss here come from Chinese labs and lead in total downloads per region. As per [The ATOM Project](https://www.atomproject.ai/), total model downloads switched from USA-dominant to China-dominant during the summer of 2025.
+
+## The highest-performing open models
+
+Benchmarks show a model's capabilities on certain predefined tasks, but you can also measure capabilities through the [LMArena](https://lmarena.ai/). This crowdsourced AI evaluation platform [lets users vote for a result from two models](https://lmarena.ai/how-it-works) through a "battle."
+
+<Image src={lmarenaLeaderboard} alt="The LMArena leaderboard aggregates user votes to compare model capabilities" />
+
+After filtering out the proprietary models such as [Gemini](https://gemini.google.com/), [Claude](https://claude.com/product/overview), and [ChatGPT](https://chatgpt.com/), we're left with a few contenders. These include Kimi K2 from the [Moonshot](https://www.moonshot.ai/) lab, Qwen3 from the [Alibaba](https://www.alibabacloud.com/en/solutions/generative-ai/) team, and of course, [DeepSeek](https://www.deepseek.com/en). This is quite interesting, as most folks know DeepSeek, but they might not be familiar with the others.
+
+### Qwen, Llama, and Gemma
+
+Different AI use cases require different model sizes and capabilities, which is why open models are so useful. Instead of a general-purpose, one-size-fits-all scenario, model families such as [Qwen](https://huggingface.co/Qwen) offer various model sizes (ranging from as small as .5 B) and modalities ([text](https://huggingface.co/Qwen/Qwen3-30B-A3B) or [vision](https://huggingface.co/Qwen/Qwen3-VL-30B-A3B-Instruct)). The Qwen team maintains a transparent strategy for [documentation and deployment instructions on GitHub](https://github.com/QwenLM/Qwen3) and is active on X (formerly Twitter) to tease upcoming releases.
+
+<Image src={qwenTestimonial} alt="A testimonial of how Qwen models are being used by the largest organizations" />
+
+Llama and Gemma offer similar "families" of models, but the Qwen ecosystem has seen [impressive adoption](https://www.atomproject.ai/). While they might not have the highest benchmarks, their commitment to the open model community makes them one of the most used local models available.
+
+<Image src={qwenAdoption} alt="Cumulative download metrics showing Qwen model family adoption" />
+
+### Frontier models for RAG, agents, and AI-assisted coding
+
+While labs like Qwen build models for specific use cases, other frontier labs are building capable models that perform like proprietary models (think ChatGPT or Gemini) at a fraction of the cost. A fair way to understand their capabilities, speed, and price is through [Artificial Analysis](https://artificialanalysis.ai/), which incorporates evaluations (like [MMLU-Pro](https://github.com/TIGER-AI-Lab/MMLU-Pro) and [LiveCodeBench](https://livecodebench.github.io/)) to compare all models, both proprietary and open.
+
+<Image src={artificialAnalysis} alt="The Artificial Analysis dashboard comparing model intelligence, speed, and price" />
+
+Let's look at the two with the highest intelligence score: Kimi K2 from Moonshot AI and gpt-oss from OpenAI.
+
+### Kimi: For tool calling and AI-assisted coding
+
+[Kimi K2](https://github.com/MoonshotAI/Kimi-K2) is one of the largest open models in terms of total parameters (about 1 trillion). It is designed with only roughly 32 billion active parameters per token to provide a smaller runtime footprint that can run on NVIDIA A100s, an H100, or even an A6000 (at 48 GB of VRAM if using 4-bit quantization). It performs quite well with agentic workflows, where you might need an AI assistant to search data, analyze trends and patterns, summarize, and generate a report.
+
+<Image src={kimiBenchmarks} alt="Kimi models meet or surpass proprietary models in certain benchmarks" />
+
+Additionally, the "thinking" variant has a context window of up to 256,000 tokens. This is helpful in "vibe" or ["spec"](https://developers.redhat.com/articles/2025/10/22/how-spec-driven-development-improves-ai-coding-quality) coding where you need to generate code, tests, and integrate [Model Context Protocol (MCP) servers](https://www.redhat.com/en/topics/ai/what-is-model-context-protocol-mcp) for additional capabilities.
+
+### OpenAI's gpt-oss: A (surprise) high performing open model
+
+Because OpenAI is the de facto brand name for AI, its release of an open model was a surprise. The [gpt-oss](https://github.com/openai/gpt-oss) model matches the performance of slightly older ChatGPT models. After a bit of a rough launch (due to a "harmony" chat template breaking tools), this model is now known for accurate tool use. Its 120b variant fits on a single 80 GB GPU (like an H100), and the 20b version fits on consumer hardware. It also provides a solid alternative to Qwen for organizations that are still evaluating their model decisions.
+
+<Image src={samAltmanGptOss} alt="OpenAI's Sam Altman promoting the gpt-oss model on X" />
+
+### Small models for consumer devices and the edge
+
+Perhaps the biggest win for AI in 2025 has been the advancement of [small language models](https://www.redhat.com/en/topics/ai/llm-vs-slm) (SLMs) that can run on almost any consumer device, including mobile phones. Small models are improving faster than most people realize. Although parameter counts might not be changing, their capabilities are increasing. This is the result of improved attention kernels, efficient block layouts, and [synthetic data generation](https://www.redhat.com/en/blog/synthetic-data-secret-ingredient-better-language-models) techniques that were not available two years ago.
+
+<Image src={smallModelPerformance} alt="General performance vs model size showing improvements in small language models" />
+
+For example, the [Granite 4](https://www.ibm.com/granite/docs/models/granite) from IBM focused on edge and on-device deployments. It is even [ISO 42001 certified](https://www.ibm.com/new/announcements/ibm-granite-4-0-hyper-efficient-high-performance-hybrid-models) for responsible development and governance. Models from Qwen, Gemma (Google), and Llama are also part of this adoption. They provide small models for developers that need air-gapped inference with predictable costs and no API key requirement.
+
+## Real-world use cases for open models
+
+<Image src={enterpriseAiPlatform} alt="AI deployment in the enterprise requires inferencing, monitoring, automation, and scaling" />
+
+While smaller models helped the majority of people to run and experiment their own AI, open models are also used in the enterprise. We see this especially in [highly regulated sectors](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai) (like telecommunications or banking) that have a strict requirement for on-premise deployment and data sovereignty. For example, due to data residency regulations, the usage of AI needs to stay local, so open models are a requirement.
+
+In areas ranging from customer service automation (call centers and chatbots) to internal knowledge management (legal and document processing), we see a combination of tools. Teams use data processing tools like [Docling](https://github.com/docling-project/docling) along with a "smaller" language model like [Llama 4 Scout](https://ai.meta.com/blog/llama-4-multimodal-intelligence/), [DeepSeek R1](https://huggingface.co/deepseek-ai/DeepSeek-R1), or [Llama 3](https://ai.meta.com/blog/meta-llama-3/) to process and respond to requests. Retrieval-augmented generation (RAG) workflows become important here, as these AI pipelines typically need [unstructured data](https://www.youtube.com/watch?v=zSA7ylHP6AY) for accurate responses.
+
+<Image src={ragWorkflow} alt="RAG remains the top way language models are customized to meet customer needs" />
+
+## How to run these models on your own hardware
+
+You can easily test and evaluate these models. To run locally on your own device (using a GPU or even just a CPU), use Ollama and RamaLama. These command-line interface (CLI) tools can pull and run a model with a single command. These projects both use the [llama.cpp](https://github.com/ggml-org/llama.cpp) inference engine but provide a simple CLI to get you started.
+
+Beyond just chatting, you can also replace run with serve to get a [OpenAI-compatible API](https://platform.openai.com/docs/api-reference/debugging-requests) for your applications instead of a remote endpoint.
+
+```bash
+ollama run gpt-oss
+```
+
+If you're using [Docker](https://www.docker.com/) or [Podman](https://podman.io/) for containerized applications, [RamaLama](https://ramalama.ai/) is a great option. It runs models in containers for enhanced isolation and security.
+
+```bash
+ramalama run gpt-oss
+```
+
+[vLLM](https://github.com/vllm-project/vllm) is suited for large-scale inference with concurrent users and repeated requests where caching is useful. A [UC Berkeley project](https://arxiv.org/abs/2309.06180) now with Red Hat as the main corporate contributor, it supports "any model, on any accelerator, on any cloud."
+
+<Image src={vllmOverview} alt="vLLM provides extensive model and hardware support for scaling up model deployments" />
+
+Through a full application platform like [Red Hat OpenShift](https://developers.redhat.com/products/openshift/overview) and [OpenShift AI](https://developers.redhat.com/products/red-hat-openshift-ai), your containerized applications run alongside open models. This provides the observability, guardrails, and more that are needed for enterprise AI deployments.
+
+## Wrapping up
+
+The power of open has provided a huge ecosystem of models for right-sized use cases and inference capabilities that power everything from Raspberry Pis to distributed Kubernetes environments. You've learned about models like Qwen, DeepSeek, gpt-oss, and platforms like LMArena and Artificial Analysis that make it easy to select the right one. Now, it's time for you to test them out, see what works for you, and control your AI narrative.
