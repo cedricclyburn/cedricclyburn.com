@@ -5,7 +5,6 @@ import Image, { type StaticImageData } from 'next/image'
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import howAiInferenceWorks from '@/images/nvidia/how-ai-inference-works.png'
-import vllmVsSglang from '@/images/nvidia/vllm-vs-sglang.png'
 import courseBanner from '@/images/nvidia/course-banner.png'
 import llmQuantization from '@/images/nvidia/llm-quantization.png'
 import societeGeneraleTownHall from '@/images/nvidia/societe-generale-town-hall.png'
@@ -19,6 +18,7 @@ type Resource = {
   href?: string
   image?: StaticImageData
   fit?: 'contain'
+  priority?: boolean
 }
 
 const sections: Array<{ id: string; title: string; items: Resource[] }> = [
@@ -32,13 +32,13 @@ const sections: Array<{ id: string; title: string; items: Resource[] }> = [
           'An Explained article on how inference and the KV cache actually work.',
         href: 'https://x.com/cedricclyburn/status/2082105486804127885',
         image: howAiInferenceWorks,
+        priority: true,
       },
       {
         title: 'vLLM vs. SGLang',
         description:
           'A benchmarked comparison of the two engines, and when each one fits.',
         href: 'https://developers.redhat.com/articles/2026/10/14/vllm-vs-sglang-choosing-the-right-inference-engine-for-your-workload',
-        image: vllmVsSglang,
       },
       {
         title: 'Fast & Efficient LLM Inference with vLLM',
@@ -129,6 +129,7 @@ function ResourceCard({ item }: { item: Resource }) {
             src={item.image}
             alt=""
             sizes="(min-width: 640px) 24rem, 100vw"
+            priority={item.priority}
             className={
               item.fit === 'contain'
                 ? 'absolute inset-0 h-full w-full object-contain'
