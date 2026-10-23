@@ -17,7 +17,6 @@ type Resource = {
   description: string
   href?: string
   image?: StaticImageData
-  fit?: 'contain'
   priority?: boolean
 }
 
@@ -65,7 +64,6 @@ const sections: Array<{ id: string; title: string; items: Resource[] }> = [
           'What quantization changes, and what it does to GPU count and cost.',
         href: 'https://developers.redhat.com/articles/2026/09/02/llm-quantization-guide-how-to-do-it--and-how-it-helps',
         image: llmQuantization,
-        fit: 'contain',
       },
       {
         title: 'Société Générale town hall',
@@ -92,7 +90,6 @@ const sections: Array<{ id: string; title: string; items: Resource[] }> = [
           'A hands-on look at llm-d routing on KV cache and splitting prefill from decode.',
         href: 'https://developers.redhat.com/articles/2025/08/19/getting-started-llm-d-distributed-ai-inference',
         image: gettingStartedLlmD,
-        fit: 'contain',
       },
       {
         title: 'Introduction to llm-d',
@@ -130,11 +127,7 @@ function ResourceCard({ item }: { item: Resource }) {
             alt=""
             sizes="(min-width: 640px) 24rem, 100vw"
             priority={item.priority}
-            className={
-              item.fit === 'contain'
-                ? 'absolute inset-0 h-full w-full object-contain'
-                : 'absolute inset-0 h-full w-full object-cover object-top'
-            }
+            className="absolute inset-0 h-full w-full object-cover object-top"
           />
         ) : null}
       </div>
