@@ -47,7 +47,7 @@ export default async function ArticlesIndex() {
 
   return (
     <SimpleLayout
-      title="Writing on software development, containers & Kubernetes, and AI."
+      title="Writing on software development, kubernetes, and AI."
       intro="Here's all of my longer content from around the web, collected in chronological order."
     >
       <div className="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">

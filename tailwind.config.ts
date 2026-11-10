@@ -1,13 +1,21 @@
-import typographyPlugin from '@tailwindcss/typography'
 import { type Config } from 'tailwindcss'
-
 import typographyStyles from './typography'
+
+// Sucrase's import interop turns this CJS plugin into {} when Tailwind loads
+// the config, which drops every prose style. require() keeps the plugin.
+const typographyPlugin = require('@tailwindcss/typography')
 
 export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   darkMode: 'selector',
   plugins: [typographyPlugin],
   theme: {
+    extend: {
+      colors: {
+        // Official Red Hat red. Link and accent color in both themes.
+        accent: '#EE0000',
+      },
+    },
     fontSize: {
       xs: ['0.8125rem', { lineHeight: '1.5rem' }],
       sm: ['0.875rem', { lineHeight: '1.5rem' }],

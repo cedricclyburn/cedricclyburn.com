@@ -29,9 +29,9 @@ function SocialLink({
     <li className={clsx(className, 'flex')}>
       <Link
         href={href}
-        className="group flex text-sm font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500"
+        className="group flex text-sm font-medium text-zinc-800 transition hover:text-accent dark:text-zinc-200 dark:hover:text-accent"
       >
-        <Icon className="h-6 w-6 flex-none fill-zinc-500 transition group-hover:fill-teal-500" />
+        <Icon className="h-6 w-6 flex-none fill-zinc-500 transition group-hover:fill-accent" />
         <span className="ml-4">{children}</span>
       </Link>
     </li>
@@ -73,7 +73,7 @@ export default function About() {
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
           I’m Cedric Clyburn. I love teaching about all things cloud-native.
           </h1>
-          <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400 [&_a]:text-teal-500 dark:[&_a]:text-teal-400 [&_a]:underline [&_a]:decoration-teal-500/30 dark:[&_a]:decoration-teal-400/30 [&_a]:underline-offset-2 [&_a]:transition [&_a:hover]:decoration-teal-500 dark:[&_a:hover]:decoration-teal-400">
+          <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400 [&_a]:text-accent dark:[&_a]:text-accent [&_a]:underline [&_a]:decoration-accent/30 dark:[&_a]:decoration-accent/30 [&_a]:underline-offset-2 [&_a]:transition [&_a:hover]:decoration-accent dark:[&_a:hover]:decoration-accent">
             <p> 
               I've always loved the moment when something "<em>clicks</em>", 
               where you realize how something works, and there's clarity. 
@@ -109,7 +109,7 @@ export default function About() {
             to speak at a number of events, including The Linux 
             Foundation's <a href="https://events.linuxfoundation.org/ai-dev-north-america/">AI.dev</a>
             , <a href="https://www.wearedevelopers.com/world-congress/">WeAreDevelopers World Congress</a>
-            , <a href="https://www.developerweek.com/">DeveloperWeek</a>
+            , <a href="https://www.cncf.io/kubecon-cloudnativecon-events/">KubeCon</a>
             , <a href="https://devnexus.com/">DevNexus</a>
             , <a href="https://www.devconf.info/">DevConf</a>
             , and many more!
@@ -119,19 +119,19 @@ export default function About() {
         <div className="lg:pl-20">
           <ul role="list">
             <SocialLink href="https://x.com/cedricclyburn" icon={XIcon}>
-              Follow on X
+              @cedricclyburn
             </SocialLink>
             <SocialLink href="https://www.instagram.com/cedricclyburn" icon={InstagramIcon} className="mt-4">
-              Follow on Instagram
+              @cedricclyburn
             </SocialLink>
             <SocialLink href="https://github.com/cedricclyburn" icon={GitHubIcon} className="mt-4">
-              Follow on GitHub
+              cedricclyburn
             </SocialLink>
             <SocialLink href="https://www.linkedin.com/in/cedricclyburn" icon={LinkedInIcon} className="mt-4">
-              Follow on LinkedIn
+              cedricclyburn
             </SocialLink>
             <SocialLink href="https://www.youtube.com/@cedcodes" icon={YoutubeIcon} className="mt-4">
-              Follow on YouTube
+              @cedcodes
             </SocialLink>
             <SocialLink
               href="mailto:cedricclyburn@gmail.com"

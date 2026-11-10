@@ -142,7 +142,7 @@ function ResourceCard({ item }: { item: Resource }) {
       </h2>
       <Card.Description>{item.description}</Card.Description>
       {item.href ? (
-        <p className="relative z-10 mt-6 flex text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
+        <p className="relative z-10 mt-6 flex text-sm font-medium text-zinc-400 transition group-hover:text-accent dark:text-zinc-200 dark:group-hover:text-accent">
           <LinkIcon className="h-6 w-6 flex-none" />
           <span className="ml-2">{hostLabel(item.href)}</span>
         </p>
