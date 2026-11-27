@@ -8,14 +8,14 @@ import '@/styles/tailwind.css'
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cedricclyburn.com'
 
 const description =
-  "I'm Cedric, a developer advocate based at Red Hat, with a background in Kubernetes, DevOps, and container tools. I love all things open-source, and create demos, workshops, and content to make developer's lives easier! Based out of New York City."
+  "I'm Cedric, a developer advocate at Red Hat, with a background in developer tools, Kubernetes, and AI engineering. I love all things open source, and create demos, workshops, and content to make developers' lives easier! Based out of New York City."
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     template: '%s - Cedric Clyburn',
     default:
-      'Cedric Clyburn - Developer advocate & engineer for all things cloud-native',
+      'Cedric Clyburn - Developer advocate & engineer for all things AI and cloud-native',
   },
   description,
   alternates: {

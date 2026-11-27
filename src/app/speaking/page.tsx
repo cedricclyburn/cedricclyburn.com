@@ -59,8 +59,8 @@ export default async function Speaking() {
 
   return (
     <SimpleLayout
-      title="I love to share ideas and speak at conferences."
-      intro="I'm a firm believer that fantastic ideas and learning come from knowledge-sharing and conversations at events and conferences, so here is a (fairly) complete list of conferences, podcasts, and other speaking opportunities I've had in the realm of Kubernetes and cloud-native."
+      title="Where I'm speaking at."
+      intro="I'm a firm believer that fantastic ideas and learning come from knowledge-sharing and conversations at events and conferences, so here is a (fairly) complete list of conferences, podcasts, and other speaking opportunities I'm involved in."
     >
       <div className="space-y-20">
         {/* Conferences Section */}

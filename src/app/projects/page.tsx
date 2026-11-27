@@ -67,8 +67,8 @@ export const metadata: Metadata = {
 export default function Projects() {
   return (
     <SimpleLayout
-      title="Projects, activities, and more."
-      intro="I've had the honor to work on a variety of advocacy projects, labs, and workshops on all kinds of open source software. Here are the ones that I'm most proud of, take a look!"
+      title="What I've been working on."
+      intro="Here's some of my projects, videos, and courses on all kinds of open source software. These are the ones that I'm most proud of, take a look!"
     >
       <ul
         role="list"

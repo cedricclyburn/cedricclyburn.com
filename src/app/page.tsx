@@ -267,19 +267,19 @@ function Photos() {
 }
 
 export default async function Home() {
-  let articles = (await getAllArticles()).slice(0, 4)
+  let articles = (await getAllArticles()).slice(0, 2)
 
   return (
     <>
       <Container className="mt-9">
         <div className="max-w-2xl">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            Developer advocate & engineer for all things cloud-native.
+            Developer advocate & engineer for all things AI and cloud-native.
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I’m Cedric, a developer advocate based at Red Hat, with a 
-            background in Kubernetes, DevOps, and container tools.
-            I love all things open-source, and create demos, workshops, 
+            I’m Cedric, a developer advocate at Red Hat, with a 
+            background in developer tools, Kubernetes, and AI engineering.
+            I love all things open source, and create demos, workshops, 
             and content to make developers' lives easier! Based out of New York City.
           </p>
           <div className="mt-6 flex gap-6">

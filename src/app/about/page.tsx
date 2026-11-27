@@ -52,7 +52,7 @@ function MailIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'I’m Cedric Clyburn. I love teaching about all things cloud-native.',
+    'I’m Cedric Clyburn. Nice to meet you!',
 }
 
 export default function About() {
@@ -71,7 +71,7 @@ export default function About() {
         </div>
         <div className="lg:order-first lg:row-span-2">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-          I’m Cedric Clyburn. I love teaching about all things cloud-native.
+          I’m Cedric Clyburn. Nice to meet you!
           </h1>
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400 [&_a]:text-accent dark:[&_a]:text-accent [&_a]:underline [&_a]:decoration-accent/30 dark:[&_a]:decoration-accent/30 [&_a]:underline-offset-2 [&_a]:transition [&_a:hover]:decoration-accent dark:[&_a:hover]:decoration-accent">
             <p> 
@@ -88,7 +88,7 @@ export default function About() {
             <p> 
               Fortunately, I have been around for a time 
               where <a href="https://kubernetes.io/">Kubernetes</a> has been the 
-              standard for application deployment, and much of my work has 
+              standard for application deployment, and much of my past work has 
               revolved around the container tools <a href="https://podman.io/">Podman</a>
               , <a href="https://podman-desktop.io/">Podman Desktop</a>
               , <a href="https://buildah.io/">Buildah</a>, and related projects. 
