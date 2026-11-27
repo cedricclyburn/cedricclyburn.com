@@ -1,0 +1,145 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import figure1 from './figure-1.webp'
+import figure2 from './figure-2.webp'
+import figure3 from './figure-3.webp'
+import figure4 from './figure-4.webp'
+import figure5 from './figure-5.webp'
+import figure6 from './figure-6.webp'
+import figure7 from './figure-7.webp'
+import figure8 from './figure-8.webp'
+import figure9 from './figure-9.webp'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2026-09-02',
+  title: "LLM quantization guide: How to do it, and how it helps",
+  description:
+    "Learn how to reduce LLM memory footprint and costs with our guide on quantization schemes for inference engines",
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+Model sizes have [roughly doubled every year](https://ourworldindata.org/scaling-up-ai) (see figure 1), and GPU memory hasn't come close to keeping up. So when a new frontier [open model](https://developers.redhat.com/articles/2026/01/07/state-open-source-ai-models-2025) is released, how do you actually deploy it to serve one user, or perhaps one thousand at a time, on hardware you can realistically get your hands on?
+
+<Image src={figure1} alt={"Model sizes (like with ChatGPT) have grown far faster than the memory available on a single GPU (using NVIDIA GPU's as examples)."} />
+
+*Figure 1: Model sizes (like with ChatGPT) have grown far faster than the memory available on a single GPU (using NVIDIA GPU's as examples).*
+
+This challenge is exactly why almost every [large language model (LLM)](https://www.redhat.com/en/topics/ai/what-are-large-language-models) running in production today is quantized. By the end of this article, you'll know:
+
+- What quantization actually does to a model
+- Where in the inference stack it actually pays off
+- Which algorithm and format to pick, and what each one costs you
+
+## What is LLM quantization?
+
+When a lab releases a new LLM, its weights usually ship in BF16 ([brain floating point](https://en.wikipedia.org/wiki/Bfloat16_floating-point_format)): 16 bits for every single number. With billions of parameters, that requires a lot of memory, and it's why the model won't fit on most hardware.
+
+So let's ask the obvious question: Do we really need all 16? Usually not. [Quantization](https://developers.redhat.com/articles/2025/08/18/optimizing-generative-ai-models-quantization) maps each weight into a lower-bit format: FP8 (floating point, decimals), INT8 (integers like 3 or -127), INT4, and so on.
+
+<Image src={figure2} alt={"Each step down in precision, from FP32 to INT8, stores every number in fewer bits and a smaller dynamic range."} />
+
+*Figure 2: Each step down in precision, from FP32 to INT8, stores every number in fewer bits and a smaller dynamic range.*
+
+Each step down decreases the memory requirements, as illustrated by figure 2. Fewer bits per number, and a smaller model overall. I particularly enjoy [this example from Maarten Grootendorst](https://www.maartengrootendorst.com/blog/quantization/) on how quantization reduces the number of bits (colors) to represent the original model, or in this case, cookie (see figure 3).
+
+<Image src={figure3} alt={"This image by Maarten Grootendorst, demonstrates that quantizing a photographic image reduces the number of colors used to represent it, in the same way quantizing a model reduces the bits used to represent each weight."} />
+
+*Figure 3: This image by Maarten Grootendorst, demonstrates that quantizing a photographic image reduces the number of colors used to represent it, in the same way quantizing a model reduces the bits used to represent each weight.*
+
+## The result: Less GPU compute and total cost for AI
+
+Let's take [Llama 4 Scout](https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E), at 109B parameters. It was released at BF16, which is 2 bytes per parameter:
+
+- **BF16**: 109B × 2 bytes per parameter = ~220 GB → You need three 80 GB GPUs
+- **INT8/FP8**: 109B × 1 byte per parameter = ~109 GB → Two GPUs
+- **INT4/FP4**: ~55 GB → One GPU
+
+It's the same model, but you're running it on 1 GPU instead of 3. That's a 75% reduction in memory footprint, and with the scarcity of hardware these days, it's a big deal. It also means you can consolidate far more models onto the same cluster, which is the whole premise behind running [Model-as-a-Service](https://developers.redhat.com/articles/2026/06/12/model-service-how-run-your-own-private-ai-api) for your developers.
+
+## Where inside the model does this happen?
+
+A model is essentially a stack of layers performing massive matrix multiplications in order to produce your result, known as transformer blocks (figure 4). Each block has a self-attention section with 4 linear layers (the Q, K, V, and O projections) and a feed-forward network with 3 more (gate, up, down). These layers are where almost all of the model's parameters live, and almost all of the compute happens. So that's what gets quantized, and exactly what a tool like [LLM Compressor](https://github.com/vllm-project/llm-compressor) operates on.
+
+<Image src={figure4} alt={"Quantization is applied to the linear layers inside each transformer block, where nearly all of the parameters and compute live."} />
+
+*Figure 4: Quantization is applied to the linear layers inside each transformer block, where nearly all of the parameters and compute live.*
+
+The embedding layer at the start and the LM head at the end are typically excluded to preserve accuracy (and they're a small fraction of the parameters anyway).
+
+## Weights and activations are 2 different wins
+
+There are 2 things inside a linear layer you can quantize, and they pay off in completely different places (see figure 5).
+
+- **Weights:** The model's learned parameters. Every forward pass pulls them from high-bandwidth memory (HBM) into fast on-chip SRAM. Cutting them from 16 to 8 bits slashes data movement in half. This is a massive latency win for token generation (the decoding phase), which is heavily memory-bound.
+- **Activations:** The tensors flowing through the model. Tensor cores churn through more operations per second when these numbers are lower precision. For example, Hopper GPUs feature dedicated FP8 cores, whereas older Ampere chips rely on INT8. This is a huge throughput win for prompt processing, also known as the [prefill phase](https://developers.redhat.com/articles/2025/08/19/getting-started-llm-d-distributed-ai-inference) of inference, which is heavily compute-bound.
+
+<Image src={figure5} alt={"Quantizing weights cuts the data movement between HBM and SRAM, while quantizing activations lets the tensor cores compute faster."} />
+
+*Figure 5: Quantizing weights cuts the data movement between HBM and SRAM, while quantizing activations lets the tensor cores compute faster.*
+
+So, weight quantization speeds up the data movement side of inference, and activation quantization speeds up the compute side. Quantizing both is what unlocks the full speedup. By the way, the naming is *W{'{'}bits{'}'}A{'{'}bits{'}'}*: Weights, then activations.
+
+| Scheme | What you get | Reach for it when |
+| --- | --- | --- |
+| W8A16 | Half the weight memory, no tensor core speedup | Memory-bound, or hardware without FP8/INT8 tensor cores |
+| W8A8 | Both wins | Hopper or newer, serving real concurrency. The production default |
+| W4A16 | 4× smaller weights, most aggressive on size | Fitting a model onto one card, can trade throughput for it |
+
+## But what type of model quantization should you actually download?
+
+This is where it gets tricky. Search any popular model on [Hugging Face](https://huggingface.co/models) and you'll get hundreds of results (figure 6), from GGUF, [NVFP4](https://developers.redhat.com/articles/2026/02/04/accelerating-large-language-models-nvfp4-quantization), AWQ-INT4, MLX-4bit, 4bpw, 5.5bit, [AutoRound](https://developers.redhat.com/articles/2025/12/09/advancing-low-bit-quantization-llms-autoround-x-llm-compressor). They are not interchangeable, and the right answer depends entirely on [which inference engine](https://developers.redhat.com/articles/2026/06/15/llamacpp-vs-vllm-choosing-right-local-llm-inference-engine) you're running.
+
+- **GGUF**: [llama.cpp](https://github.com/ggml-org/llama.cpp), Ollama, LM Studio. Local inference on CPU or a consumer GPU.
+- **MLX**: Apple silicon.
+- **FP8, NVFP4, AWQ, GPTQ, compressed-tensors**: [vLLM](https://www.redhat.com/en/topics/ai/what-is-vllm) and data center GPUs.
+
+<Image src={figure6} alt={"Searching for a single popular model on Hugging Face returns dozens of quantization formats, and they are not interchangeable."} />
+
+*Figure 6: Searching for a single popular model on Hugging Face returns dozens of quantization formats, and they are not interchangeable.*
+
+## Does it make the model dumber?
+
+Done correctly, essentially no. But "done correctly" is what I want to emphasize.
+
+Naive quantization, where you round every number down and cross your fingers, does hurt. What works are calibrated techniques like [GPTQ](https://developers.redhat.com/articles/2026/03/18/llm-compressor-010-faster-compression-distributed-gptq), AWQ, and SmoothQuant, which run a small representative dataset through the model to figure out which weights matter most and protect those. All 3 are implemented in [LLM Compressor](https://github.com/vllm-project/llm-compressor), the open source library Red Hat maintains for producing vLLM-ready checkpoints.
+
+The Red Hat AI team published [NVFP4 versions of a big spread of open models this year](https://developers.redhat.com/articles/2026/02/04/accelerating-large-language-models-nvfp4-quantization), from 8B up past 400B, and the recovery numbers are the interesting part (illustrated in figure 7):
+
+- **70B–235B models**: ~99% of BF16 accuracy
+- **~30B models**: 97–99%
+- **7B–14B models**: ~95–98%
+
+<Image src={figure7} alt={"Accuracy recovery of quantized models compared to their BF16 baselines, across model sizes."} />
+
+*Figure 7: Accuracy recovery of quantized models compared to their BF16 baselines, across model sizes.*
+
+What's quite interesting is that recovery gets better as models get bigger, which is backward from what most people assume, and mixture of experts (MoE) models hold up especially well. If you want the receipts, we [ran over half a million evaluations on quantized LLMs](https://developers.redhat.com/articles/2024/10/17/we-ran-over-half-million-evaluations-quantized-llms), and we dug separately into [how quantized models handle long-context tasks](https://developers.redhat.com/articles/2024/02/03/how-well-do-quantized-models-handle-long-context-tasks) as well.
+
+## What quantization looks like under load
+
+If you're deploying a model for a team, this is the part that matters most. We benchmarked Llama 3 70B on two H100s with [GuideLLM](https://developers.redhat.com/articles/2025/06/20/guidellm-evaluate-llm-deployments-real-world-inference), FP16 versus FP8 weights-and-activations, on a [retrieval-augmented generation (RAG)](https://www.redhat.com/en/topics/ai/what-is-retrieval-augmented-generation) style workload of roughly 1024 tokens in and 128 out (illustrated in figure 8):
+
+- **Throughput**: 158 → 474 input tokens/sec
+- **Time to first token under load**: Over 30,000ms → about 4,800ms
+
+<Image src={figure8} alt={"The same Llama 3 70B deployment on the same two H100s, FP16 versus FP8, showing over 3x the throughput and a 6.7x drop in time to first token under load."} />
+
+*Figure 8: The same Llama 3 70B deployment on the same two H100s, FP16 versus FP8, showing over 3x the throughput and a 6.7x drop in time to first token under load.*
+
+This comparison was performed with the same GPUs and the same model. But, the difference is entirely what precision, or quantization, you're running at.
+
+## Conclusion
+
+What's important to take away is that quantization isn't a sacrifice you make because you may not have enough hardware. If you're using modern algorithms and validate your accuracy against real benchmarks, it's a powerful way to fit a frontier model onto the GPUs you already have, serve far more users, and cut your time to first token by an order of magnitude under load.
+
+<Image src={figure9} alt={"Red Hat AI publishes pre-compressed models on Hugging Face, with the weight and activation quantization scheme listed right on the model card."} />
+
+*Figure 9: Red Hat AI publishes pre-compressed models on Hugging Face, with the weight and activation quantization scheme listed right on the model card.*
+
+If you want to get started, [Red Hat AI](https://huggingface.co/RedHatAI) publishes pre-compressed models on Hugging Face (see figure 9), including Kimi, Qwen, Gemma, and more, along with the recovery benchmarks from native precision to the quantized version, so you can decide whether it works for you. And when you're ready to put one into production, [Red Hat AI Inference Server](https://www.redhat.com/en/products/ai/inference) ships vLLM with these optimizations built in, and [Red Hat OpenShift AI](https://www.redhat.com/en/products/ai/openshift-ai) handles the scaling once a single GPU is no longer enough. Plus, it's all built from open source, from the model layer to the application stack itself.

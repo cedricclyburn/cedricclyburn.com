@@ -1,0 +1,76 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import dataDilemma from './data-dilemma.png'
+import modelDistillation from './model-distillation.png'
+import iterativeSelfImprovement from './iterative-self-improvement.png'
+import dataRefinement from './data-refinement.png'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2025-03-25',
+  title: 'Synthetic data: A secret ingredient for better language models',
+  description:
+    'It\'s increasingly clear that the quality of a large language model (LLM) is hugely dependent on the quality of the data used during training.',
+};
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+};
+
+export default (props) => <ArticleLayout article={article} {...props} />;
+
+It's increasingly clear that the quality of a [large language model](https://www.redhat.com/en/topics/ai/what-are-large-language-models) (LLM) is hugely dependent on the quality of the data used during training. Take [DeepSeek](https://builtin.com/artificial-intelligence/deepseek-r1) for example, an [open source frontier model](https://www.redhat.com/en/blog/open-source-ai-red-hats-point-view) developed for an incredibly low cost, which incorporated synthetic data for training. In addition, for enterprises requiring specialized models for business use cases, real-world data can be challenging to obtain and annotate for model training. That’s why today’s artificial intelligence (AI) breakthroughs are being powered by [synthetic data](https://research.ibm.com/blog/what-is-synthetic-data)—a transformative approach to training and refining language models that’s faster, cheaper and more scalable than traditional methods.
+
+## The data dilemma: Why synthetic data matters
+
+Training high-performing LLMs requires vast amounts of diverse, high-quality data. Historically, this meant scraping all parts of the internet, manually curating datasets or paying teams of annotators—a process that’s expensive, slow and sometimes ethically complicated. At the same time, for specialized models in industries like [healthcare](https://www.redhat.com/en/topics/ai/what-is-ai-in-healthcare), traditional data may contain personally identifiable information (PII) and be subject to regulations such as [HIPPA](https://www.dhcs.ca.gov/formsandpubs/laws/hipaa/Pages/1.00WhatisHIPAA.aspx) or the [EU AI Act](https://artificialintelligenceact.eu/).
+
+<Image src={dataDilemma} alt="The data dilemma Why synthetic data matters" />
+
+*For organizations developing custom AI models, the data preparation process can be quite intensive*
+
+This is where synthetic data comes in. Synthetic data is artificially generated data used to augment real-world data, helping [reduce the time, expense and legal hurdles](https://arxiv.org/abs/2410.15226) of collecting and labeling large datasets. By leveraging LLMs, it’s possible to generate specialized queries that can be more diverse and comprehensive than human-curated alternatives.
+
+## How synthetic data generation works
+
+Synthetic data isn’t “fake” data, instead it is designed to mimic real-world data where that data may be scarce. Let’s take a look at some primary methods for generating synthetic data that are commonly used in the language models of today.
+
+### Knowledge transfer: Model distillation for synthetic data
+
+One of the most effective ways to generate synthetic data is known as **distillation**, where a larger, more advanced “teacher” model (such as Llama 405B) creates training examples for a smaller “student” model. This facilitates the transfer of knowledge into a more specialized, [small language model](https://www.redhat.com/en/topics/ai/llm-vs-slm) (SLM), which has faster response times and is less resource-intensive once deployed. Notably, Meta’s [Llama license changed in the 3.1 release to explicitly allow distillation](https://ai.meta.com/blog/meta-llama-3-1/), although it’s important to note that many proprietary models don’t permit these workflows.
+
+<Image src={modelDistillation} alt="Knowledge transfer Model distillation for synthetic data" />
+
+*With traditional model distillation, the teacher model is distilled in a knowledge transfer to the smaller, student model*
+
+### Iterative self-improvement
+
+Models can also refine their own outputs through iterative **self-improvement**. Here the model starts with plain text and human-written prompts, and iteratively evolves those into complex queries covering all sorts of edge cases. This is an important part of post-training and fine-tuning, where a model already has a “base” of knowledge that can be supplemented with additional domain-specific data to develop specialized expertise related to a certain task or field of knowledge.
+
+[Microsoft’s Evol-Instruct](https://arxiv.org/abs/2304.12244) is one example of an automated pipeline, but at Red Hat, with the partnership of [IBM Research](https://research.ibm.com/), we’ve been developing [InstructLab](https://www.redhat.com/en/topics/ai/what-is-instructlab) to help overcome scalability challenges in the instruction-tuning phase of LLM training. By structuring a taxonomy of data and enabling subject matter experts to contribute without needing deep data science expertise, InstructLab offers a cost-effective and more scalable solution for enhancing LLM capabilities with [knowledge](https://docs.instructlab.ai/taxonomy/knowledge/) and [skills](https://docs.instructlab.ai/taxonomy/skills/).
+
+InstructLab works in part by translating traditional data sources as seed examples for synthetic data generation, enabling more diverse outputs, implementing rigorous filtering of produced data and providing multiphase tuning to incrementally improve the model's performance. This phased approach helps maintain training stability and provides a replay buffer to help prevent [catastrophic forgetting](https://en.wikipedia.org/wiki/Catastrophic_interference).
+
+<Image src={iterativeSelfImprovement} alt="Iterative self-improvement" />
+
+*With InstructLab, a taxonomy organizes initial seed data to be used in synthetic data generation for model customization*
+
+### Data refinement and synthetic augmentation in model training
+
+While we’ve been looking at ways to improve smaller and more specialized models, you might be wondering how the next evolution of [foundation models](https://www.redhat.com/en/topics/ai/what-are-foundation-models) is using synthetic data to improve benchmarks and evaluations.
+
+One example is the [Microsoft Phi-4](https://huggingface.co/microsoft/phi-4) open source model which incorporates a significant amount of synthetic data in its training process, with multi-agent prompting and self-revision workflows, excelling at complex reasoning. During pre-training, a combination of data refinement, filtering and classification can be performed to produce higher-quality corpuses of data.
+
+For example the [HuggingFace Cosmopedia dataset](https://github.com/huggingface/cosmopedia) has over 25 billion tokens and one of the largest open synthetic datasets to date. An initial web sample from a dataset like [RefinedWeb](https://arxiv.org/abs/2306.01116) might include articles on “*baking techniques*” with a straightforward explanation of how to bake bread. By using the [Mixtral-8x7B-Instruct model](https://mistral.ai/en/news/mixtral-of-experts) to generate a synthetic re-representation of the data, the custom prompt might instruct the model to create a detailed guide for beginners, such as, “*Write a step-by-step tutorial on baking sourdough bread, including tips for achieving the perfect crust*.” This resulting synthetic data expands on the original idea with added depth and clarity, increasing the diversity and quality of the original data sample.
+
+<Image src={dataRefinement} alt="Data refinement and synthetic augmentation in model training" />
+
+*In Cosmopedia, initial web extracts and seed examples are re-represented to provide more context and deeper background context*
+
+## Quality and bias risks with synthetic data
+
+While synthetic data has immense potential only bottlenecked by computational speeds, there are a number of risks to keep in mind. First is what’s known as [model collapse](https://www.ibm.com/think/topics/model-collapse), where repeated training on synthetic data can degrade model performance, leading to “hallucinations” or oversimplified outputs. In addition, [initial flaws or biases in the training data](https://arxiv.org/abs/2305.17493) or samples can persist or worsen during the generation process, and careful human curation of seed examples and post-generation review is necessary. Ultimately, a systematic pipeline with a critic system—an AI component that evaluates the performance of another AI model or system—can help to filter only high-quality examples, and a combination of LLM annotation and human annotation can provide the best results.
+
+## The future is synthetic (and open)
+
+As AI models continue to grow more sophisticated, the role of synthetic data will become the default, not the exception, but its success is based on transparency and rigorous validation. With InstructLab, we are building a future that addresses the challenges of [synthetic data through grounded source data](https://www.redhat.com/en/blog/how-instructlabs-synthetic-data-generation-enhances-llms), a diversity of contributions from subject matter experts and automated quality checks. This means organizations and enterprises have the potential to develop their own unique AI models, customized for their specific use cases and free from vendor lock-in. As we always say at Red Hat, the future is open!

@@ -1,0 +1,88 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import figure1 from './figure-1.png'
+import figure2 from './figure-2.png'
+import figure3 from './figure-3.png'
+import figure4 from './figure-4.png'
+import figure5 from './figure-5.png'
+import figure6 from './figure-6.png'
+import figure7 from './figure-7.png'
+import figure8 from './figure-8.png'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2026-07-15',
+  title: "Run Claude Code locally with vLLM and OpenShift AI",
+  description:
+    "Deploy a self-hosted AI coding assistant with vLLM and Red Hat OpenShift AI for privacy and operational independence.",
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+These days, most developers are using some kind of AI coding assistant, whether that's Claude Code, Codex, or one of the many open source [agents](https://www.redhat.com/en/topics/ai/what-is-agentic-ai) out there (84% are using or plan to use AI tools, according to the [latest Stack Overflow Developer Survey](https://survey.stackoverflow.co/2025/ai)). But here's the thing: while you might be running the agent on your own machine, you're still using a proprietary, third-party LLM underneath.
+
+While that’s okay for most use cases, there are situations where it becomes a problem, for example, hitting your daily token limit in the middle of important work (see Figure 1), or sending private code off to a third party. More recently, frontier models that we depend on have suddenly become unavailable, as we’ve seen with both [the Claude models](https://www.bbc.com/news/articles/c932g3v3e13o) and [the latest ChatGPT release](https://techcrunch.com/2026/06/26/openai-limits-gpt-5-6-rollout-after-government-request-says-restrictions-shouldnt-be-the-norm/).
+
+<Image src={figure1} alt={"Terminal interface displaying a pink-highlighted error message indicating that the Claude usage limit has been reached."} />
+
+*Figure 1: Hitting a model’s usage limit mid-work might be the modern developer’s biggest enemy.*
+
+The good news is that you can run your own open source models with vLLM as the inference backend, giving you a fully local and private AI coding assistant. Let me show you exactly how.
+
+## Select a platform and benchmark your model
+
+While we’ll be powering an AI coding agent, deploying a model also means configuring token authorization, resource autoscaling, and additional capabilities provided by [Red Hat OpenShift AI](https://www.redhat.com/en/products/ai/openshift-ai) as a Kubernetes distribution. As shown in Figure 2 the foundation ships with a list of validated models benchmarked by the Red Hat AI team, including NVIDIA's Nemotron, Mistral, Qwen, and other open source models.
+
+<Image src={figure2} alt={"Red Hat OpenShift AI dashboard listing validated models, including NVIDIA Nemotron and Qwen, under the AI hub section."} />
+
+*Figure 2: Red Hat AI validated models are pretested, enterprise-ready AI models that Red Hat has verified for compatibility, performance, and support.*
+
+You also get performance insights for a variety of use cases, such as chatbots, RAG, and, for our purposes, code fixing. You can set latency and service-level objectives (SLOs) against different hardware profiles and see how a model will perform before you commit to deploying it, as shown in Figure 3.
+
+<Image src={figure3} alt={"Performance insights page in Red Hat OpenShift AI comparing latency and throughput for Qwen on different GPU hardware profiles"} />
+
+*Figure 3: You can benchmark model performance across hardware configurations before deployment.*
+
+## Deploy the model with vLLM
+
+Let’s walk through configuring and deploying the model using [vLLM](https://vllm.ai/), a popular open source inference server. [There are a variety of ways to use vLLM](https://docs.vllm.ai/en/stable/usage/), including running it directly on a Linux machine or with vllm serve {'{'}model{'}'}, but we’ll use the container image in our cloud-native setup. As a container, it’ll be deployed on OpenShift AI and use [KServe](https://kserve.github.io/website/) on the back end to deploy the model and scale the instance, as configured in Figure 4.
+
+<Image src={figure4} alt={"Configuration page in Red Hat OpenShift AI deploying a Qwen model with the vLLM serving runtime for KServe on a GPU profile."} />
+
+*Figure 4: Within OpenShift AI, you can deploy the model with vLLM as an inference engine and let KServe manage the underlying infrastructure.*
+
+In the **Advanced settings** (Figure 5), we make the model accessible through an external route outside the cluster. This step lets us connect to it from a local machine as a developer.
+
+<Image src={figure5} alt={"Advanced settings menu in Red Hat OpenShift AI enabling external route access and token authentication for the deployed model."} />
+
+*Figure 5: For accessing the model outside the cluster, you can create an external route and API token.*
+
+With those preferences set, we kick off the deployment, which begins spinning up the resources needed to get the model running on vLLM on top of OpenShift AI (Figure 6).
+
+<Image src={figure6} alt={"Deployments list in Red Hat OpenShift AI showing the qwen35b-coding model deployment status as starting."} />
+
+*Figure 6: With everything set, the model deployment begins, with downloading the weights, allocating GPU memory, and setting up the API for requests.*
+
+## Connect Claude Code to your private model
+
+Now, as a developer, we head to the terminal. We’ll export the OpenAI-compatible API endpoint for the model we have running on vLLM, set a dummy API key variable and the model name, and finish with the claude command to start up Claude Code (Figure 7).
+
+<Image src={figure7} alt={"Terminal command exporting environment variables for the API endpoint, dummy API key, and model name, then starting Claude Code."} />
+
+*Figure 7: Setting up the configuration of Claude Code to use our newly deployed model.*
+
+As shown in Figure 8, the left side displays the logs for the model running on vLLM. When we ask a question through our AI agent, Claude Code starts making requests to the instance running on our own hardware. We can watch it call tools and eventually summarize what the repository does, helping us be more productive as developers, without a single request leaving our infrastructure.
+
+<Image src={figure8} alt={"Split screen showing vLLM inference logs in OpenShift on the left and Claude Code analyzing a local code base on the right."} />
+
+*Figure 8: A split-screen view of the vLLM model inference server (left) and use of an AI agent like Claude Code (right).*
+
+## Wrapping up
+
+In just a few quick steps, we set up a self-hosted coding assistant that our team is already familiar with (supporting MCP servers, Skills, and more). The value here isn’t just privacy (though that's a primary benefit) but operational independence. When your AI coding tools depend on external APIs, you're exposed to rate limits, [outages](https://www.bbc.com/news/articles/c629pny4gl7o), [pricing changes](https://github.blog/news-insights/company-news/github-copilot-is-moving-to-usage-based-billing/), and, as we saw with the [Fable/Mythos directive](https://www.anthropic.com/news/fable-mythos-access), regulatory actions that can pull models offline with zero warning. [Running your own inference back end](https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai/trial) gives you a fallback that you control, using vLLM and OpenShift AI.
+
+If you want to try this setup yourself, check out the [Red Hat AI validated models on Hugging Face](https://huggingface.co/RedHatAI) and the [vLLM Claude Code integration docs](https://docs.vllm.ai/en/stable/serving/integrations/claude_code/).

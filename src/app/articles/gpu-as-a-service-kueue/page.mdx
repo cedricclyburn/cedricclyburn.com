@@ -1,0 +1,113 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import figure1 from './figure-1.png'
+import figure2 from './figure-2.png'
+import figure3 from './figure-3.png'
+import figure4 from './figure-4.jpg'
+import figure5 from './figure-5.png'
+import figure6 from './figure-6.png'
+import figure7 from './figure-7.png'
+import figure8 from './figure-8.png'
+import figure9 from './figure-9.png'
+import figure10 from './figure-10.png'
+import figure11 from './figure-11.png'
+
+export const article = {
+  author: 'Cedric Clyburn and James Harmison',
+  date: '2026-06-29',
+  title: "Implement GPU-as-a-Service with Kueue and NVIDIA MIG",
+  description:
+    "Learn how to implement GPU-as-a-Service on Red Hat OpenShift using Kueue, NVIDIA MIG, and a custom dashboard plug-in for self-service GPU resource booking.",
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+Many organizations buying GPUs today end up with the same problem: the cards [are expensive](https://www.vice.com/en/article/new-report-suggests-phased-price-hikes-for-amd-and-nvidia-gpus-in-2026/), the demand across teams is uneven ([about 52% utilization on average](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=11292736)), and there's no clean way for a developer to actually get their hands on one without filing a ticket. The result is usually some mix of GPUs sitting idle and GPUs being hoarded… sometimes both (and somehow on the same cluster).
+
+[GPU-as-a-Service](https://www.redhat.com/en/blog/unlocking-ai-innovation-gpu-service-red-hat) (GPUaaS) is the pattern that fixes that. A central platform team owns the hardware, and developers reserve slices of it on demand, almost like booking a meeting room. This post walks through how we put that workflow together on Red Hat OpenShift using the [Red Hat build of Kueue](https://kueue.sigs.k8s.io/), [NVIDIA Multi-Instance GPU (MIG](https://www.nvidia.com/en-us/technologies/multi-instance-gpu/)), and a small custom dashboard plug-in for self-service requesting of GPU resources, as shown in Figure 1.
+
+<Image src={figure1} alt={"Consumers and administrators interfacing with Red Hat AI modules for workload definitions, scheduling, and enablement."} />
+
+*Figure 1: GPU-as-a-Service connects AI workloads to shared infrastructure through a layer that handles scheduling, partitioning, and quota management.*
+
+## How GPUaaS works: Kueue and NVIDIA MIG
+
+We use [OpenShift](https://www.redhat.com/en/technologies/cloud-computing/openshift) core platform features and [OpenShift AI](https://www.redhat.com/en/products/ai/openshift-ai) workload integration to manage a central pool of shared compute.
+
+Kueue is a queueing and quota system for Kubernetes workloads. It lets a platform admin define resource pools, assign them to specific teams or users, and apply rules like fair sharing when things get busy, as shown in Figure 2.
+
+<Image src={figure2} alt={"LocalQueues route workloads into ClusterQueues, which map to Kubernetes nodes across performance, CPU, spot, and GPU instance types."} />
+
+*Figure 2: Kueue organizes work into LocalQueues and ClusterQueues, grouped into a cohort that shares capacity across node pools.*
+
+NVIDIA MIG lets a single physical GPU be sliced into smaller, isolated instances. For example, an H200 can be carved into smaller pieces like a `1g.18gb` slice or a `2g.35gb` slice, each of which behaves like an independent GPU. MIG makes GPU-as-a-Service more flexible because instead of allocating a whole accelerator to someone running a small model, they can request the slice they actually need, as shown in Figure 3.
+
+<Image src={figure3} alt={"Seven application workloads, including TensorFlow and Jupyter, map directly to separate GPU slices powered by a single physical processor."} />
+
+*Figure 3: NVIDIA MIG partitions a single physical GPU into isolated instances, each with dedicated memory and compute, so multiple users can share one accelerator.*
+
+MIG partitions [are configured](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mig-ocp.html) in the [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/introduction.html) using a combination of labels on nodes and platform-level enablement in the operator's `ClusterPolicy` resource.
+
+Kueue and MIG meet in a resource called a [ClusterQueue](https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/). The `coveredResources` block in this configuration file (Figure 4) lists each MIG slice size alongside CPU, memory, and full GPUs.
+
+<Image src={figure4} alt={"OpenShift web console YAML editor highlighting the ClusterQueue kind and the covered resources configuration for multiple MIG slices."} />
+
+*Figure 4: ClusterQueue YAML configuration showing MIG slice quotas in the OpenShift web console.*
+
+With the [Red Hat build of Kueue](https://catalog.redhat.com/en/software/containers/kueue/kueue-rhel9-operator/683f1acec43730d661f43aa8?q=kueue&architecture=amd64&image=68659caf0f9ed281bd405931), our platform team can define resource quotas (including individual MIG slice sizes) with flexible fair sharing, preemption, and queue prioritization. With that setup, let's look at what a developer actually sees when booking GPU resources. The `ClusterQueue` in this example does not have any direct quota; instead, it borrows from within its assigned cohort. This system allows teams to request unclaimed GPUs on a self-service basis without availability guarantees, making it ideal for lower-priority batch jobs.
+
+## How can we self-serve GPU quota reservations?
+
+Kueue's APIs provide extensive scheduling options, but most developers don't want to write YAML to request a GPU for the afternoon. To simplify this process, our platform team built a custom GPU booking plug-in for the OpenShift web console (Figure 5), and it's just as cool as you'd expect.
+
+<Image src={figure5} alt={"OpenShift web console interface showing the GPU Resource Booking dashboard with resource usage charts and a reservation calendar."} />
+
+*Figure 5: GPU booking plug-in dashboard showing usage overview and calendar.*
+
+This GPU booking plug-in pulls live data from the [Kueue APIs](https://kueue.sigs.k8s.io/docs/reference/kueue.v1beta1/) to show which resources are reserved or available, allowing you to schedule time on a calendar. The dashboard shows availability for each tier across full H200 GPUs and the three MIG slice sizes. When you're ready to reserve a slice, it's just as easy as setting the configuration and partition size. See Figure 6.
+
+<Image src={figure6} alt={"OpenShift web console configuration modal containing date range, time, and MIG slice resource selectors for booking a GPU."} />
+
+*Figure 6: The Book GPU Resources modal with a date range and partition selectors.*
+
+This custom plug-in relies on standard Kubernetes and Kueue architectural designs rather than introducing a unique data model. Because it generates native Kueue resources, operations tools like GitOps pipelines and the command-line interface (CLI) continue to function without interruption. Reviewing the `ClusterQueue` configuration shows the assigned quota for the requested MIG `2g.35gb` resource size (Figure 7).
+
+<Image src={figure7} alt={"OpenShift web console YAML editor displaying configuration fields for the user-developer ClusterQueue resource."} />
+
+*Figure 7: ClusterQueue YAML with namespace selector and quota for reserving MIG 2g.35gb resources.*
+
+Because our plug-in uses the `namespaceSelector` field within the `ClusterQueue`, developers from other projects cannot accidentally schedule workloads against this dedicated quota. It still participates in the broader cluster cohort, so it benefits from fair sharing when other workloads aren't pushing. While our booking UI offers an accelerated way to write the YAML, the system manages all actions through native Kubernetes resources.
+
+## Deploying a model onto the reserved GPU slice
+
+With a reservation in hand, configuring OpenShift AI is simple. You can select an appropriately sized model from the [model catalog](https://www.redhat.com/en/blog/discover-red-hat-openshift-ai-model-catalog) (Figure 8). Each model provides performance details and standard benchmarks across different types of accelerators, reducing the guesswork of “Will this model fit properly on my hardware?”
+
+<Image src={figure8} alt={"Model details page for Apertus-8B-Instruct in the Red Hat OpenShift AI catalog with a highlighted Deploy model button."} />
+
+*Figure 8: The OpenShift AI catalog showing a Red Hat AI validated model.*
+
+The deployment guide prompts you to choose a hardware profile (Figure 9). An administrator preconfigures hardware profiles to link a model deployment to a `LocalQueue` and its corresponding reserved `ClusterQueue`. The custom plug-in automates the creation of these `HardwareProfile` resources alongside the `LocalQueue` and `ClusterQueue`, providing immediate self-service access.
+
+<Image src={figure9} alt={"OpenShift AI model deployment page highlighting a dropdown menu with the reserved MIG-35GB hardware profile option."} />
+
+*Figure 9: The model deployment page with the reserved hardware profile selected.*
+
+Selecting the **Reserved** hardware profile tethers this deployment to your booked GPU resource. The deployment operates as a standard OpenShift AI workload while executing within the defined Kueue reservation. Select the reserved profile, choose the [vLLM NVIDIA image](https://developers.redhat.com/articles/2025/10/16/profiling-vllm-inference-server-gpu-acceleration-rhel), and deploy (Figure 10). The model deploys exclusively to your reserved multi-instance GPU slice.
+
+<Image src={figure10} alt={"OpenShift AI model deployment form showing the selected vLLM serving runtime with a cursor hovering over the Next button."} />
+
+*Figure 10: The model deployment screen with the reserved MIG-35GB hardware profile and the vLLM NVIDIA serving runtime selected for KServe.*
+
+## Why GPU-as-a-Service matters
+
+We're seeing a wide variety of practical use cases for AI, from [traditional recommendation systems](https://developers.redhat.com/learn/openshift-ai/build-and-evaluate-fraud-detection-model-tensorflow-and-onnx) to the [latest AI agents](https://www.redhat.com/en/products/ai/agentic-ai) and coding assistants. These workloads depend on consistent access to underlying hardware accelerators. This standardized approach allows developers to build features without being bottlenecked by tickets or GPU availability, while the platform team maintains visibility into resource use patterns. Long-running jobs like real-time inference can share resources elastically with batch jobs like AI model fine-tuning, governed by your established access policies.
+
+<Image src={figure11} alt={"A three-tiered architecture mapping AI workloads through a GPU resource management layer down to various infrastructure environments."} />
+
+*Figure 11: The complete GPUaaS picture in Red Hat AI with scheduling, enablement, and observability.*
+
+These components integrate as hybrid cloud resources using Red Hat OpenShift and OpenShift AI. Explore the [interactive GPU-as-a-Service demo](https://www.redhat.com/architect/portfolio/detail/226-gpu-as-a-service-interactive-experience?intcmp=RHCTG0250000458741) or visit the [Red Hat AI inference](https://www.redhat.com/en/products/ai/inference) product page to get started.

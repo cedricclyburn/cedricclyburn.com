@@ -1,0 +1,91 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import figure1 from './figure-1.jpg'
+import figure2 from './figure-2.png'
+import figure3 from './figure-3.png'
+import figure4 from './figure-4.png'
+import figure5 from './figure-5.png'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2026-08-26',
+  title: "How AI observability works with MLflow",
+  description:
+    "Learn how AI observability works with MLflow, an open source tool that can trace an agentic query and find the root cause of discrepancies between AI assistant responses and dashboard data. This post discusses the practical value of tracing an agent and what MLflow adds to an observability stack.",
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+As I'm sure you already know, [AI responses aren't always correct](https://www.bbc.co.uk/mediacentre/2025/new-ebu-research-ai-assistants-news-content) (your favorite LLM probably has a disclaimer saying the same thing). So as adoption of AI coding agents like [Claude Code](https://claude.com/product/claude-code)—or really any application that calls tools—takes off, it's natural to have questions about the answers users get back. Did the agent call the right tool? What context went to the LLM before it gave its response?
+
+Traditional application monitoring can tell you that an API responded successfully within 5 seconds. That's useful! But when that observability philosophy is applied to AI, it treats the entire workflow (whether it's [agentic](https://www.redhat.com/en/topics/ai/what-is-agentic-ai), [RAG](https://www.redhat.com/en/topics/ai/what-is-retrieval-augmented-generation), or beyond) as a single black box.
+
+That's why [AI observability](https://www.redhat.com/en/topics/automation/observability-to-aiops-automation) matters: it makes it possible to connect the response a user sees to the model calls, retrieved context, tool uses, and all the other steps that produced it. In this blog post, I’ll walk through a typical agentic application and show you how that can work, using the open source project [MLflow](https://github.com/mlflow/mlflow) behind the scenes.
+
+## Where you can go wrong without AI observability
+
+Say we have a mortgage lending application, where our team can ask an AI assistant questions about the business—something like "show me the current pipeline status." The assistant uses tools that retrieve internal data.
+
+Figure 1 illustrates the dashboard where team members can see data and interact with the assistant. At first glance, the assistant’s answer looks solid. But notice that its *44% pull-through rate and 60 average days to close* response doesn't match the dashboard, which gives 43.2% and 52.5 days for the same metrics.
+
+<Image src={figure1} alt={"Our AI assistant reports a 44% pull-through rate and 60 days to close, but the dashboard shows 43.2% and 52.5. What’s happening here?"} />
+
+*Figure 1. Our AI assistant reports a 44% pull-through rate and 60 days to close, but the dashboard shows 43.2% and 52.5. What’s happening here?*
+
+So did the model [hallucinate](https://www.redhat.com/en/blog/when-llms-day-dream-hallucinations-how-prevent-them)? Well… we don't know! The dashboard and the assistant could be using different time windows, different queries, or different definitions of "pull-through." From this view, there's no way to tell. That's the observability gap, and the way out of it is being able to see the path that produced the answer.
+
+## Finding the request in MLflow
+
+All we've seen so far is a final answer, but there was an entire decision-making process that happened in the few seconds between the question and the response. A typical agentic query like this one generates more than 30 metrics (token counts, LLM latency, database query times) and more than 15 log events (agent decisions, tool parameters, and so on) into a single distributed trace. MLflow can provide visibility into those traces, as shown in Figure 2.
+
+<Image src={figure2} alt={"MLflow user interface displaying a list of recent distributed traces for AI agent requests. The trace list includes tracking details such as session IDs, timestamps, and total request duration times."} />
+
+*Figure 2. The MLflow trace list, showing recent agent requests with session IDs, time stamps, and duration.*
+
+This gives us a lot more than an HTTP access log. We can associate a request with a conversation session, inspect its complete response, and open the trace directly instead of manually correlating a handful of services, as shown in Figure 3.
+
+<Image src={figure3} alt={"Timeline chart within MLflow breaking down a request into three execution spans: an initial model call lasting 2.48 seconds, a ceo_pipeline_summary tool execution taking 75 milliseconds, and a second model call taking 2.40 seconds."} />
+
+*Figure 3. An MLflow trace timeline with 3 spans: a model call, the tool call, and a second model call.*
+
+In this specific trace, we can see:
+
+- The first model call took 2.48 seconds and decided what action to take.
+- A tool call (`ceo_pipeline_summary`) grabbed data from our internal application and returned it to the LLM in 75 milliseconds.
+- A second model call took 2.40 seconds and composed the final answer.
+
+So the tool wasn't the bottleneck here. Almost all of the request time came from the 2 model calls. That's immediately useful to 2 different teams: your SRE/platform folks get real latency attribution, and your AI engineering team gets a view into model behavior and decision quality.
+
+## Tracing what happened to the AI agent
+
+Now let's look inside those spans, specifically the `ceo_pipeline_summary` tool call we mentioned earlier. Figure 4 illustrates what this looks like.
+
+<Image src={figure4} alt={"Detailed span view in MLflow for the ceo_pipeline_summary tool execution, showing the raw JSON payload received by the agent containing the values 44% and 60 days."} />
+
+*Figure 4. The span detail for ceo_pipeline_summary, showing the raw JSON that the agent received: 44% and 60 days.*
+
+There it is! MLflow shows that our agent received an input of 44% and 60 days, the exact numbers it reported. So we have concrete evidence the model didn't invent those figures. It accurately summarized what it received from the tool.
+
+This means that the difference between our assistant and the dashboard is farther upstream. Maybe the data is calculated differently, maybe one result was cached, maybe the tool is querying a different date range. We still don't know the answer! But we've gone from "the AI got it wrong" to "the tool and the dashboard disagree," and that's a bug someone can actually pick up and fix. That's the practical value of tracing an agent.
+
+## What MLflow adds to your observability stack
+
+Simply put, we need metrics, logs, and traces more than ever. MLflow connects a single user request to the model calls, tools, prompts, and context that produced an answer.
+
+MLflow is open source and [compatible](https://mlflow.org/docs/latest/genai/tracing/opentelemetry/genai-semconv/) with OpenTelemetry, and also with [automatic tracing](https://mlflow.org/docs/latest/genai/tracing/) integrations for [popular model and agent frameworks](https://mlflow.org/docs/latest/genai/tracing/integrations/), including LangChain, Claude Code, and many other AI tools.
+
+With [Red Hat OpenShift AI](https://www.redhat.com/en/products/ai/openshift-ai), you get logical isolation for your traces and experiments, so alongside serving models and running automations, you can debug requests and watch how your AI applications and agents are actually performing, in one place, across any hybrid cloud provider. That's pretty neat, I'd say! You can try out the demo application we’ve been discussing (see Figure 5 for the architecture) [as a Red Hat AI Quickstart](https://docs.redhat.com/en/learn/ai-quickstarts/rh-multi-agent-loan-origination). It demonstrates a complete (and sovereign) agentic AI use case with MLflow.
+
+<Image src={figure5} alt={"Technical architecture diagram of the mortgage lending agent application, showing data flow from the web browser through API layers to the backend AI models, data sources, and MLflow observability stack."} />
+
+*Figure 5. The architecture of the mortgage lending agent application, from the browser through the API to the models and data behind it.*
+
+## Wrapping up
+
+We just walked through debugging a single request, but the real value shows up over time. Once you're capturing traces, you can use them to evaluate future versions of the application, watch for changes on your model provider's end (did it just get nerfed?), and build pipelines that catch regressions in tool calls before your users do.
+
+As we depend more and more on AI applications and agents, I really think AI observability stops being just nice to have and becomes a requirement for anything you put in production. It makes it possible to either confirm that you’re getting the right answer back, or to figure out exactly where you went wrong.

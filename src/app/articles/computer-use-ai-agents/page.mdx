@@ -1,0 +1,110 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import figure1 from './figure-1.png'
+import figure2 from './figure-2.png'
+import figure3 from './figure-3.jpg'
+import figure4 from './figure-4.png'
+import figure5 from './figure-5.png'
+import figure6 from './figure-6.png'
+import figure7 from './figure-7.png'
+import figure8 from './figure-8.png'
+
+export const article = {
+  author: 'Cedric Clyburn',
+  date: '2026-07-20',
+  title: "Computer use: How AI agents can automate almost anything",
+  description:
+    "Learn how to set up local agentic AI computer use. Run quantized models like Qwen 3.6 with Hermes to automate desktop tasks on your own terms today.",
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+"Hey, can you take a photo of me using Photo Booth with a filter… also, open Chess and move some of the pawns up."
+
+That little exchange shows computer use in action, one of the coolest things happening in [agentic AI](https://www.redhat.com/en/topics/ai/what-is-agentic-ai) right now.
+
+<Image src={figure1} alt={"A Hermes agent terminal interface executing commands alongside active Photo Booth and Chess windows on a macOS desktop."} />
+
+*Figure 1: My AI agent controlling my macOS desktop applications through computer use.*
+
+## What is computer use?
+
+Computer use lets an AI use software the same way you do, so it can view the screen, click, and type—all without you touching the keyboard or mouse. This approach is invaluable for automating tedious, manual tasks. For example, one of my previous jobs required me to move data from a CRM into Jira tickets. Computer use can also help with enterprise-level tasks where custom integrations are not available.
+
+Pretty neat, right? But you almost certainly have private data on your own machine that you'd rather not hand to a third-party AI provider. If you pay per token via an LLM API, [these tool calls can get quite expensive](https://fortune.com/2026/05/26/uber-coo-ai-spending-tokens-claude-code/). You might want to look at running your own LLM and wiring it up to an agent running locally.
+
+With that in mind, I'll show you how to run an open-weight model (such as [Qwen](https://huggingface.co/Qwen) or [Gemma](https://deepmind.google/models/gemma/)) with an open source AI harness ([Hermes](https://github.com/nousresearch/hermes-agent)) so that you can implement computer use on your own terms.
+
+## Step 1: Pick a model (and don't overpay for hardware)
+
+When you choose a model, it's worth checking out [Red Hat AI on Hugging Face](https://huggingface.co/RedHatAI), where an entire library of compressed models can dramatically cut your hardware requirements (in some cases, halving the RAM requirements or more). The core technique is [quantization](https://developers.redhat.com/articles/2025/08/18/optimizing-generative-ai-models-quantization), which squeezes a model down to fewer bits per weight (Figure 2).
+
+<Image src={figure2} alt={"A horizontal diagram illustrating precision and dynamic range across FP32, BF16, FP16, and INT8 model weight formats."} />
+
+*Figure 2: Quantization compresses model weights to fewer bits, shrinking the memory footprint while preserving nearly all the original accuracy.*
+
+Take the [Qwen 3.6 35B](https://huggingface.co/Qwen/Qwen3.6-35B-A3B) model shown in Figure 3. The native released weights in full precision are roughly 72 GB. [Red Hat's 4-bit version](https://huggingface.co/RedHatAI/Qwen3.6-35B-A3B-NVFP4)? About 25 GB. This reduced footprint means that you can run this model on your own MacBook Pro with stable performance. Thanks to modern compression algorithms, the [quantized version performs almost identically to the original on most benchmarks](https://developers.redhat.com/articles/2024/10/17/we-ran-over-half-million-evaluations-quantized-llms). The compressed version retains 99% of the original model accuracy while using a fraction of the hardware footprint.
+
+<Image src={figure3} alt={"The Qwen 3.6 35B model repository page on Hugging Face next to the compressed 4-bit version hosted by Red Hat AI."} />
+
+*Figure 3: While the full-precision weights require roughly 72 GB, Red Hat's 4-bit compressed model fits in about 25 GB.*
+
+## Step 2: Deploy it (either locally or on Kubernetes)
+
+For this example, we use Qwen 3.6 with 35 billion parameters. It's a sparse [Mixture-of-Experts model](https://www.redhat.com/en/topics/ai/mixture-of-experts), meaning it features 35 billion total parameters with roughly 3 billion active parameters per token, and it's natively multimodal. This architecture makes it a good fit for computer use because the agent passes a screen capture to the model and then uses tools to interact with user interface elements like check boxes.
+
+Now, let's get it running.
+
+### Deploying the model locally
+
+If you have the hardware to run it (I like to use the [llmfit project](https://github.com/AlexsJones/llmfit) to check compatibility before downloading anything) you might be surprised by how quickly you can serve a model locally. As a macOS user, I've tried most of the local inference tools, from [Ollama](https://ollama.com/) to [LM Studio](https://lmstudio.ai/) and upstream [llama.cpp](https://github.com/ggml-org/llama.cpp). These days, I'm reaching for [oMLX](https://github.com/jundot/omlx), a simple open source server and menu-bar application that manages models and exposes an OpenAI-compatible API endpoint (Figure 4). This tool usesApple's [MLX framework](https://opensource.apple.com/projects/mlx) to accelerate inference through unified memory.
+
+<Image src={figure4} alt={"The oMLX Chat application interface displaying a response from a locally served Qwen 3.6 35B 4-bit model."} />
+
+*Figure 4: An instance of oMLX serving Qwen 3.6 35B locally on a workstation and exposing an OpenAI-compatible API endpoint using Apple's MLX framework.*
+
+If you are developing on Windows or Linux, the same model runs through [llama.cpp](https://github.com/ggml-org/llama.cpp). Download a model (Unsloth, shown in Figure 5, makes some good quantized ones), point `llama-server` at it, and configure the same OpenAI-compatible endpoint to connect your agent.
+
+<Image src={figure5} alt={"The Unsloth AI organization page on Hugging Face listing various quantized models compressed in GGUF format."} />
+
+*Figure 5: Various models compressed in the GGUF format for consumer use.*
+
+### Deploying the model with vLLM on OpenShift AI
+
+On [Red Hat OpenShift AI](https://developers.redhat.com/products/red-hat-openshift-ai), you can deploy models directly from the [model catalog](https://www.redhat.com/en/blog/discover-red-hat-openshift-ai-model-catalog) onto a Kubernetes environment. You can then create a route to make the model reachable from outside the cluster, authenticated with a custom API key.
+
+Inside the cluster, the platform optimizes throughput and reduces latency by intelligently routing traffic and disaggregating the inference steps. This process splits the compute-heavy prefill phase from the memory-bound decode phase by using the [llm-d project](https://github.com/llm-d/llm-d). In [Red Hat's published benchmarks](https://llm-d.ai/blog/kvcache-wins-you-can-see), intelligent inference scheduling delivered up to 57 times faster time-to-first-token and roughly two times the throughput compared to naive round-robin routing on the same hardware.
+
+<Image src={figure6} alt={"The Red Hat OpenShift AI dashboard listing deployed model instances, active serving runtimes, and inference endpoints."} />
+
+*Figure 6: Deployed models within OpenShift AI, which allows users to manage endpoints and serving runtimes like vLLM.*
+
+### Note
+
+To learn more about the differences between llama.cpp and vLLM, read our guide on [choosing the right local LLM inference engine](https://developers.redhat.com/articles/2026/06/15/llamacpp-vs-vllm-choosing-right-local-llm-inference-engine).
+
+## Step 3: Set up the local agent
+
+On my local machine, I've installed [Hermes](https://github.com/nousresearch/hermes-agent), a popular open source AI agent that runs on macOS, Windows, and Linux (Figure 7). Hermes can write code, manage your calendar, diagnose your Kubernetes cluster, and more. Because it connects to any OpenAI-compatible endpoint, I can point it directly at the model I just served—whether that's oMLX on my macOS environment or vLLM on OpenShift—with no code changes. The configuration requires only a base URL and an API key.
+
+<Image src={figure7} alt={"A terminal window showing the Hermes agent startup interface, listing available system tools and configuration options."} />
+
+*Figure 7: The Hermes agent user interface showing available tools and service connections.*
+
+To interact with your desktop, Hermes performs [computer use](https://hermes-agent.nousresearch.com/docs/user-guide/features/computer-use) through a [computer use agent (CUA)](https://github.com/trycua/cua) driver, which is an open source tool that lets the agent control the screen. The driver also includes configurable, multi-layer guardrails that protect windows from closing unexpectedly and require user approval before the agent types text or takes sensitive actions. You stay in the loop.
+
+<Image src={figure8} alt={"A split-screen workspace featuring the computer use agent terminal on the left and a DeepSeek research paper PDF on the right."} />
+
+*Figure 8: Using computer use in my daily work to understand this diagram from the DeepSeek DFlash research paper.*
+
+## Step 4: Profit? Well, yes
+
+So, let's give it a try: "Hey, can you use my browser to go to the vLLM repo and give it a star?"
+
+Just kidding, you don't have to. But that's what computer use is all about. The model reads the screen, finds the browser, locates the star button, and selects it automatically. This architectural configuration differs because it runs entirely within a sovereign environment, keeping the local model, the local agent, and your private data on your machine.
+
+To explore more capabilities, view the available [open source tools and options from Red Hat AI](https://www.redhat.com/en/products/ai).
