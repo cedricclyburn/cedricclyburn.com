@@ -74,45 +74,35 @@ export default function About() {
           I’m Cedric Clyburn. Nice to meet you!
           </h1>
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400 [&_a]:text-accent dark:[&_a]:text-accent [&_a]:underline [&_a]:decoration-accent/30 dark:[&_a]:decoration-accent/30 [&_a]:underline-offset-2 [&_a]:transition [&_a:hover]:decoration-accent dark:[&_a:hover]:decoration-accent">
-            <p> 
-              I've always loved the moment when something "<em>clicks</em>", 
-              where you realize how something works, and there's clarity. 
-              When I had the opportunity during my first internship in college 
-              to become a <a href="https://www.whatisdevrel.com/">developer advocate</a>
-              , I was able to make that happen for others, all 
-              while spreading the awareness of open source 
-              software and culture. Since then, I've been devoted to making 
-              education more accessible for all, to work in the open, and try 
-              and help make developers' lives easier! 
-            </p> 
-            <p> 
-              Fortunately, I have been around for a time 
-              where <a href="https://kubernetes.io/">Kubernetes</a> has been the 
-              standard for application deployment, and much of my past work has 
-              revolved around the container tools <a href="https://podman.io/">Podman</a>
-              , <a href="https://podman-desktop.io/">Podman Desktop</a>
-              , <a href="https://buildah.io/">Buildah</a>, and related projects. 
-              In the realm of emerging technologies, I lead technical advocacy 
-              for AI-focused topics (Agentic AI, RAG, and more) and open source projects 
-              including <a href="https://docs.vllm.ai/">vLLM</a>
-              , <a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a>
-              , <a href="https://modelcontextprotocol.io/">Model Context Protocol</a>
-              , and more. Additionally, I've created 
-              workshops for cloud-native RAG with <a href="https://www.kubeflow.org">Kubeflow</a>, 
-              and dabble with MLOps. 
+            <p>
+              I've always loved the moment when something "clicks," when you
+              realize how something works, and there's clarity. During my first
+              internship in college, I had the opportunity to become a developer
+              advocate, and I was able to make that happen for others while
+              spreading awareness of open-source software and culture. Since
+              then, I've been devoted to making education more accessible for
+              all, working in the open, and helping make developers' lives
+              easier!
             </p>
             <p>
-            One of my passions is connecting folks, so I help to organize the 
-            annual <a href="https://kcdnewyork.com">
-            Kubernetes Community Days conference in New York City</a>. 
-            I also enjoy speaking myself at conferences, and have had the privilege 
-            to speak at a number of events, including The Linux 
-            Foundation's <a href="https://events.linuxfoundation.org/ai-dev-north-america/">AI.dev</a>
-            , <a href="https://www.wearedevelopers.com/world-congress/">WeAreDevelopers World Congress</a>
-            , <a href="https://www.cncf.io/kubecon-cloudnativecon-events/">KubeCon</a>
-            , <a href="https://devnexus.com/">DevNexus</a>
-            , <a href="https://www.devconf.info/">DevConf</a>
-            , and many more!
+              My background has been focused on{' '}
+              <a href="https://kubernetes.io/">Kubernetes</a> for application
+              deployment, working on projects like{' '}
+              <a href="https://podman.io/">Podman</a> for container management
+              and <a href="https://docs.vllm.ai/">vLLM</a> for AI inference.
+              I've built interactive demos, led workshops around the world, and
+              helped developers use open source projects. However, I absolutely{' '}
+              <em>love</em> creating video and written content to help
+              developers learn new topics in emerging technologies, with over
+              3M+ views online.
+            </p>
+            <p>
+              One of my passions is connecting folks, so I help organize the
+              annual <a href="https://kcdnewyork.com">Kubernetes Community Days</a>{' '}
+              conference in New York City. I also enjoy speaking at conferences
+              and have had the privilege to speak at events including Devoxx,
+              KubeCon, WeAreDevelopers World Congress, DeveloperWeek, DevNexus,
+              DevConf, and many more!
             </p>
           </div>
         </div>
