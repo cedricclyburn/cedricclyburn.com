@@ -12,7 +12,8 @@ export async function GET(req: Request) {
 
   let feed = new Feed({
     title: author.name,
-    description: 'Articles and tutorials on Kubernetes, DevOps, containers, and open source by Cedric Clyburn.',
+    description:
+      "Here's all of my longer content from around the web, collected in chronological order.",
     author,
     id: siteUrl,
     link: siteUrl,

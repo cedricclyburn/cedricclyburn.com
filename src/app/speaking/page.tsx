@@ -80,6 +80,12 @@ export default async function Speaking() {
         {/* Podcasts Section */}
         <SpeakingSection title="Podcasts">
           <Appearance
+            href="https://www.kubernetesbytes.com/home-1/episode/2915da8a/running-llms-is-easy-scaling-inference-on-kubernetes-is-hard"
+            title="Running LLMs is easy. Scaling Inference on Kubernetes is Hard!"
+            location="Kubernetes Bytes, November 9, 2026"
+            cta="Listen to podcast"
+          />
+          <Appearance
             href="https://allthingsopen.org/articles/specialized-coder-orchestra-conductor-ai-developer-roles"
             title="From Specialized Coder to Orchestra Conductor: How AI Changes Developer Roles"
             location="We Love Open Source, All Things Open"
@@ -106,13 +112,13 @@ export default async function Speaking() {
           <Appearance
             href="https://www.kubernetesbytes.com/home-1/episode/44410748/mongodb-kubernetes-operators-with-joel-lord-and-cedric-clyburn"
             title="MongoDB Kubernetes Operators with Joel Lord & Cedric Clyburn"
-            location="Kubernetes Bytes, August 2022"
+            location="Kubernetes Bytes"
             cta="Listen to podcast"
           />
           <Appearance
             href="https://podcasts.mongodb.com/public/112/The-MongoDB-Podcast-b02cf624/343850c6"
             title="The Intern Episode, Part 2"
-            location="The MongoDB Podcast, July 2022"
+            location="The MongoDB Podcast"
             cta="Listen to podcast"
           />
         </SpeakingSection>

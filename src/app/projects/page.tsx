@@ -1,5 +1,5 @@
 import { type Metadata } from 'next'
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from '@vercel/analytics/react'
 import Image from 'next/image'
 
 import { Card } from '@/components/Card'
@@ -15,35 +15,50 @@ const projects = [
     name: 'Kubernetes & OpenShift Labs',
     description:
       'Self-paced labs hosted by Red Hat to get hands-on learning experience.',
-    link: { href: 'https://www.redhat.com/en/interactive-labs/openshift', label: 'redhat.com' },
+    link: {
+      href: 'https://www.redhat.com/en/interactive-labs/openshift',
+      label: 'redhat.com',
+    },
     logo: logoRedhat,
   },
   {
     name: 'Technical Blogs & Guides',
     description:
       'Technical content and guides around getting started with Podman, Tekton, and Buildah.',
-    link: { href: 'https://developers.redhat.com/author/cedric-clyburn', label: 'developers.redhat.com' },
+    link: {
+      href: 'https://developers.redhat.com/author/cedric-clyburn',
+      label: 'developers.redhat.com',
+    },
     logo: logoRedhatdeveloper,
   },
   {
     name: 'Whiteboard Explainer Videos',
     description:
       'Open source technologies explained for everyone, using the fantastic IBM studio whiteboard.',
-    link: { href: 'https://www.youtube.com/watch?v=00Q0G84kq3M', label: 'youtube.com' },
+    link: {
+      href: 'https://www.youtube.com/watch?v=00Q0G84kq3M',
+      label: 'youtube.com',
+    },
     logo: logoIbm,
   },
   {
     name: 'MongoDB & Kubernetes',
     description:
       'Article & demo repository on using the MongoDB Kubernetes operator to connect to MongoDB Atlas.',
-    link: { href: 'https://www.mongodb.com/developer/products/atlas/kubernetes-operator-application-deployment/', label: 'mongodb.com' },
+    link: {
+      href: 'https://www.mongodb.com/developer/products/atlas/kubernetes-operator-application-deployment/',
+      label: 'mongodb.com',
+    },
     logo: logoMongodb,
   },
   {
     name: 'Red Hat Blogs',
     description:
       'Higher-level blogs and thought leadership around development, developer experience, and applied AI.',
-    link: { href: 'https://www.redhat.com/en/authors/cedric-clyburn', label: 'redhat.com' },
+    link: {
+      href: 'https://www.redhat.com/en/authors/cedric-clyburn',
+      label: 'redhat.com',
+    },
     logo: logoRedhat,
   },
 ]
@@ -61,7 +76,8 @@ function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 
 export const metadata: Metadata = {
   title: 'Projects',
-  description: "Cedric Clyburn's projects and initiatives in cloud-native",
+  description:
+    "Here's some of my projects, videos, and courses on all kinds of open source software. These are the ones that I'm most proud of, take a look!",
 }
 
 export default function Projects() {
@@ -76,7 +92,7 @@ export default function Projects() {
       >
         {projects.map((project) => (
           <Card as="li" key={project.name}>
-            <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
+            <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
               <Image
                 src={project.logo}
                 alt=""
@@ -97,6 +113,5 @@ export default function Projects() {
       </ul>
       <Analytics />
     </SimpleLayout>
-    
   )
 }

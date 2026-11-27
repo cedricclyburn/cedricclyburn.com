@@ -1,5 +1,5 @@
 import Image, { type ImageProps } from 'next/image'
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from '@vercel/analytics/react'
 import Link from 'next/link'
 import clsx from 'clsx'
 
@@ -124,14 +124,16 @@ function Newsletter() {
       <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
         Get notified when I publish something new, and unsubscribe at any time.
       </p>
-      <div className="mt-6 flex">
-        <input
-          type="email"
-          placeholder="Email address"
-          aria-label="Email address"
-          required
-          className="min-w-0 flex-auto appearance-none rounded-md border border-zinc-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/10 sm:text-sm dark:border-zinc-700 dark:bg-zinc-700/[0.15] dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:focus:border-accent dark:focus:ring-accent/10"
-        />
+      <div className="mt-6 flex items-center">
+        <span className="flex min-w-0 flex-auto p-px">
+          <input
+            type="email"
+            placeholder="Email address"
+            aria-label="Email address"
+            required
+            className="w-full appearance-none rounded-[calc(var(--radius-md)-1px)] bg-white px-3 py-[calc(--spacing(2)-1px)] shadow-md shadow-zinc-800/5 outline outline-zinc-900/10 placeholder:text-zinc-400 focus:ring-4 focus:ring-accent/10 focus:outline-accent sm:text-sm dark:bg-zinc-700/15 dark:text-zinc-200 dark:outline-zinc-700 dark:placeholder:text-zinc-500 dark:focus:ring-accent/10 dark:focus:outline-accent"
+          />
+        </span>
         <Button type="submit" className="ml-4 flex-none">
           Join
         </Button>
@@ -159,7 +161,7 @@ function Role({ role }: { role: Role }) {
 
   return (
     <li className="flex gap-4">
-      <div className="relative mt-1 flex h-10 w-10 flex-none items-center justify-center rounded-full shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
+      <div className="relative mt-1 flex h-10 w-10 flex-none items-center justify-center rounded-full shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
         <Image src={role.logo} alt="" className="h-7 w-7" unoptimized />
       </div>
       <dl className="flex flex-auto flex-wrap gap-x-2">
@@ -231,7 +233,11 @@ function Resume() {
           <Role key={roleIndex} role={role} />
         ))}
       </ol>
-      <Button href="https://drive.google.com/file/d/1CeS6exQ9bsKdq-tbOqjAlQ0c3MgmXoo5/view?usp=sharing" variant="secondary" className="group mt-6 w-full">
+      <Button
+        href="https://drive.google.com/file/d/1CeS6exQ9bsKdq-tbOqjAlQ0c3MgmXoo5/view?usp=sharing"
+        variant="secondary"
+        className="group mt-6 w-full"
+      >
         Download CV
         <ArrowDownIcon className="h-4 w-4 stroke-zinc-400 transition group-active:stroke-zinc-600 dark:group-hover:stroke-zinc-50 dark:group-active:stroke-zinc-50" />
       </Button>
@@ -249,16 +255,18 @@ function Photos() {
           <div
             key={image.src}
             className={clsx(
-              'relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl dark:bg-zinc-800',
+              'relative w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl dark:bg-zinc-800',
               rotations[imageIndex % rotations.length],
             )}
           >
-            <Image
-              src={image}
-              alt=""
-              sizes="(min-width: 640px) 18rem, 11rem"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
+            <div className="aspect-9/10">
+              <Image
+                src={image}
+                alt=""
+                sizes="(min-width: 640px) 18rem, 11rem"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
           </div>
         ))}
       </div>
@@ -277,13 +285,17 @@ export default async function Home() {
             Developer advocate & engineer for all things AI and cloud-native.
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I’m Cedric, a developer advocate at Red Hat, with a 
-            background in developer tools, Kubernetes, and AI engineering.
-            I love all things open source, and create demos, workshops, 
-            and content to make developers' lives easier! Based out of New York City.
+            I’m Cedric, a developer advocate at Red Hat, with a background in
+            developer tools, Kubernetes, and AI engineering. I love all things
+            open source, and create demos, workshops, and content to make
+            developers' lives easier! Based out of New York City.
           </p>
           <div className="mt-6 flex gap-6">
-            <SocialLink href="https://x.com/cedricclyburn" aria-label="Follow on X" icon={XIcon} />
+            <SocialLink
+              href="https://x.com/cedricclyburn"
+              aria-label="Follow on X"
+              icon={XIcon}
+            />
             <SocialLink
               href="https://www.instagram.com/cedricclyburn"
               aria-label="Follow on Instagram"

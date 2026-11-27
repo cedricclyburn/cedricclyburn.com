@@ -50,3 +50,7 @@ jspm_packages
 ## library folder
 dist
 templates
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

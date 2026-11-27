@@ -2,7 +2,8 @@ import { MetadataRoute } from 'next'
 import { getAllArticles } from '@/lib/articles'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cedricclyburn.com'
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://cedricclyburn.com'
 
   const articles = await getAllArticles()
 
@@ -46,12 +47,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${siteUrl}/podman`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${siteUrl}/nvidia`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.6,

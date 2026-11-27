@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   },
   description,
   alternates: {
+    canonical: './',
     types: {
       'application/rss+xml': `${siteUrl}/feed.xml`,
     },
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Cedric Clyburn',
     description,
-    url: siteUrl,
+    url: './',
     siteName: 'Cedric Clyburn',
     locale: 'en_US',
     type: 'website',

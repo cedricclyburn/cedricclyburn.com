@@ -28,7 +28,7 @@ function Article({ article }: { article: ArticleWithSlug }) {
       <Card.Eyebrow
         as="time"
         dateTime={article.date}
-        className="mt-1 hidden md:block"
+        className="mt-1 max-md:hidden"
       >
         {formatDate(article.date)}
       </Card.Eyebrow>
