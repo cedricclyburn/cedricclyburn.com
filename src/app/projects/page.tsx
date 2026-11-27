@@ -4,52 +4,62 @@ import Image from 'next/image'
 
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import logoRedhatdeveloper from '@/images/logos/redhatdeveloper.svg'
-import logoMongodb from '@/images/logos/mongodb.svg'
+import logoDeeplearning from '@/images/logos/deeplearning.svg'
 import logoIbm from '@/images/logos/ibm.svg'
-import logoOpenShuttle from '@/images/logos/open-shuttle.svg'
 import logoRedhat from '@/images/logos/redhat.svg'
+import logoRedhatdeveloper from '@/images/logos/redhatdeveloper.svg'
+import logoX from '@/images/logos/x.svg'
+import logoYoutube from '@/images/logos/youtube.svg'
 
 const projects = [
   {
-    name: 'Kubernetes & OpenShift Labs',
+    name: 'Fast & Efficient LLM Inference with vLLM',
     description:
-      'Self-paced labs hosted by Red Hat to get hands-on learning experience.',
+      'A short course on serving open-source LLMs with vLLM, from quantization to benchmarking.',
     link: {
-      href: 'https://www.redhat.com/en/interactive-labs/openshift',
-      label: 'redhat.com',
+      href: 'https://www.deeplearning.ai/courses/fast-and-efficient-llm-inference-with-vllm',
+      label: 'deeplearning.ai',
     },
-    logo: logoRedhat,
-  },
-  {
-    name: 'Technical Blogs & Guides',
-    description:
-      'Technical content and guides around getting started with Podman, Tekton, and Buildah.',
-    link: {
-      href: 'https://developers.redhat.com/author/cedric-clyburn',
-      label: 'developers.redhat.com',
-    },
-    logo: logoRedhatdeveloper,
+    logo: logoDeeplearning,
   },
   {
     name: 'Whiteboard Explainer Videos',
     description:
       'Open source technologies explained for everyone, using the fantastic IBM studio whiteboard.',
     link: {
-      href: 'https://www.youtube.com/watch?v=00Q0G84kq3M',
+      href: 'https://www.youtube.com/watch?v=XN3xNJvWXsc',
       label: 'youtube.com',
     },
     logo: logoIbm,
   },
   {
-    name: 'MongoDB & Kubernetes',
-    description:
-      'Article & demo repository on using the MongoDB Kubernetes operator to connect to MongoDB Atlas.',
+    name: 'AI Fundamentals Explained',
+    description: 'Articles on X that explain the fundamentals of AI.',
     link: {
-      href: 'https://www.mongodb.com/developer/products/atlas/kubernetes-operator-application-deployment/',
-      label: 'mongodb.com',
+      href: 'https://x.com/cedricclyburn/articles',
+      label: 'x.com',
     },
-    logo: logoMongodb,
+    logo: logoX,
+  },
+  {
+    name: 'Cloud-native RAG on Kubernetes',
+    description:
+      'A KubeCon tutorial on building retrieval-augmented generation apps on Kubernetes.',
+    link: {
+      href: 'https://www.youtube.com/watch?v=x3tS2SzpA1c',
+      label: 'youtube.com',
+    },
+    logo: logoYoutube,
+  },
+  {
+    name: 'Technical Blogs & Guides',
+    description:
+      'Technical content and guides around getting started with open source AI, Kubernetes, and more.',
+    link: {
+      href: 'https://developers.redhat.com/author/cedric-clyburn',
+      label: 'developers.redhat.com',
+    },
+    logo: logoRedhatdeveloper,
   },
   {
     name: 'Red Hat Blogs',

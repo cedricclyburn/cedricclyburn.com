@@ -16,11 +16,11 @@ import {
 import logoMongodb from '@/images/logos/mongodb.svg'
 import logoRedhat from '@/images/logos/redhat.svg'
 import logoNcino from '@/images/logos/ncino.svg'
-import image1 from '@/images/photos/image-1.jpg'
-import image2 from '@/images/photos/image-2.jpg'
-import image3 from '@/images/photos/image-3.jpg'
-import image4 from '@/images/photos/image-4.jpg'
-import image5 from '@/images/photos/image-5.jpg'
+import summitAudience from '@/images/photos/red-hat-summit-audience-containers-talk.webp'
+import vllmWithAndrewNg from '@/images/photos/cedric-clyburn-andrew-ng-vllm.webp'
+import developerBooth from '@/images/photos/cedric-clyburn-red-hat-developer-booth.webp'
+import developerWeekAudience from '@/images/photos/developer-week-audience-code-talk.webp'
+import summitStage from '@/images/photos/cedric-clyburn-red-hat-summit-stage.webp'
 import { type ArticleWithSlug, getAllArticles } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
 
@@ -245,15 +245,38 @@ function Resume() {
   )
 }
 
+const photos = [
+  {
+    image: summitAudience,
+    alt: 'Audience watching a containers talk on the Red Hat Summit stage.',
+  },
+  {
+    image: vllmWithAndrewNg,
+    alt: 'Cedric Clyburn and Andrew Ng beside a monitor about LLM inference with vLLM.',
+  },
+  {
+    image: developerBooth,
+    alt: 'Cedric Clyburn in a red hat talking with attendees at a Red Hat Developer booth.',
+  },
+  {
+    image: developerWeekAudience,
+    alt: 'Audience watching a code talk on stage at Developer Week.',
+  },
+  {
+    image: summitStage,
+    alt: 'Cedric Clyburn on the Red Hat Summit stage beside a slide titled The anatomy of an agent.',
+  },
+]
+
 function Photos() {
   let rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
 
   return (
     <div className="mt-16 sm:mt-20">
       <div className="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
-        {[image1, image2, image3, image4, image5].map((image, imageIndex) => (
+        {photos.map((photo, imageIndex) => (
           <div
-            key={image.src}
+            key={photo.image.src}
             className={clsx(
               'relative w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl dark:bg-zinc-800',
               rotations[imageIndex % rotations.length],
@@ -261,8 +284,8 @@ function Photos() {
           >
             <div className="aspect-9/10">
               <Image
-                src={image}
-                alt=""
+                src={photo.image}
+                alt={photo.alt}
                 sizes="(min-width: 640px) 18rem, 11rem"
                 className="absolute inset-0 h-full w-full object-cover"
               />
